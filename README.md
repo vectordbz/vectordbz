@@ -16,18 +16,6 @@
   <a href="#feedback">Feedback</a>
 </p>
 
----
-
-## ⚠️ Alpha Version — For Testing Only
-
-> **🚨 This software is currently in super early alpha and is provided strictly for testing and evaluation purposes.**
->
-> **Use at your own risk.** This is not production-ready software. Features may be incomplete, unstable, or change without notice. We take no responsibility for any data loss, corruption, or other issues that may occur while using this application.
->
-> **Do not use on production databases.** We recommend testing only on development or staging environments.
-
----
-
 ## 💬 We Want Your Feedback!
 
 This is an early release meant to gather feedback and understand what the community needs. If you have any suggestions, feature requests, bug reports, or general feedback, I would be thrilled to hear from you! 
