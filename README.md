@@ -31,7 +31,7 @@ Please open an [issue](https://github.com/vectordbz/vectordbz/issues) or start a
 | **Qdrant** | ✅ Fully Supported | v1.7+ |
 | **Weaviate** | ✅ Fully Supported | v1.19+ |
 | **Milvus** | ✅ Fully Supported | v2.3+ |
-| **ChromaDB** | 🚧 Coming Soon | - |
+| **ChromaDB** | ✅ Fully Supported | v0.4+ |
 
 ---
 
