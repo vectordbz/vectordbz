@@ -3,17 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="VectorDBZ - The ultimate desktop GUI for exploring, managing, and analyzing vector databases. Connect to Qdrant, Weaviate, Milvus, ChromaDB, and more. Analyze embeddings, detect duplicates, find outliers, and optimize performance.">
-    <meta name="keywords" content="vector database, embedding analysis, Qdrant GUI, Weaviate management, Milvus desktop, ChromaDB GUI, vector database visualization, duplicate detection, outlier detection, cluster analysis">
+    <meta name="description" content="VectorDBZ - Professional desktop application for managing and analyzing vector databases. Connect to Qdrant, Weaviate, Milvus, ChromaDB, and more. Enterprise-grade features for embedding analysis, duplicate detection, outlier identification, and performance optimization.">
+    <meta name="keywords" content="vector database, embedding analysis, Qdrant GUI, Weaviate management, Milvus desktop, ChromaDB GUI, vector database visualization, duplicate detection, outlier detection, cluster analysis, semantic search, vector embeddings, database management tool">
     <meta name="author" content="VectorDBZ">
-    <meta property="og:title" content="VectorDBZ - Vector Database Management & Analysis Tool">
-    <meta property="og:description" content="A modern desktop GUI for exploring and managing vector databases with advanced analytics and visualization.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#0A0E1A">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <title>VectorDBZ - Vector Database Management & Analysis Tool</title>
+    <meta property="og:url" content="https://vectordbz.com/">
+    <meta property="og:title" content="VectorDBZ - Vector Database Management & Analysis Tool">
+    <meta property="og:description" content="Enterprise-grade desktop application for managing and analyzing vector databases with advanced analytics, visualization, and security features.">
+    <meta property="og:image" content="https://vectordbz.com/assets/icon.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="VectorDBZ">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://vectordbz.com/">
+    <meta name="twitter:title" content="VectorDBZ - Vector Database Management & Analysis Tool">
+    <meta name="twitter:description" content="Enterprise-grade desktop application for managing and analyzing vector databases with advanced analytics, visualization, and security features.">
+    <meta name="twitter:image" content="https://vectordbz.com/assets/icon.png">
+    <meta name="twitter:creator" content="@vectordbz">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://vectordbz.com/">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icon.png">
+    
+    <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="icon" href="assets/favicon.ico">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <title>VectorDBZ - Vector Database Management & Analysis Tool</title>
     <style>
         * {
             margin: 0;
@@ -78,6 +106,12 @@
             height: 56px;
         }
 
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
         .logo {
             display: flex;
             align-items: center;
@@ -113,6 +147,16 @@
             align-items: center;
             margin: 0;
             padding: 0;
+        }
+
+        @media (max-width: 768px) {
+            .nav-left {
+                gap: 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
         }
 
         .nav-links li {
@@ -174,7 +218,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 100px 24px 60px;
+            padding: 120px 24px 80px;
             position: relative;
             overflow: hidden;
         }
@@ -241,6 +285,7 @@
             max-width: 80rem;
             margin: 0 auto;
             text-align: center;
+            padding: 0 1rem;
         }
 
         .top-badge {
@@ -253,7 +298,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
         .badge-icon {
@@ -276,8 +321,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            margin-bottom: 0.75rem;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
             font-size: inherit;
             font-weight: inherit;
             margin-left: auto;
@@ -315,22 +360,29 @@
             line-height: 2rem !important;
             font-weight: 300 !important;
             margin-top: 0 !important;
-            margin-bottom: 1.25rem !important;
+            margin-bottom: 2rem !important;
             color: rgb(156, 163, 175) !important;
-            max-width: 50rem;
+            max-width: 56rem;
             margin-left: auto;
             margin-right: auto;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 1024px) {
+            .hero-subtitle {
+                white-space: normal;
+            }
         }
 
         .hero p:not(.hero-subtitle) {
             font-size: clamp(1rem, 2vw, 1.125rem);
             margin-top: 0;
-            margin-bottom: 2.5rem;
+            margin-bottom: 3.5rem;
             color: rgba(107, 114, 128, 1);
-            max-width: 42rem;
+            max-width: 48rem;
             margin-left: auto;
             margin-right: auto;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .hero-buttons {
@@ -339,7 +391,7 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 3rem;
             flex-wrap: wrap;
         }
 
@@ -365,7 +417,7 @@
         .btn-primary:hover {
             background: linear-gradient(to right, var(--blue-600), var(--violet-600));
             box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
-            transform: scale(1.05);
+            transform: translateY(-1px);
         }
 
         .btn-primary svg {
@@ -396,7 +448,8 @@
 
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
         }
 
         .btn-secondary svg {
@@ -409,10 +462,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 2rem;
             font-size: 0.875rem;
             color: rgba(107, 114, 128, 1);
-            margin-bottom: 2.5rem;
+            margin-bottom: 0;
         }
 
         .platform-item {
@@ -543,8 +596,9 @@
         .section-subtitle {
             font-size: 1.125rem;
             color: rgba(156, 163, 175, 1);
-            max-width: 42rem;
+            max-width: 48rem;
             margin: 0 auto;
+            line-height: 1.7;
         }
 
         .features-grid {
@@ -559,7 +613,7 @@
             position: relative;
             height: 100%;
             padding: 2rem;
-            border-radius: 16px;
+            border-radius: 12px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
@@ -578,12 +632,13 @@
         }
 
         .feature-card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
             background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-2px);
         }
 
         .feature-card:hover::before {
-            opacity: 0.3;
+            opacity: 0.2;
         }
 
         .feature-icon-wrapper {
@@ -615,6 +670,10 @@
             background: linear-gradient(to right, #6366f1, var(--blue-500));
         }
 
+        .feature-icon-wrapper.cyan {
+            background: linear-gradient(to right, var(--cyan-500), var(--cyan-400));
+        }
+
         .feature-icon-inner {
             width: 100%;
             height: 100%;
@@ -640,7 +699,7 @@
         }
 
         .feature-card:hover h3 {
-            color: rgba(96, 165, 250, 0.9);
+            color: var(--blue-400);
         }
 
         .feature-card p {
@@ -998,6 +1057,10 @@
                 display: none;
             }
 
+            .nav-left {
+                gap: 0;
+            }
+
             .hero {
                 padding: 100px 16px 60px;
             }
@@ -1018,7 +1081,6 @@
             }
 
             .features-grid,
-            .screenshot-grid,
             .steps-grid {
                 grid-template-columns: 1fr;
             }
@@ -1037,16 +1099,17 @@
 <body>
     <header>
         <nav class="container">
-            <a href="#" class="logo">
-                <img src="assets/icon.png" alt="VectorDBZ Logo">
-                <span class="logo-text">Vector<span class="logo-accent">DBZ</span></span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#databases">Integrations</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#screenshots">Gallery</a></li>
-                <li><a href="#how-it-works">Guide</a></li>
-            </ul>
+            <div class="nav-left">
+                <a href="#" class="logo">
+                    <img src="assets/icon.png" alt="VectorDBZ Logo">
+                    <span class="logo-text">Vector<span class="logo-accent">DBZ</span></span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#databases">Integrations</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">Guide</a></li>
+                </ul>
+            </div>
             <a href="https://github.com/vectordbz/vectordbz" class="github-icon" target="_blank" aria-label="GitHub">
                 <svg height="32" aria-hidden="true" viewBox="0 0 24 24" version="1.1" width="32" data-view-component="true" class="octicon octicon-mark-github v-align-middle">
                     <path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"></path>
@@ -1072,7 +1135,7 @@
                     <path d="M4 17v2"></path>
                     <path d="M5 18H3"></path>
                 </svg>
-                <span>Built for Developers, by Developers</span>
+                <span>Made for Developers, by Developers</span>
             </div>
             <h1 class="hero-logo">
                 <img src="assets/icon.png" alt="VectorDBZ Logo" class="logo-image">
@@ -1080,8 +1143,8 @@
                     <span class="logo-vector">Vector</span><span class="logo-dbz">DBZ</span>
                 </span>
             </h1>
-            <p class="hero-subtitle">The Ultimate Desktop GUI for Vector Database Management & Analysis</p>
-            <p>Connect to Qdrant, Weaviate, Milvus, ChromaDB, and more. Explore collections, analyze embeddings, detect duplicates, find outliers—all from one powerful interface.</p>
+            <p class="hero-subtitle">Desktop Application for Vector Database Management & Analysis</p>
+            <p>Connect to Qdrant, Weaviate, Milvus, ChromaDB, and more. Explore collections, analyze embeddings, detect duplicates, and identify outliers—all from a unified interface.</p>
             <div class="hero-buttons">
                 <a href="https://github.com/vectordbz/vectordbz/releases" class="btn-primary" target="_blank">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1118,7 +1181,7 @@
 
     <section class="databases-section" id="databases">
         <div class="container">
-            <p class="databases-header">Connect to Your vector databases with ease</p>
+            <p class="databases-header">Supported Vector Databases</p>
             <div class="databases-grid">
                 <div class="database-card">
                     <div class="status-dot"></div>
@@ -1147,8 +1210,8 @@
     <section class="features" id="features">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Everything you need to <span class="gradient">understand your vectors</span></h2>
-                <p class="section-subtitle">One tool for all your vector database needs. Stop guessing about your embeddings—get actionable insights.</p>
+                <h2 class="section-title">Everything you need to <span class="gradient">manage your vectors</span></h2>
+                <p class="section-subtitle">A powerful desktop application built for developers who work with vector databases. Connect, explore, analyze, and optimize—all in one place.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
@@ -1162,7 +1225,7 @@
                         </div>
                     </div>
                     <h3>Multi-Database Support</h3>
-                    <p>Connect to Qdrant, Weaviate, Milvus, ChromaDB and more. Manage multiple connections simultaneously with secure API key storage.</p>
+                    <p>Connect to Qdrant, Weaviate, Milvus, ChromaDB, and other vector databases. Manage multiple connections with encrypted credential storage and connection pooling.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper violet">
@@ -1173,8 +1236,8 @@
                             </svg>
                         </div>
                     </div>
-                    <h3>Visual Analysis</h3>
-                    <p>Interactive visualizations powered by ECharts. Understand your vector space with intuitive charts and graphs.</p>
+                    <h3>Advanced Visualizations</h3>
+                    <p>Interactive visualizations powered by ECharts. Analyze vector space relationships through dimensionality reduction and clustering visualizations.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper amber">
@@ -1184,8 +1247,8 @@
                             </svg>
                         </div>
                     </div>
-                    <h3>Real-time Insights</h3>
-                    <p>Get instant feedback with live progress indicators. Batch analysis with configurable parameters.</p>
+                    <h3>Real-time Analysis</h3>
+                    <p>Monitor analysis progress with live indicators. Execute batch operations with configurable parameters for large-scale datasets.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper green">
@@ -1195,8 +1258,8 @@
                             </svg>
                         </div>
                     </div>
-                    <h3>Secure Connections</h3>
-                    <p>HTTPS support and secure credential management. Your data stays safe with local-first architecture.</p>
+                    <h3>Enterprise Security</h3>
+                    <p>HTTPS/TLS support with encrypted credential management. Local-first architecture ensures your data remains secure and private.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper pink">
@@ -1209,8 +1272,8 @@
                             </svg>
                         </div>
                     </div>
-                    <h3>Multiple Metrics</h3>
-                    <p>Support for Cosine, Euclidean, and Dot Product distance metrics. Choose what works for your data.</p>
+                    <h3>Multiple Distance Metrics</h3>
+                    <p>Support for Cosine Similarity, Euclidean Distance, and Dot Product metrics. Select the optimal metric for your use case and data characteristics.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-wrapper indigo">
@@ -1222,67 +1285,8 @@
                             </svg>
                         </div>
                     </div>
-                    <h3>Sample & Scale</h3>
-                    <p>Load sample data for quick testing. Handle large datasets efficiently with smart sampling.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="screenshots" id="screenshots">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">See VectorDBZ in <span class="gradient">action</span></h2>
-                <p class="section-subtitle">Powerful features wrapped in an intuitive interface</p>
-            </div>
-            <div class="screenshot-grid">
-                <div class="screenshot-item">
-                    <img src="screenshots/analysis_tab_embedded_quality_overview.png" alt="Embedding Quality Analysis">
-                    <div class="screenshot-overlay"></div>
-                    <div class="screenshot-caption">
-                        <h3>Embedding Quality Analysis</h3>
-                        <p>Comprehensive quality metrics and distribution analysis</p>
-                    </div>
-                </div>
-                <div class="screenshot-item">
-                    <img src="screenshots/visualize_tab.png" alt="Interactive Visualizations">
-                    <div class="screenshot-overlay"></div>
-                    <div class="screenshot-caption">
-                        <h3>Interactive Visualizations</h3>
-                        <p>PCA projections with K-means clustering</p>
-                    </div>
-                </div>
-                <div class="screenshot-item">
-                    <img src="screenshots/analysis_tab_outliers.png" alt="Outlier Detection">
-                    <div class="screenshot-overlay"></div>
-                    <div class="screenshot-caption">
-                        <h3>Outlier Detection</h3>
-                        <p>Identify and analyze anomalous vectors</p>
-                    </div>
-                </div>
-                <div class="screenshot-item">
-                    <img src="screenshots/data_tab.png" alt="Browse & Query Data">
-                    <div class="screenshot-overlay"></div>
-                    <div class="screenshot-caption">
-                        <h3>Browse & Query Data</h3>
-                        <p>Explore your collections with powerful filters</p>
-                    </div>
-                </div>
-                <div class="screenshot-item">
-                    <img src="screenshots/analysis_tab_metadata_seperation.png" alt="Metadata Separation Analysis">
-                    <div class="screenshot-overlay"></div>
-                    <div class="screenshot-caption">
-                        <h3>Metadata Separation Analysis</h3>
-                        <p>Understand how well your metadata clusters</p>
-                    </div>
-                </div>
-                <div class="screenshot-item">
-                    <img src="screenshots/connection_modal.png" alt="Easy Connections">
-                    <div class="screenshot-overlay"></div>
-                    <div class="screenshot-caption">
-                        <h3>Easy Connections</h3>
-                        <p>Connect to any vector database in seconds</p>
-                    </div>
+                    <h3>Scalable Operations</h3>
+                    <p>Load sample datasets for testing and validation. Process large-scale collections efficiently with intelligent sampling and pagination.</p>
                 </div>
             </div>
         </div>
@@ -1293,9 +1297,9 @@
         <div class="how-it-works-blur-2"></div>
         <div class="how-it-works-content">
             <div class="how-it-works-header">
-                <span class="badge">How It Works</span>
-                <h2 class="section-title">Get insights in <span class="gradient">minutes</span></h2>
-                <p class="section-subtitle">Five simple steps to understanding your vector database like never before.</p>
+                <span class="badge">Getting Started</span>
+                <h2 class="section-title">Deploy and analyze in <span class="gradient">minutes</span></h2>
+                <p class="section-subtitle">A streamlined workflow for connecting to your vector databases and extracting actionable insights.</p>
             </div>
             <div class="steps-grid">
                 <div class="step-item">
@@ -1311,7 +1315,7 @@
                         <div class="step-number">01</div>
                     </div>
                     <h3>Download & Install</h3>
-                    <p>Get VectorDBZ for your platform. Cross-platform support for macOS, Windows, and Linux.</p>
+                    <p>Download VectorDBZ for your platform. Available for macOS, Windows, and Linux with native performance.</p>
                 </div>
                 <div class="step-item">
                     <div class="step-connector"></div>
@@ -1326,7 +1330,7 @@
                         <div class="step-number">02</div>
                     </div>
                     <h3>Connect Your Database</h3>
-                    <p>Add your vector database connection with secure credential storage. Multiple connections supported.</p>
+                    <p>Configure connections to your vector databases with encrypted credential storage. Manage multiple connections simultaneously.</p>
                 </div>
                 <div class="step-item">
                     <div class="step-connector"></div>
@@ -1340,7 +1344,7 @@
                         <div class="step-number">03</div>
                     </div>
                     <h3>Search & Explore</h3>
-                    <p>Explore your collections, browse vector data, and perform semantic searches across your embeddings.</p>
+                    <p>Generate embeddings from text or files using custom functions, then explore your collections and perform semantic searches across your vectors.</p>
                 </div>
                 <div class="step-item">
                     <div class="step-connector"></div>
@@ -1353,7 +1357,7 @@
                         <div class="step-number">04</div>
                     </div>
                     <h3>Run Analysis</h3>
-                    <p>Choose your analysis tools and configure parameters for comprehensive insights.</p>
+                    <p>Select from advanced analysis tools and configure parameters to generate comprehensive insights about your vector data.</p>
                 </div>
                 <div class="step-item">
                     <div class="step-icon-wrapper">
@@ -1367,8 +1371,8 @@
                         </div>
                         <div class="step-number">05</div>
                     </div>
-                    <h3>Get Insights</h3>
-                    <p>Visualize results with interactive charts. Export data and share findings with your team.</p>
+                    <h3>Visualize & Export</h3>
+                    <p>Review results through interactive visualizations. Export data and reports for team collaboration and documentation.</p>
                 </div>
             </div>
         </div>
@@ -1401,5 +1405,46 @@
             </div>
         </div>
     </footer>
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "VectorDBZ",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": ["Windows", "macOS", "Linux"],
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "description": "Professional desktop application for managing and analyzing vector databases. Connect to Qdrant, Weaviate, Milvus, ChromaDB, and more. Enterprise-grade features for embedding analysis, duplicate detection, outlier identification, and performance optimization.",
+        "url": "https://github.com/vectordbz/vectordbz",
+        "downloadUrl": "https://github.com/vectordbz/vectordbz/releases",
+        "softwareVersion": "latest",
+        "releaseNotes": "https://github.com/vectordbz/vectordbz/releases",
+        "author": {
+            "@type": "Organization",
+            "name": "VectorDBZ"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5",
+            "ratingCount": "1"
+        },
+        "featureList": [
+            "Multi-database support (Qdrant, Weaviate, Milvus, ChromaDB)",
+            "Vector search and semantic search",
+            "Embedding quality analysis",
+            "Duplicate detection",
+            "Outlier identification",
+            "Cluster analysis",
+            "Interactive visualizations",
+            "Custom embedding functions",
+            "Secure credential management"
+        ]
+    }
+    </script>
 </body>
 </html>
