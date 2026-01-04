@@ -22,6 +22,7 @@
 | **Weaviate** | ✅ Supported | `v1.19+` |
 | **Milvus** | ✅ Supported | `v2.3+` |
 | **ChromaDB** | ✅ Supported | `v0.4+` |
+| **pgvector (PostgreSQL)** | ✅ Supported | `PostgreSQL 11+` with `pgvector` extension |
 
 ---
 
