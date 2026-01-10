@@ -22,64 +22,20 @@
 | **Weaviate** | ✅ Supported | `v1.19+` |
 | **Milvus** | ✅ Supported | `v2.3+` |
 | **ChromaDB** | ✅ Supported | `v0.4+` |
+| **Pinecone** | ✅ Supported | Latest |
 | **pgvector (PostgreSQL)** | ✅ Supported | `PostgreSQL 11+` with `pgvector` extension |
 
 ---
 
 ## Features
 
-### Connection Management
-- **Multiple Connections** — Connect to multiple databases simultaneously
-- **Saved Connections** — Save and organize your database connections locally
-- **Connection Testing** — Verify connectivity before establishing connections
-- **Secure** — Support for API keys and HTTPS connections
-
-### Data Explorer
-- **Browse Collections** — View all collections with document counts
-- **Paginated Data View** — Navigate through large datasets with forward/backward pagination
-- **Document Details** — Inspect full document payloads and vector data
-- **Dynamic Columns** — Automatically detect and display payload fields
-
-### Search & Filter
-- **Vector Search** — Find similar vectors using sample documents
-- **Embedding Functions** — Generate embeddings from text or files using custom JavaScript functions
-  - **Custom Functions** — Create your own embedding functions to connect to any API or service
-  - **Text & File Input** — Generate embeddings from text strings or uploaded files
-  - **Pre-built Templates** — Quick-start templates for OpenAI, Cohere, Hugging Face, Ollama, Jina AI, and more
-  - **Seamless Integration** — Generated embeddings are automatically copied to the search field
-  - **Privacy First** — All embedding functions and API keys are stored locally on your device
-- **Filter Builder** — Build complex filters with AND/OR logic
-- **Multiple Operators** — Support for equals, contains, greater than, less than, and more
-- **Multi-Vector Support** — Search across collections with named vectors
-
-### Visualization
-- **2D/3D Scatter Plots** — Visualize vector embeddings in reduced dimensions
-- **Dimensionality Reduction** — PCA, t-SNE, and UMAP algorithms
-- **Interactive Charts** — Zoom, pan, and hover for details
-- **Color by Field** — Color-code points by payload values
-- **Export** — Download visualizations as PNG images
-
-### Collection Management
-- **Collection Info** — View detailed collection configuration and statistics
-- **Drop Collection** — Delete collections with confirmation
-- **Truncate Collection** — Clear all documents while preserving schema
-- **Delete Documents** — Remove individual documents or filter-based batch deletion
-
-### Analysis & Quality Metrics
-- **Embedding Quality Overview** — Analyze vector quality with dimensionality, norm distribution, and distance metrics
-- **Distance Distribution** — Compare k-nearest neighbor distances vs random pairs
-- **Cluster Analysis** — Perform K-Means or DBSCAN clustering with silhouette scores
-- **Metadata Separation** — Evaluate how well metadata labels are separated in vector space
-- **Outlier Detection** — Identify anomalous documents using statistical methods
-- **Duplicate Detection** — Find near-duplicate vectors with configurable similarity thresholds
-- **Embedding Comparison** — Compare multiple vector fields using rank correlation and neighbor overlap
-- **Multiple Distance Metrics** — Support for cosine, euclidean, and dot product distances
-- **Interactive Charts** — Visualize analysis results with responsive charts
-
-### User Experience
-- **Dark/Light Themes** — Switch between dark and light modes
-- **Multi-Tab Interface** — Open multiple collections in separate tabs
-- **Responsive Layout** — Collapsible sidebar for more workspace
+- **Multiple Database Support** — Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, and pgvector
+- **Data Explorer** — Browse collections, view documents with pagination, and inspect payloads
+- **Vector Search** — Find similar vectors with advanced filtering and multi-vector support
+- **Embedding Functions** — Generate embeddings from text or files using custom JavaScript functions with pre-built templates for OpenAI, Cohere, Hugging Face, and more
+- **Visualization** — 2D/3D scatter plots with PCA, t-SNE, and UMAP dimensionality reduction
+- **Collection Management** — View collection info, drop/truncate collections, and delete documents
+- **Dark/Light Themes** — Modern UI with multi-tab interface and responsive layout
 - **Cross-Platform** — Windows, macOS, and Linux support
 
 ---
@@ -121,7 +77,6 @@ This project is in active development. Contributions, bug reports, and feature r
 
 - **Bug Reports** — [Open an issue](https://github.com/vectordbz/vectordbz/issues/new?labels=bug)
 - **Feature Requests** — [Start a discussion](https://github.com/vectordbz/vectordbz/discussions/new?category=ideas)
-- **General Feedback** — [Open an issue](https://github.com/vectordbz/vectordbz/issues) or [start a discussion](https://github.com/vectordbz/vectordbz/discussions)
 
 ### Roadmap
 
