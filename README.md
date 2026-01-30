@@ -16,24 +16,27 @@
 
 ## Supported Databases
 
-| Database | Status | Minimum Version |
-|:--------:|:------:|:---------------:|
-| **Qdrant** | ✅ Supported | `v1.7+` |
-| **Weaviate** | ✅ Supported | `v1.19+` |
-| **Milvus** | ✅ Supported | `v2.3+` |
-| **ChromaDB** | ✅ Supported | `v0.4+` |
-| **Pinecone** | ✅ Supported | Latest |
-| **pgvector (PostgreSQL)** | ✅ Supported | `PostgreSQL 11+` with `pgvector` extension |
+| Database | Minimum Version |
+|:--------:|:---------------:|
+| **Qdrant** | `v1.7+` |
+| **Weaviate** | `v1.19+` |
+| **Milvus** | `v2.3+` |
+| **ChromaDB** | `v0.4+` |
+| **Pinecone** | Latest |
+| **pgvector (PostgreSQL)** | `PostgreSQL 11+` with `pgvector` extension |
+| **Elasticsearch** | `v8.x` |
 
 ---
 
 ## Features
 
-- **Multiple Database Support** — Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, and pgvector
+- **Multiple Database Support** — Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector, and Elasticsearch
 - **Data Explorer** — Browse collections, view documents with pagination, and inspect payloads
 - **Vector Search** — Find similar vectors with advanced filtering and multi-vector support
+- **Search History & Comparison** — Track and compare search results with detailed analytics
 - **Embedding Functions** — Generate embeddings from text or files using custom JavaScript functions with pre-built templates for OpenAI, Cohere, Hugging Face, and more
-- **Visualization** — 2D/3D scatter plots with PCA, t-SNE, and UMAP dimensionality reduction
+- **Advanced Visualization** — Interactive scatter plots with UMAP, t-SNE, and PCA dimensionality reduction
+- **Clustering Analysis** — High-dimensional clustering with K-means and DBSCAN algorithms
 - **Collection Management** — View collection info, drop/truncate collections, and delete documents
 - **Dark/Light Themes** — Modern UI with multi-tab interface and responsive layout
 - **Cross-Platform** — Windows, macOS, and Linux support
@@ -42,14 +45,16 @@
 
 ## Installation
 
-Download the latest release for your platform from the [Releases](https://github.com/vectordbz/vectordbz/releases) page.
+Download the latest version for your platform:
 
-| Platform | Download |
-|:--------:|:--------:|
-| **Windows** | `VectorDBZ-x.x.x-Setup.exe` |
-| **macOS** (Intel) | `VectorDBZ-darwin-x64-x.x.x.zip` |
-| **macOS** (Apple Silicon) | `VectorDBZ-darwin-arm64-x.x.x.zip` |
-| **Linux** | `vectordbz_x.x.x_amd64.deb` or `.rpm` |
+**[Download VectorDBZ →](https://github.com/vectordbz/vectordbz/releases/latest)**
+
+| Platform | Package |
+|----------|---------|
+| **Windows** | `.exe` installer |
+| **macOS** (Intel) | `darwin-x64` package |
+| **macOS** (Apple Silicon) | `darwin-arm64` package |
+| **Linux** | `.deb` or `.rpm` package |
 
 ### macOS Installation Note
 
@@ -69,20 +74,16 @@ Then try opening the app again.
 
 ---
 
-## Feedback
+## Platform Support
 
-This project is in active development. Contributions, bug reports, and feature requests are welcome.
+- **Windows** — 10 and later
+- **macOS** — 10.15 (Catalina) and later
+- **Linux** — Ubuntu 18.04+, Fedora 32+, or equivalent
 
-### Contributing
+---
 
-- **Bug Reports** — [Open an issue](https://github.com/vectordbz/vectordbz/issues/new?labels=bug)
-- **Feature Requests** — [Start a discussion](https://github.com/vectordbz/vectordbz/discussions/new?category=ideas)
+## Support
 
-### Roadmap
-
-We are actively working on:
-- Additional vector database integrations
-- Enhanced analysis capabilities
-- Improved visualization tools
-- Performance optimizations for large datasets
+- **Issues & Questions** — [GitHub Issues](https://github.com/vectordbz/vectordbz/issues)
+- **Release Notes** — [Changelog](https://github.com/vectordbz/vectordbz/releases)
 
