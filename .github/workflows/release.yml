@@ -41,7 +41,7 @@ jobs:
           cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build and Make (Windows)
         if: matrix.platform == 'win32'
