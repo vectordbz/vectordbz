@@ -58,6 +58,6 @@ jobs:
         run: npm ci
 
       - name: Build (renderer + main + preload)
-        run: npm run build
+        run: npm run package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
