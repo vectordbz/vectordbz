@@ -216,18 +216,18 @@ describe('Weaviate Client Integration Tests', () => {
       const titleVector = Array.from({ length: 384 }, () => Math.random());
       const contentVector = Array.from({ length: 384 }, () => Math.random());
       
-      const documentToInsert = {
+      const documentToInsert: Document = {
         primary: { name: 'id', value: '' }, // Empty = let Weaviate generate UUID
         vectors: {
           title_vector: {
             key: 'title_vector',
-            vectorType: 'dense',
+            vectorType: 'dense' as const,
             size: 384,
             value: { data: titleVector },
           },
           content_vector: {
             key: 'content_vector',
-            vectorType: 'dense',
+            vectorType: 'dense' as const,
             size: 384,
             value: { data: contentVector },
           },
@@ -252,7 +252,7 @@ describe('Weaviate Client Integration Tests', () => {
       // Use the original documentToInsert to preserve the vectors, but update the ID
       insertedNamedVectorDoc = {
         ...documentToInsert,
-        primary: result.document?.primary || (result.id ? { name: 'id', value: result.id } : documentToInsert.primary),
+        primary: result.document?.primary || documentToInsert.primary,
       };
       
       console.log('✓ Document with multiple named vectors inserted');

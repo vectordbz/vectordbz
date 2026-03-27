@@ -5,7 +5,6 @@
   "description": "A desktop GUI for exploring and managing vector databases",
   "main": ".vite/build/main.js",
   "scripts": {
-    "premake": "node ../scripts/generate-update-files.js",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",

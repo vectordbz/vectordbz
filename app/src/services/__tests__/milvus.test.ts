@@ -200,7 +200,7 @@ describe('Milvus Client Integration Tests', () => {
       // Verify schema
       await waitFor(async () => {
         const schema = await client.getCollectionSchema(sparseCollectionName);
-        return schema.success && schema.schema?.vectors?.sparse_vector;
+        return !!(schema.success && schema.schema?.vectors?.sparse_vector);
       });
       
       const schemaResult = await client.getCollectionSchema(sparseCollectionName);
@@ -323,14 +323,17 @@ describe('Milvus Client Integration Tests', () => {
       // Verify schema
       await waitFor(async () => {
         const schema = await client.getCollectionSchema(binaryCollectionName);
-        return schema.success && schema.schema?.vectors?.binary_vector;
+        return !!(schema.success && schema.schema?.vectors?.binary_vector);
       });
       
       const schemaResult = await client.getCollectionSchema(binaryCollectionName);
       expect(schemaResult.success).toBe(true);
-      expect(schemaResult.schema?.vectors.binary_vector).toBeDefined();
-      expect(schemaResult.schema?.vectors.binary_vector.vectorType).toBe('binary');
-      expect(schemaResult.schema?.vectors.binary_vector.size).toBe(256);
+      const binaryField = schemaResult.schema?.vectors.binary_vector;
+      expect(binaryField).toBeDefined();
+      expect(binaryField?.vectorType).toBe('binary');
+      if (binaryField?.vectorType === 'binary') {
+        expect(binaryField.size).toBe(256);
+      }
       console.log('✓ Binary vector schema verified');
       
       // Cleanup
