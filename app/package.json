@@ -81,9 +81,5 @@
     "tsne-js": "^1.0.3",
     "umap-js": "^1.4.0",
     "weaviate-client": "^3.10.0"
-  },
-  "optionalDependencies": {
-    "encoding": "0.1.13",
-    "iconv-lite": "^0.6.3"
   }
 }
