@@ -12,7 +12,7 @@ export function getDatabaseColor(type: string) {
     redissearch: '#DC382D',
   };
   return colors[type] || '#6366f1';
-};
+}
 
 const defaultPresets = {
   host: undefined,

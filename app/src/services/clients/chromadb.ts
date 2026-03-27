@@ -167,7 +167,7 @@ function buildChromaFilter(filter: FilterQuery): Record<string, any> {
 }
 
 // Helper to create a no-op embedding function
-function createNoOpEmbeddingFunction(dimension: number = 1536) {
+function createNoOpEmbeddingFunction(dimension = 1536) {
     return {
         embed: async (texts: string[]) => {
             return texts.map(() => new Array(dimension).fill(0));
@@ -727,7 +727,7 @@ export class ChromaDBClient implements VectorDBClient {
     private recordsToDocuments(records: GetResponse): Document[] {
         const documents: Document[] = [];
         const ids = records.ids || [];
-        // @ts-ignore - for some reason chromadb doesnt export MultiQueryResponse, but distances is available on search
+        // @ts-expect-error - chromadb doesn't export MultiQueryResponse, but distances is available on search
         const distances = (records.distances as number[]) || [];
         const embeddings = records.embeddings || [];
         const metadatas = records.metadatas || [];

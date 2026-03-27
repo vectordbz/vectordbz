@@ -23,7 +23,7 @@ import { VectorDBClient, Document } from '../../types';
  * Generate a Pinecone-compatible collection name
  * Pinecone requires: lowercase alphanumeric characters and hyphens only
  */
-function generatePineconeCollectionName(prefix: string = 'test'): string {
+function generatePineconeCollectionName(prefix = 'test'): string {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 8);
   // Replace underscores with hyphens and ensure lowercase

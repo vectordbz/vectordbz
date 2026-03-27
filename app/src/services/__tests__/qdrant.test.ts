@@ -28,7 +28,7 @@ describe('Qdrant Client Integration Tests', () => {
   // Client-Specific Test Helpers
   // ============================================
 
-  async function testCollectionCreation(collectionName: string, vectorDimension: number = 1536) {
+  async function testCollectionCreation(collectionName: string, vectorDimension = 1536) {
     console.log('Step 1: Testing connection...');
     const connectionResult = await client.testConnection();
     if (!connectionResult.success) {

@@ -698,7 +698,7 @@ export class MilvusClient implements VectorDBClient {
       let offset = 0;
       const batchSize = 10000;
 
-      while (true) {
+      for (;;) {
         const queryResponse = await this.client.query({
           collection_name: collection,
           ...(filterExpr && { expr: filterExpr }),

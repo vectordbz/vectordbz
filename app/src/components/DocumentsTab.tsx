@@ -82,7 +82,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
 
   const getDocuments = async (
     options?: { filter?: FilterQuery, limit?: number, offset?: string | number, sort?: Array<{ field: string; order: 'asc' | 'desc' }> },
-    reset: boolean = false
+    reset = false
   ) => {
     const { filter, limit, offset, sort } = options || {};
 

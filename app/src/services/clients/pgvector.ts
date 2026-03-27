@@ -417,7 +417,7 @@ function buildFTSCondition(
 function rowToDocument(
     row: any,
     vectorColumns: string[],
-    primaryKey: string = 'id'
+    primaryKey = 'id'
 ): Document {
     const vectors: Record<string, DocumentVector> = {};
     // Extract vectors - pgvector only supports dense vectors
@@ -544,7 +544,7 @@ export class PgVectorClient implements VectorDBClient {
         }
     }
 
-    async getCollections(withVectors: boolean = false): Promise<GetCollectionsResult> {
+    async getCollections(withVectors = false): Promise<GetCollectionsResult> {
         const client = await this.getClient();
         try {
             // Build query - conditionally filter by vector columns
@@ -1079,11 +1079,8 @@ export class PgVectorClient implements VectorDBClient {
                 // Convert distance to similarity score
                 const documents = result.rows
                     .map((row: Record<string, any> & { distance?: string; hybrid_score?: string; vector_distance?: string; text_rank?: string }) => {
-                        let score: number;
-
-                        // Use vector distance
                         const distance = parseFloat(row.distance || '0');
-                        score = distanceMetric === 'cosine' ? distance : 1 - distance;
+                        const score = distanceMetric === 'cosine' ? distance : 1 - distance;
 
                         if (options?.scoreThreshold && score < options.scoreThreshold) {
                             return null;
@@ -1304,10 +1301,11 @@ export class PgVectorClient implements VectorDBClient {
 
                 // Build type definition
                 switch (col.type) {
-                    case 'varchar':
+                    case 'varchar': {
                         const length = col.length || 255;
                         colDef += ` VARCHAR(${length})`;
                         break;
+                    }
                     case 'text':
                         colDef += ' TEXT';
                         break;

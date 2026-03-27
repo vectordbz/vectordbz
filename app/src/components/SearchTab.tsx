@@ -600,7 +600,6 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigationState]);
 
   const generateRandomVector = () => {

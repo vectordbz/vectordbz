@@ -842,7 +842,7 @@ export class RedisSearchClient implements VectorDBClient {
       const batchSize = 500;
       let deletedCount = 0;
 
-      while (true) {
+      for (;;) {
         const result = await this.client.ft.search(index, filterQuery, {
           LIMIT: { from, size: batchSize },
           RETURN: [],

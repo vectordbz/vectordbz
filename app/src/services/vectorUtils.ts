@@ -104,7 +104,7 @@ export function getVectorShortLabel(vector: DocumentVector): string {
  * @param maxElements - Maximum number of elements to show before truncating (default: 50)
  * @returns Formatted string representation of the vector
  */
-export function formatVectorForDisplay(vector: DocumentVector, maxElements: number = 50): string {
+export function formatVectorForDisplay(vector: DocumentVector, maxElements = 50): string {
   if (vector.vectorType === 'dense' || vector.vectorType === 'binary') {
     // Dense and binary vectors have value.data array
     const data = 'data' in vector.value ? vector.value.data : [];
@@ -312,7 +312,7 @@ export function performKMeansVectors(
 export function performKMeans2D(
   points: Array<{ x: number; y: number }>,
   k: number,
-  maxIterations: number = 100
+  maxIterations = 100
 ): number[] {
   if (points.length === 0 || k <= 0) return [];
   if (k >= points.length) {
@@ -439,7 +439,7 @@ export function performDBSCANVectors(
 export function performDBSCAN2D(
   points: Array<{ x: number; y: number }>,
   eps: number,
-  minPts: number = 4
+  minPts = 4
 ): number[] {
   if (points.length === 0) return [];
 
@@ -628,7 +628,7 @@ export function calculateSilhouetteScore(
 /**
  * Simple PCA implementation for dimensionality reduction
  */
-export function performPCA(vectors: number[][], dimensions: number = 2): number[][] {
+export function performPCA(vectors: number[][], dimensions = 2): number[][] {
   const n = vectors.length;
   if (n === 0) return [];
 
@@ -689,7 +689,7 @@ import { UMAP } from 'umap-js';
  */
 export async function performUMAP(
   vectors: number[][],
-  dimensions: number = 2,
+  dimensions = 2,
   options?: {
     nNeighbors?: number;
     minDist?: number;
@@ -729,7 +729,7 @@ export async function performUMAP(
  */
 export async function performTSNE(
   vectors: number[][],
-  dimensions: number = 2,
+  dimensions = 2,
   options?: {
     perplexity?: number;
     epsilon?: number;

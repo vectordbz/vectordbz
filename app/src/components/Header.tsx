@@ -29,7 +29,7 @@ const WindowButton: React.FC<{
         cursor: 'pointer',
         background: hovered ? (isClose ? '#e81123' : hoverColor) : 'transparent',
         transition: 'background 0.1s',
-        // @ts-ignore
+        // @ts-expect-error - WebkitAppRegion is an Electron-specific CSS property
         WebkitAppRegion: 'no-drag',
         appRegion: 'no-drag',
       }}

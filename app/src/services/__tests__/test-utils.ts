@@ -28,7 +28,7 @@ export interface TestFlowOptions {
 /**
  * Generate a random collection name for testing
  */
-export function generateTestCollectionName(prefix: string = 'test'): string {
+export function generateTestCollectionName(prefix = 'test'): string {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 8);
   return `${prefix}_${timestamp}_${random}`;
@@ -38,7 +38,7 @@ export function generateTestCollectionName(prefix: string = 'test'): string {
  * Generate a test vector of specified dimension
  * Matches the UI's generateRandomVector implementation
  */
-export function generateTestVector(dimension: number = 1536): number[] {
+export function generateTestVector(dimension = 1536): number[] {
   return Array.from({ length: dimension }, () =>
     parseFloat((Math.random() * 2 - 1).toFixed(6))
   );
@@ -47,7 +47,7 @@ export function generateTestVector(dimension: number = 1536): number[] {
 /**
  * Generate a sparse test vector
  */
-export function generateTestSparseVector(maxDimension: number = 30000, nonZeroCount: number = 50): { indices: number[], values: number[] } {
+export function generateTestSparseVector(maxDimension = 30000, nonZeroCount = 50): { indices: number[], values: number[] } {
   const indices: number[] = [];
   const values: number[] = [];
   
@@ -69,7 +69,7 @@ export function generateTestSparseVector(maxDimension: number = 30000, nonZeroCo
 /**
  * Generate a binary test vector (byte array)
  */
-export function generateTestBinaryVector(dimensionBits: number = 256): number[] {
+export function generateTestBinaryVector(dimensionBits = 256): number[] {
   const numBytes = Math.ceil(dimensionBits / 8);
   return Array.from({ length: numBytes }, () => Math.floor(Math.random() * 256));
 }
@@ -79,7 +79,7 @@ export function generateTestBinaryVector(dimensionBits: number = 256): number[] 
  */
 export function generateTestDocument(
   id: string | number,
-  vectorDimension: number = 1536,
+  vectorDimension = 1536,
   metadata: Record<string, unknown> = {}
 ): Document {
   return {
@@ -137,7 +137,7 @@ export function generateTestSparseDocument(
  */
 export function generateTestBinaryDocument(
   id: string | number,
-  dimensionBits: number = 256,
+  dimensionBits = 256,
   metadata: Record<string, unknown> = {}
 ): Document {
   return {
@@ -168,7 +168,7 @@ export function generateTestBinaryDocument(
  */
 export function generateTestHybridDocument(
   id: string | number,
-  denseDimension: number = 384,
+  denseDimension = 384,
   metadata: Record<string, unknown> = {}
 ): Document {
   return {
@@ -208,8 +208,8 @@ export function generateTestHybridDocument(
  */
 export async function waitFor(
   condition: () => boolean | Promise<boolean>,
-  timeout: number = 5000,
-  interval: number = 100
+  timeout = 5000,
+  interval = 100
 ): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < timeout) {

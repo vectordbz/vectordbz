@@ -257,7 +257,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
   };
 
   // Helper function to get the vector for a document
-  const getVectorForDocument = (document: Document, sparseMaxDimension: number = 0): number[] | null => {
+  const getVectorForDocument = (document: Document, sparseMaxDimension = 0): number[] | null => {
     const vectorsLength = Object.keys(document.vectors).length;
     if (!document.vectors || vectorsLength === 0) {
       return null;

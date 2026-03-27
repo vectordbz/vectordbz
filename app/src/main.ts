@@ -130,7 +130,7 @@ const clients = new Map<string, { client: VectorDBClient; type: DatabaseType }>(
 let mainWindow: BrowserWindow | null = null;
 
 // Update status tracking
-let updateStatus: {
+const updateStatus: {
   checking: boolean;
   available: boolean;
   downloading: boolean;
@@ -501,6 +501,7 @@ ipcMain.handle('embedding:execute', async (_event, params: {
         size: buffer.length,
         arrayBuffer: async () => params.fileData!.data,
         stream: () => {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           const { Readable } = require('stream');
           return Readable.from(buffer);
         },

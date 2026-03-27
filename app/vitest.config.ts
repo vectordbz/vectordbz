@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { defineConfig } from 'vitest/config';
 import path from 'path';
 

@@ -899,7 +899,7 @@ export class WeaviateClient implements VectorDBClient {
     let deletedCount = 0;
     let consecutiveEmptyBatches = 0;
 
-    while (true) {
+    for (;;) {
       // Fetch batch of object IDs
       const getQuery = this.buildGetIdsQuery(collection, context, BATCH_SIZE);
       const response = await this.client.post('/v1/graphql', { query: getQuery });
