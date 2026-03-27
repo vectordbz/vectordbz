@@ -5,12 +5,20 @@
 <h1 align="center">VectorDBZ</h1>
 
 <p align="center">
-  <strong>A modern desktop application for exploring, managing, and analyzing vector databases</strong>
+  <strong>Open-source desktop client for vector databases</strong>
 </p>
 
 <p align="center">
   <img src="assets/app.gif" alt="VectorDBZ Application" />
 </p>
+
+<p align="center">
+  <a href="https://github.com/vectordbz/vectordbz/releases/latest"><img src="https://img.shields.io/github/v/release/vectordbz/vectordbz?label=download&color=blue" alt="Latest Release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" /></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen" alt="Contributions Welcome" /></a>
+</p>
+
+VectorDBZ lets you connect to local or cloud vector database instances, explore collections, run vector and hybrid searches, and visualize embeddings in 2D/3D — all from a native desktop app, no infrastructure required.
 
 ---
 
@@ -25,65 +33,60 @@
 | **Pinecone** | Latest |
 | **pgvector (PostgreSQL)** | `PostgreSQL 11+` with `pgvector` extension |
 | **Elasticsearch** | `v8.x` |
-
----
-
-## Features
-
-- **Multiple Database Support** — Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector, and Elasticsearch
-- **Data Explorer** — Browse collections, view documents with pagination, and inspect payloads
-- **Vector Search** — Find similar vectors with advanced filtering and multi-vector support
-- **Search History & Comparison** — Track and compare search results with detailed analytics
-- **Embedding Functions** — Generate embeddings from text or files using custom JavaScript functions with pre-built templates for OpenAI, Cohere, Hugging Face, and more
-- **Advanced Visualization** — Interactive scatter plots with UMAP, t-SNE, and PCA dimensionality reduction
-- **Clustering Analysis** — High-dimensional clustering with K-means and DBSCAN algorithms
-- **Collection Management** — View collection info, drop/truncate collections, and delete documents
-- **Dark/Light Themes** — Modern UI with multi-tab interface and responsive layout
-- **Cross-Platform** — Windows, macOS, and Linux support
+| **RedisSearch (Redis Stack)** | `v2.0+` |
 
 ---
 
 ## Installation
 
-Download the latest version for your platform:
-
-**[Download VectorDBZ →](https://github.com/vectordbz/vectordbz/releases/latest)**
+**[Download the latest release →](https://github.com/vectordbz/vectordbz/releases/latest)**
 
 | Platform | Package |
 |----------|---------|
-| **Windows** | `.exe` installer |
-| **macOS** (Intel) | `darwin-x64` package |
-| **macOS** (Apple Silicon) | `darwin-arm64` package |
-| **Linux** | `.deb` or `.rpm` package |
+| **Windows** | `.exe` installer (Windows 10+) |
+| **macOS** Intel | `darwin-x64` zip (macOS 10.15+) |
+| **macOS** Apple Silicon | `darwin-arm64` zip (macOS 10.15+) |
+| **Linux** | `.deb` or `.rpm` (Ubuntu 18.04+, Fedora 32+) |
 
-### macOS Installation Note
+### macOS Note
 
-The macOS app is not code-signed (requires Apple Developer account). After downloading:
+The app is not code-signed. On first launch, right-click → **Open** → click **Open** in the dialog.
 
-1. Extract the `.zip` file
-2. Move `VectorDBZ.app` to your Applications folder
-3. **First launch**: Right-click → "Open" → Click "Open" in the dialog
-
-If you see **"VectorDBZ is damaged"** error, open Terminal and run:
+If you see **"VectorDBZ is damaged"**, run:
 
 ```bash
 xattr -cr /Applications/VectorDBZ.app
 ```
 
-Then try opening the app again.
+---
+
+## Development
+
+See **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)** for the full setup guide — prerequisites, running the app locally, seeding test data, and available scripts.
+
+Quick start:
+
+```bash
+git clone https://github.com/vectordbz/vectordbz.git
+cd vectordbz/app
+npm ci
+npm run start
+```
 
 ---
 
-## Platform Support
+## Contributing
 
-- **Windows** — 10 and later
-- **macOS** — 10.15 (Catalina) and later
-- **Linux** — Ubuntu 18.04+, Fedora 32+, or equivalent
+Contributions are welcome — new database integrations, bug fixes, and feature improvements.
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) to get started
+- Use the [step-by-step guide](docs/ADDING_A_DATABASE.md) to add a new database integration
+- Browse [open issues](https://github.com/vectordbz/vectordbz/issues)
+- [Open an issue](https://github.com/vectordbz/vectordbz/issues/new/choose) before starting large changes
 
 ---
 
 ## Support
 
 - **Issues & Questions** — [GitHub Issues](https://github.com/vectordbz/vectordbz/issues)
-- **Release Notes** — [Changelog](https://github.com/vectordbz/vectordbz/releases)
-
+- **Release Notes** — [GitHub Releases](https://github.com/vectordbz/vectordbz/releases)

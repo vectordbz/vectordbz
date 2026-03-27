@@ -1,0 +1,85 @@
+{
+  "name": "vectordbz",
+  "productName": "VectorDBZ",
+  "version": "0.0.18",
+  "description": "A desktop GUI for exploring and managing vector databases",
+  "main": ".vite/build/main.js",
+  "scripts": {
+    "premake": "node ../scripts/generate-app-update-yml.js",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts,.tsx .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Snir Kara",
+    "email": "snirjka@gmail.com"
+  },
+  "license": "MIT",
+  "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "vectordbz",
+        "repo": "vectordbz"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.10.2",
+    "@electron-forge/maker-deb": "^7.10.2",
+    "@electron-forge/maker-rpm": "^7.10.2",
+    "@electron-forge/maker-squirrel": "^7.10.2",
+    "@electron-forge/maker-zip": "^7.10.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
+    "@electron-forge/plugin-fuses": "^7.10.2",
+    "@electron-forge/plugin-vite": "^7.10.2",
+    "@electron-forge/publisher-github": "^7.10.2",
+    "@electron/fuses": "^1.8.0",
+    "@types/electron-squirrel-startup": "^1.0.2",
+    "@types/pg": "^8.11.10",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/ui": "^4.0.16",
+    "electron": "39.2.5",
+    "eslint": "^8.57.1",
+    "eslint-plugin-import": "^2.32.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.21",
+    "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.1.0",
+    "@elastic/elasticsearch": "^8.19.1",
+    "@monaco-editor/react": "^4.7.0",
+    "@pinecone-database/pinecone": "^6.1.3",
+    "@qdrant/js-client-rest": "^1.16.2",
+    "@zilliz/milvus2-sdk-node": "^2.6.5",
+    "antd": "^6.0.1",
+    "axios": "^1.13.2",
+    "chromadb": "^1.10.5",
+    "electron-log": "^5.4.3",
+    "plotly.js": "^2.35.2",
+    "react-plotly.js": "^2.6.0",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^11.0.2",
+    "electron-updater": "^6.6.2",
+    "pg": "^8.16.3",
+    "posthog-js": "^1.312.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "tsne-js": "^1.0.3",
+    "umap-js": "^1.4.0",
+    "redis": "^4.7.0",
+    "weaviate-client": "^3.10.0"
+  }
+}

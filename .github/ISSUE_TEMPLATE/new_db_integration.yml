@@ -1,0 +1,87 @@
+name: New Database Integration
+description: Propose adding support for a new vector database
+labels: ["new-database", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a new database integration! Please fill out the details below.
+        
+        Before implementing, read the [Adding a Database guide](https://github.com/vectordbz/vectordbz/blob/main/docs/ADDING_A_DATABASE.md) to understand the process.
+        
+        Opening this issue first lets us confirm the integration fits the project and avoid duplicate work.
+
+  - type: input
+    id: db_name
+    attributes:
+      label: Database Name
+      placeholder: "e.g. Vespa, Chroma v2, OpenSearch"
+    validations:
+      required: true
+
+  - type: input
+    id: db_website
+    attributes:
+      label: Database Website / Docs
+      placeholder: "https://..."
+    validations:
+      required: true
+
+  - type: input
+    id: sdk_link
+    attributes:
+      label: Official JavaScript / TypeScript SDK
+      description: Link to the npm package or GitHub repo for the official client SDK
+      placeholder: "https://www.npmjs.com/package/..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: vector_types
+    attributes:
+      label: Supported Vector Types
+      description: Which vector types does this database support?
+      multiple: true
+      options:
+        - Dense vectors
+        - Sparse vectors
+        - Binary vectors
+        - Multi-vector (multiple named vectors per document)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: search_types
+    attributes:
+      label: Supported Search Types
+      multiple: true
+      options:
+        - Dense (ANN) vector search
+        - Sparse vector search
+        - Lexical / BM25 / full-text search
+        - Hybrid search (vector + lexical)
+        - Metadata/payload filtering
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Why should VectorDBZ support this database?
+      description: Who uses this database and what would they benefit from having a GUI?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: willing_to_implement
+    attributes:
+      label: Implementation
+      options:
+        - label: I am willing to implement this integration myself (following the contributing guide)
+        - label: I would like someone else to implement this
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any quirks, limitations, or special considerations for this database?

@@ -1,0 +1,32 @@
+{
+  "name": "vectordb-mock-data",
+  "version": "1.0.0",
+  "description": "Mock data generator for VectorDB",
+  "type": "module",
+  "scripts": {
+    "seed": "node seed.js",
+    "seed:qdrant": "node seed.js --qdrant",
+    "seed:weaviate": "node seed.js --weaviate",
+    "seed:chroma": "node seed.js --chroma",
+    "seed:chromadb": "node seed.js --chroma",
+    "seed:milvus": "node seed.js --milvus",
+    "seed:pinecone": "node seed.js --pinecone",
+    "seed:pgvector": "node seed.js --pgvector",
+    "seed:elasticsearch": "node seed.js --elasticsearch",
+    "seed:redissearch": "node seed.js --redissearch",
+    "seed:redis": "node seed.js --redis",
+    "clean": "node clean.js"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.2.0",
+    "@pinecone-database/pinecone": "^6.1.3",
+    "@qdrant/js-client-rest": "^1.16.2",
+    "@zilliz/milvus2-sdk-node": "^2.6.5",
+    "axios": "^1.7.7",
+    "chromadb": "^1.10.5",
+    "dotenv": "^17.2.3",
+    "@elastic/elasticsearch": "^8.15.0",
+    "pg": "^8.13.1",
+    "redis": "^4.7.0"
+  }
+}

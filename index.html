@@ -3,44 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="VectorDBZ - Professional desktop application for managing and analyzing vector databases. Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector (PostgreSQL), Elasticsearch, and more. Enterprise-grade features for vector analysis, visualization, and performance optimization.">
+    <meta name="description" content="VectorDBZ - Open-source desktop application for exploring, managing, and analyzing vector databases. Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector (PostgreSQL), Elasticsearch, RedisSearch, and more.">
     <meta name="keywords" content="vector database, embedding analysis, Qdrant GUI, Weaviate management, Milvus desktop, ChromaDB GUI, Pinecone GUI, pgvector, PostgreSQL vector, Elasticsearch vector, Elasticsearch GUI, PostgreSQL GUI, vector database visualization, semantic search, vector embeddings, database management tool">
     <meta name="author" content="VectorDBZ">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="theme-color" content="#0A0E1A">
-    
-    <!-- Open Graph / Facebook -->
+
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vectordbz.com/">
     <meta property="og:title" content="VectorDBZ - Vector Database Management & Analysis Tool">
-    <meta property="og:description" content="Enterprise-grade desktop application for managing and analyzing vector databases (Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector, Elasticsearch) with advanced analytics, visualization, and security features.">
+    <meta property="og:description" content="Open-source desktop application for exploring and managing vector databases (Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector, Elasticsearch, RedisSearch) with advanced analytics and visualizations.">
     <meta property="og:image" content="https://vectordbz.com/assets/icon.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="VectorDBZ">
-    
-    <!-- Twitter -->
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://vectordbz.com/">
     <meta name="twitter:title" content="VectorDBZ - Vector Database Management & Analysis Tool">
-    <meta name="twitter:description" content="Enterprise-grade desktop application for managing and analyzing vector databases (Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector, Elasticsearch) with advanced analytics, visualization, and security features.">
+    <meta name="twitter:description" content="Open-source desktop application for exploring and managing vector databases (Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector, Elasticsearch, RedisSearch) with advanced analytics and visualizations.">
     <meta name="twitter:image" content="https://vectordbz.com/assets/icon.png">
     <meta name="twitter:creator" content="@vectordbz">
-    
-    <!-- Canonical URL -->
+
     <link rel="canonical" href="https://vectordbz.com/">
-    
-    <!-- Favicons -->
+
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icon.png">
-    
-    <!-- Preconnect for performance -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+
     <title>VectorDBZ - Vector Database Management & Analysis Tool</title>
     <style>
         * {
@@ -56,8 +51,8 @@
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.7);
             --text-tertiary: rgba(255, 255, 255, 0.5);
+            --text-muted: rgba(156, 163, 175, 1);
             --border-color: rgba(255, 255, 255, 0.1);
-            --border-hover: rgba(255, 255, 255, 0.2);
             --blue-400: #60a5fa;
             --blue-500: #3b82f6;
             --blue-600: #2563eb;
@@ -68,10 +63,6 @@
             --cyan-400: #22d3ee;
             --cyan-500: #06b6d4;
             --green-400: #4ade80;
-            --yellow-400: #facc15;
-            --glow-blue: rgba(59, 130, 246, 0.4);
-            --glow-violet: rgba(139, 92, 246, 0.4);
-            --glow-purple: rgba(192, 132, 252, 0.3);
         }
 
         body {
@@ -82,67 +73,52 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
+            *, *::before, *::after {
                 animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
         }
 
+        a { color: inherit; text-decoration: none; }
+
+        ::selection {
+            background: rgba(59, 130, 246, 0.3);
+            color: var(--text-primary);
+        }
+
         .container {
-            max-width: 1280px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
         }
 
-        /* Header */
+        /* ── Header ── */
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            background: rgba(10, 14, 26, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         header.scrolled {
-            background: rgba(15, 23, 42, 0.95);
-            border-bottom-color: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        @supports (backdrop-filter: blur(24px)) {
-            header {
-                background: rgba(15, 23, 42, 0.6);
-            }
-            header.scrolled {
-                background: rgba(15, 23, 42, 0.85);
-            }
+            background: rgba(10, 14, 26, 0.9);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
         }
 
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem 0;
             height: 56px;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
         }
 
         .logo {
@@ -151,129 +127,38 @@
             gap: 10px;
             font-size: 1.125rem;
             font-weight: 700;
-            color: var(--text-primary);
-            text-decoration: none;
             letter-spacing: -0.02em;
-            cursor: pointer;
-            transition: opacity 0.2s ease;
-            border-radius: 8px;
-            padding: 4px;
-        }
-
-        .logo:hover {
-            opacity: 0.9;
-        }
-
-        .logo:focus-visible {
-            outline: 2px solid var(--blue-500);
-            outline-offset: 2px;
         }
 
         .logo img {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
         }
 
-        .logo-text {
-            color: var(--text-primary);
-        }
-
-        .logo-accent {
-            background: linear-gradient(135deg, var(--blue-400), var(--violet-400), var(--purple-400));
+        .logo .accent {
+            background: linear-gradient(135deg, var(--blue-400), var(--violet-400));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-            align-items: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        @media (max-width: 768px) {
-            .nav-left {
-                gap: 1.5rem;
-            }
-
-            .nav-links {
-                gap: 1.5rem;
-            }
-        }
-
-        .nav-links li {
-            margin: 0;
-        }
-
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.65);
-            text-decoration: none;
-            font-weight: 400;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-            padding: 0.25rem 0;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .nav-links a:focus-visible {
-            outline: 2px solid var(--blue-500);
-            outline-offset: 4px;
-            border-radius: 4px;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.8);
-            transition: width 0.2s ease;
-        }
-
-        .nav-links a:hover {
-            color: rgba(255, 255, 255, 1);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .github-icon {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
+        .github-link {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border-radius: 8px;
-            padding: 4px;
+            color: var(--text-tertiary);
+            transition: color 0.2s ease;
         }
 
-        .github-icon:focus-visible {
-            outline: 2px solid var(--blue-500);
-            outline-offset: 2px;
-        }
+        .github-link:hover { color: var(--text-primary); }
 
-        .github-icon svg {
+        .github-link svg {
             width: 24px;
             height: 24px;
             fill: currentColor;
         }
 
-        .github-icon:hover {
-            color: rgba(255, 255, 255, 1);
-            transform: translateY(-1px);
-        }
-
-        /* Hero Section */
+        /* ── Hero ── */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -287,6 +172,7 @@
         .hero-bg {
             position: absolute;
             inset: 0;
+            pointer-events: none;
         }
 
         .hero-gradient {
@@ -298,78 +184,60 @@
         .hero-gradient-mesh {
             position: absolute;
             inset: 0;
-            background: 
+            background:
                 radial-gradient(at 20% 30%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
                 radial-gradient(at 80% 70%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
                 radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
             opacity: 0.6;
-            animation: gradientShift 15s ease infinite;
+            animation: meshShift 15s ease infinite;
         }
 
-        @keyframes gradientShift {
-            0%, 100% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 0.8;
-            }
+        @keyframes meshShift {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.8; }
         }
 
         .hero-blur-1 {
             position: absolute;
-            top: 25%;
-            left: 25%;
-            width: 600px;
-            height: 600px;
+            top: 25%; left: 25%;
+            width: 600px; height: 600px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, rgba(37, 99, 235, 0.1) 50%, transparent 100%);
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, transparent 70%);
             filter: blur(120px);
-            transform: translate(50px, 30px) scale(1.1);
             animation: float 20s ease-in-out infinite;
         }
 
         .hero-blur-2 {
             position: absolute;
-            bottom: 25%;
-            right: 25%;
-            width: 500px;
-            height: 500px;
+            bottom: 25%; right: 25%;
+            width: 500px; height: 500px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, rgba(124, 58, 237, 0.1) 50%, transparent 100%);
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, transparent 70%);
             filter: blur(100px);
             animation: float 25s ease-in-out infinite reverse;
         }
 
         .hero-blur-3 {
             position: absolute;
-            top: 50%;
-            right: 33%;
-            width: 300px;
-            height: 300px;
+            top: 50%; right: 33%;
+            width: 300px; height: 300px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 100%);
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
             filter: blur(80px);
-            transform: translate(22px, -29px);
             animation: float 18s ease-in-out infinite;
         }
 
         @keyframes float {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
-            }
-            33% {
-                transform: translate(30px, -30px) scale(1.1);
-            }
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
         }
 
         .hero-grid {
             position: absolute;
             inset: 0;
             opacity: 0.06;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(59, 130, 246, 0.15) 1px, transparent 1px);
             background-size: 60px 60px;
@@ -378,53 +246,11 @@
             -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 50%, black 40%, transparent 100%);
         }
 
-        .hero-grid::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(139, 92, 246, 0.2) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(139, 92, 246, 0.2) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridMove 25s linear infinite reverse;
-            opacity: 0.5;
-            mix-blend-mode: screen;
-        }
-
-        .hero-grid::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.3) 1px, transparent 1px),
-                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.3) 1px, transparent 1px),
-                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.2) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridPulse 4s ease-in-out infinite;
-            opacity: 0.6;
-        }
-
         @keyframes gridMove {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(60px, 60px);
-            }
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
         }
 
-        @keyframes gridPulse {
-            0%, 100% {
-                opacity: 0.4;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-            }
-        }
-
-        /* Animated grid particles */
         .grid-particles {
             position: absolute;
             inset: 0;
@@ -436,610 +262,257 @@
             position: absolute;
             width: 3px;
             height: 3px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.8), transparent);
             border-radius: 50%;
             animation: particleMove 8s linear infinite;
-            box-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
         }
 
-        .grid-particle:nth-child(1) {
-            left: 10%;
-            top: 20%;
-            animation-delay: 0s;
-            animation-duration: 10s;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.9), transparent);
-        }
-
-        .grid-particle:nth-child(2) {
-            left: 30%;
-            top: 40%;
-            animation-delay: 2s;
-            animation-duration: 12s;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.9), transparent);
-        }
-
-        .grid-particle:nth-child(3) {
-            left: 50%;
-            top: 60%;
-            animation-delay: 4s;
-            animation-duration: 9s;
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.9), transparent);
-        }
-
-        .grid-particle:nth-child(4) {
-            left: 70%;
-            top: 30%;
-            animation-delay: 1s;
-            animation-duration: 11s;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.9), transparent);
-        }
-
-        .grid-particle:nth-child(5) {
-            left: 90%;
-            top: 50%;
-            animation-delay: 3s;
-            animation-duration: 13s;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.9), transparent);
-        }
-
-        .grid-particle:nth-child(6) {
-            left: 20%;
-            top: 80%;
-            animation-delay: 5s;
-            animation-duration: 10s;
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.9), transparent);
-        }
-
-        .grid-particle:nth-child(7) {
-            left: 60%;
-            top: 10%;
-            animation-delay: 2.5s;
-            animation-duration: 11s;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.9), transparent);
-        }
-
-        .grid-particle:nth-child(8) {
-            left: 80%;
-            top: 70%;
-            animation-delay: 6s;
-            animation-duration: 9s;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.9), transparent);
-        }
+        .grid-particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 10s; background: radial-gradient(circle, rgba(59, 130, 246, 0.9), transparent); box-shadow: 0 0 6px rgba(59, 130, 246, 0.6); }
+        .grid-particle:nth-child(2) { left: 30%; top: 40%; animation-delay: 2s; animation-duration: 12s; background: radial-gradient(circle, rgba(139, 92, 246, 0.9), transparent); box-shadow: 0 0 6px rgba(139, 92, 246, 0.6); }
+        .grid-particle:nth-child(3) { left: 50%; top: 60%; animation-delay: 4s; animation-duration: 9s; background: radial-gradient(circle, rgba(6, 182, 212, 0.9), transparent); box-shadow: 0 0 6px rgba(6, 182, 212, 0.6); }
+        .grid-particle:nth-child(4) { left: 70%; top: 30%; animation-delay: 1s; animation-duration: 11s; background: radial-gradient(circle, rgba(59, 130, 246, 0.9), transparent); box-shadow: 0 0 6px rgba(59, 130, 246, 0.6); }
+        .grid-particle:nth-child(5) { left: 90%; top: 50%; animation-delay: 3s; animation-duration: 13s; background: radial-gradient(circle, rgba(139, 92, 246, 0.9), transparent); box-shadow: 0 0 6px rgba(139, 92, 246, 0.6); }
+        .grid-particle:nth-child(6) { left: 20%; top: 80%; animation-delay: 5s; animation-duration: 10s; background: radial-gradient(circle, rgba(6, 182, 212, 0.9), transparent); box-shadow: 0 0 6px rgba(6, 182, 212, 0.6); }
+        .grid-particle:nth-child(7) { left: 60%; top: 10%; animation-delay: 2.5s; animation-duration: 11s; background: radial-gradient(circle, rgba(59, 130, 246, 0.9), transparent); box-shadow: 0 0 6px rgba(59, 130, 246, 0.6); }
+        .grid-particle:nth-child(8) { left: 80%; top: 70%; animation-delay: 6s; animation-duration: 9s; background: radial-gradient(circle, rgba(139, 92, 246, 0.9), transparent); box-shadow: 0 0 6px rgba(139, 92, 246, 0.6); }
 
         @keyframes particleMove {
-            0% {
-                transform: translate(0, 0) scale(1) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            50% {
-                transform: translate(60px, 60px) scale(1.2) rotate(180deg);
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(120px, 120px) scale(0.5) rotate(360deg);
-                opacity: 0;
-            }
+            0% { transform: translate(0, 0) scale(1); opacity: 0; }
+            10% { opacity: 1; }
+            50% { transform: translate(60px, 60px) scale(1.2); }
+            90% { opacity: 1; }
+            100% { transform: translate(120px, 120px) scale(0.5); opacity: 0; }
         }
 
-        /* Glowing grid intersections */
         .grid-glow {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 1), transparent);
+            width: 4px; height: 4px;
             border-radius: 50%;
-            box-shadow: 
-                0 0 8px rgba(59, 130, 246, 0.8),
-                0 0 16px rgba(59, 130, 246, 0.4),
-                0 0 24px rgba(59, 130, 246, 0.2);
             animation: glowPulse 3s ease-in-out infinite;
             filter: blur(0.5px);
         }
 
-        .grid-glow:nth-child(2) {
-            background: radial-gradient(circle, rgba(139, 92, 246, 1), transparent);
-            box-shadow: 
-                0 0 8px rgba(139, 92, 246, 0.8),
-                0 0 16px rgba(139, 92, 246, 0.4),
-                0 0 24px rgba(139, 92, 246, 0.2);
-        }
-
-        .grid-glow:nth-child(3) {
-            background: radial-gradient(circle, rgba(6, 182, 212, 1), transparent);
-            box-shadow: 
-                0 0 8px rgba(6, 182, 212, 0.8),
-                0 0 16px rgba(6, 182, 212, 0.4),
-                0 0 24px rgba(6, 182, 212, 0.2);
-        }
-
-        .grid-glow:nth-child(1) {
-            left: 15%;
-            top: 25%;
-            animation-delay: 0s;
-        }
-
-        .grid-glow:nth-child(2) {
-            left: 35%;
-            top: 45%;
-            animation-delay: 0.5s;
-        }
-
-        .grid-glow:nth-child(3) {
-            left: 55%;
-            top: 65%;
-            animation-delay: 1s;
-        }
-
-        .grid-glow:nth-child(4) {
-            left: 75%;
-            top: 35%;
-            animation-delay: 1.5s;
-        }
-
-        .grid-glow:nth-child(5) {
-            left: 25%;
-            top: 55%;
-            animation-delay: 2s;
-        }
-
-        .grid-glow:nth-child(6) {
-            left: 65%;
-            top: 15%;
-            animation-delay: 2.5s;
-        }
+        .grid-glow:nth-child(1) { left: 15%; top: 25%; animation-delay: 0s; background: radial-gradient(circle, rgba(59, 130, 246, 1), transparent); box-shadow: 0 0 8px rgba(59, 130, 246, 0.8), 0 0 16px rgba(59, 130, 246, 0.4); }
+        .grid-glow:nth-child(2) { left: 35%; top: 45%; animation-delay: 0.5s; background: radial-gradient(circle, rgba(139, 92, 246, 1), transparent); box-shadow: 0 0 8px rgba(139, 92, 246, 0.8), 0 0 16px rgba(139, 92, 246, 0.4); }
+        .grid-glow:nth-child(3) { left: 55%; top: 65%; animation-delay: 1s; background: radial-gradient(circle, rgba(6, 182, 212, 1), transparent); box-shadow: 0 0 8px rgba(6, 182, 212, 0.8), 0 0 16px rgba(6, 182, 212, 0.4); }
+        .grid-glow:nth-child(4) { left: 75%; top: 35%; animation-delay: 1.5s; background: radial-gradient(circle, rgba(59, 130, 246, 1), transparent); box-shadow: 0 0 8px rgba(59, 130, 246, 0.8), 0 0 16px rgba(59, 130, 246, 0.4); }
+        .grid-glow:nth-child(5) { left: 25%; top: 55%; animation-delay: 2s; background: radial-gradient(circle, rgba(139, 92, 246, 1), transparent); box-shadow: 0 0 8px rgba(139, 92, 246, 0.8), 0 0 16px rgba(139, 92, 246, 0.4); }
+        .grid-glow:nth-child(6) { left: 65%; top: 15%; animation-delay: 2.5s; background: radial-gradient(circle, rgba(6, 182, 212, 1), transparent); box-shadow: 0 0 8px rgba(6, 182, 212, 0.8), 0 0 16px rgba(6, 182, 212, 0.4); }
 
         @keyframes glowPulse {
-            0%, 100% {
-                opacity: 0.4;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.5);
-            }
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
         }
 
-        /* Animated grid lines with glow */
         .grid-lines {
             position: absolute;
             inset: 0;
             opacity: 0.3;
+            pointer-events: none;
         }
 
         .grid-line {
             position: absolute;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(59, 130, 246, 0.4),
-                rgba(139, 92, 246, 0.4),
-                transparent
-            );
-            height: 1px;
-            width: 200px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4), transparent);
+            height: 1px; width: 200px;
             animation: lineMove 6s linear infinite;
-            box-shadow: 0 0 4px rgba(59, 130, 246, 0.3);
         }
 
         .grid-line.vertical {
-            width: 1px;
-            height: 200px;
-            background: linear-gradient(
-                180deg,
-                transparent,
-                rgba(59, 130, 246, 0.4),
-                rgba(139, 92, 246, 0.4),
-                transparent
-            );
-            animation: lineMoveVertical 6s linear infinite;
+            width: 1px; height: 200px;
+            background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4), transparent);
+            animation: lineMoveV 6s linear infinite;
         }
 
         @keyframes lineMove {
-            0% {
-                transform: translateX(-200px);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(calc(100vw + 200px));
-                opacity: 0;
-            }
+            0% { transform: translateX(-200px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(calc(100vw + 200px)); opacity: 0; }
         }
 
-        @keyframes lineMoveVertical {
-            0% {
-                transform: translateY(-200px);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(calc(100vh + 200px));
-                opacity: 0;
-            }
-        }
-
-        .hero-gradient-mesh {
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(at 20% 30%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 80% 70%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
-            opacity: 0.6;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 0.8;
-            }
+        @keyframes lineMoveV {
+            0% { transform: translateY(-200px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(calc(100vh + 200px)); opacity: 0; }
         }
 
         .hero-content {
             position: relative;
             z-index: 10;
-            max-width: 80rem;
+            max-width: 720px;
             margin: 0 auto;
             text-align: center;
-            padding: 0 1rem;
-            animation: fadeIn 0.8s ease-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .top-badge {
+        .badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 0.625rem 1.25rem;
+            padding: 6px 16px;
             border-radius: 9999px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            margin-bottom: 3rem;
-            animation: fadeInUp 0.6s ease-out;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.5s ease-out;
         }
 
-        .top-badge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .badge-icon {
-            width: 16px;
-            height: 16px;
+        .badge svg {
+            width: 14px;
+            height: 14px;
             color: var(--blue-400);
         }
 
-        .badge-icon svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .top-badge span {
-            font-size: 0.875rem;
-            color: rgba(209, 213, 219, 1);
-        }
-
-        .hero-logo {
+        .hero-title {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1.25rem;
+            gap: 1rem;
             margin-bottom: 1.5rem;
-            font-size: inherit;
-            font-weight: inherit;
-            margin-left: auto;
-            margin-right: auto;
-            animation: fadeInUp 0.8s ease-out 0.2s both;
+            animation: fadeInUp 0.5s ease-out 0.1s both;
         }
 
-        .logo-image {
-            width: clamp(50px, 7vw, 75px);
-            height: clamp(50px, 7vw, 75px);
-            align-self: center;
-            transition: transform 0.3s ease;
+        .hero-title img {
+            width: clamp(48px, 7vw, 72px);
+            height: clamp(48px, 7vw, 72px);
+            border-radius: 16px;
         }
 
-        .hero-logo:hover .logo-image {
-            transform: scale(1.05) rotate(5deg);
-        }
-
-        .logo-text-hero {
-            font-size: clamp(2.5rem, 7vw, 5rem);
+        .hero-title-text {
+            font-size: clamp(2.5rem, 7vw, 4.5rem);
             font-weight: 800;
             letter-spacing: -0.05em;
             line-height: 1;
-            display: flex;
-            align-items: center;
         }
 
-        .logo-vector {
-            color: var(--text-primary);
-        }
-
-        .logo-dbz {
-            background: linear-gradient(135deg, var(--blue-400) 0%, var(--violet-400) 50%, var(--purple-400) 100%);
+        .hero-title-text .gradient {
+            background: linear-gradient(135deg, var(--blue-400), var(--violet-400), var(--purple-400));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            background-size: 200% 200%;
-            animation: gradientShift 3s ease infinite;
-            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
-        }
-
-        @keyframes gradientShift {
-            0%, 100% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
         }
 
         .hero-subtitle {
-            font-size: clamp(1.25rem, 3vw, 1.75rem) !important;
-            line-height: 1.6 !important;
-            font-weight: 400 !important;
-            margin-top: 0 !important;
-            margin-bottom: 2rem !important;
-            color: rgba(209, 213, 219, 0.9) !important;
-            max-width: 56rem;
-            margin-left: auto;
-            margin-right: auto;
-            white-space: nowrap;
-            animation: fadeInUp 0.8s ease-out 0.3s both;
-            letter-spacing: -0.01em;
+            font-size: clamp(1.25rem, 3vw, 1.625rem);
+            font-weight: 400;
+            color: rgba(209, 213, 219, 0.9);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            animation: fadeInUp 0.5s ease-out 0.2s both;
         }
 
-        @media (max-width: 1024px) {
-            .hero-subtitle {
-                white-space: normal;
-            }
-        }
-
-        .hero p:not(.hero-subtitle) {
-            font-size: clamp(1rem, 2vw, 1.125rem);
-            margin-top: 0;
-            margin-bottom: 3.5rem;
+        .hero-description {
+            font-size: 1rem;
             color: rgba(107, 114, 128, 1);
-            max-width: 48rem;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 560px;
+            margin: 0 auto 2.5rem;
             line-height: 1.7;
+            animation: fadeInUp 0.5s ease-out 0.25s both;
         }
 
         .hero-buttons {
             display: flex;
-            flex-direction: row;
             align-items: center;
             justify-content: center;
             gap: 1rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
         }
 
         .btn-primary {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-            white-space: nowrap;
             font-weight: 600;
-            height: 48px;
-            background: linear-gradient(135deg, var(--blue-500) 0%, var(--violet-500) 100%);
+            height: 46px;
+            background: linear-gradient(135deg, var(--blue-500), var(--violet-500));
             color: var(--text-primary);
-            padding: 0 36px;
-            font-size: 1rem;
-            border-radius: 14px;
-            text-decoration: none;
-            box-shadow: 
-                0 10px 30px rgba(59, 130, 246, 0.3),
-                0 0 0 0 rgba(59, 130, 246, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 32px;
+            font-size: 0.9375rem;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 14px;
-            padding: 2px;
-            background: linear-gradient(135deg, var(--blue-400), var(--violet-400), var(--purple-400));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, var(--blue-600) 0%, var(--violet-600) 100%);
-            box-shadow: 
-                0 16px 40px rgba(59, 130, 246, 0.4),
-                0 0 0 4px rgba(59, 130, 246, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px) scale(1.02);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.35);
         }
 
-        .btn-primary:hover::before {
-            opacity: 1;
-        }
+        .btn-primary:active { transform: translateY(0); }
 
-        .btn-primary:hover::after {
-            opacity: 1;
-        }
-
-        .btn-primary:active {
-            transform: translateY(0) scale(0.98);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-primary:focus-visible {
-            outline: 2px solid var(--blue-500);
-            outline-offset: 4px;
-        }
-
-        .btn-primary svg {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-        }
+        .btn-primary svg { width: 18px; height: 18px; }
 
         .btn-secondary {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-            white-space: nowrap;
             font-weight: 600;
-            height: 48px;
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            height: 46px;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.04);
             color: var(--text-primary);
-            padding: 0 36px;
-            font-size: 1rem;
-            border-radius: 14px;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 32px;
+            font-size: 0.9375rem;
+            border-radius: 12px;
             cursor: pointer;
-            position: relative;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-secondary::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
         }
 
         .btn-secondary:hover {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
-            border-color: rgba(59, 130, 246, 0.4);
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
         }
 
-        .btn-secondary:hover::before {
-            opacity: 1;
-        }
+        .btn-secondary:active { transform: translateY(0); }
 
-        .btn-secondary:active {
-            transform: translateY(0) scale(0.98);
-        }
+        .btn-secondary svg { width: 18px; height: 18px; }
 
-        .btn-secondary:focus-visible {
-            outline: 2px solid var(--blue-500);
-            outline-offset: 4px;
-        }
-
-        .btn-secondary svg {
-            width: 20px;
-            height: 20px;
-            margin-left: 8px;
-        }
-
-        .platform-indicators {
+        .platforms {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 2rem;
-            font-size: 0.875rem;
+            gap: 1.5rem;
+            font-size: 0.8125rem;
             color: rgba(107, 114, 128, 1);
-            margin-bottom: 0;
-            animation: fadeInUp 0.8s ease-out 0.5s both;
+            animation: fadeInUp 0.5s ease-out 0.35s both;
         }
 
         .platform-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .platform-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: var(--green-400);
         }
 
-        /* Database Section */
-        .databases-section {
-            padding: 32px 24px;
+        /* ── Databases Bar ── */
+        .databases {
+            padding: 40px 24px;
             border-top: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
             background: var(--bg-secondary);
         }
 
-        .databases-header {
+        .databases-label {
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.6875rem;
             color: rgba(107, 114, 128, 1);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
+            letter-spacing: 0.12em;
             font-weight: 600;
+            margin-bottom: 1.25rem;
         }
 
         .databases-grid {
@@ -1047,54 +520,26 @@
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            max-width: 80rem;
-            margin: 0 auto;
+            gap: 0.625rem;
         }
 
-        .database-card {
-            position: relative;
+        .db-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             padding: 8px 18px;
             border-radius: 9999px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(8px) saturate(180%);
-            -webkit-backdrop-filter: blur(8px) saturate(180%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: default;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.2s ease, background 0.2s ease;
         }
 
-        .database-card::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 9999px;
-            background: linear-gradient(135deg, var(--blue-500), var(--violet-500));
-            opacity: 0;
-            filter: blur(8px);
-            transition: opacity 0.3s ease;
-            z-index: -1;
+        .db-pill:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
         }
 
-        .database-card:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 
-                0 8px 24px rgba(59, 130, 246, 0.25),
-                0 0 0 1px rgba(59, 130, 246, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .database-card:hover::before {
-            opacity: 0.4;
-        }
-
-        .database-card .status-dot {
+        .db-dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
@@ -1102,662 +547,169 @@
             flex-shrink: 0;
         }
 
-        .database-card.coming .status-dot {
-            background: var(--yellow-400);
-        }
-
-        .database-card.coming {
-            background: rgba(255, 255, 255, 0.02);
-            border-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .database-card span {
+        .db-pill span {
             font-size: 0.8125rem;
             font-weight: 500;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             white-space: nowrap;
         }
 
-        .database-card.coming span {
-            color: rgba(107, 114, 128, 1);
-        }
-
-        .coming-badge {
-            font-size: 0.625rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
-            padding: 0.125rem 0.5rem;
-            border-radius: 9999px;
-            margin-left: 0.5rem;
-            display: inline-flex;
-            align-items: center;
-            line-height: 1;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Features Section */
+        /* ── Features ── */
         .features {
-            padding: 80px 24px;
+            padding: 100px 24px;
             position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 0% 0%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(139, 92, 246, 0.04) 0%, transparent 50%);
+            pointer-events: none;
         }
 
         .section-header {
             text-align: center;
             margin-bottom: 4rem;
+            position: relative;
         }
 
         .section-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-size: clamp(1.75rem, 4vw, 2.75rem);
             font-weight: 800;
             margin-bottom: 1rem;
-            color: var(--text-primary);
             letter-spacing: -0.03em;
-            line-height: 1.1;
+            line-height: 1.15;
         }
 
         .section-title .gradient {
-            background: linear-gradient(135deg, var(--blue-400) 0%, var(--violet-400) 50%, var(--purple-400) 100%);
+            background: linear-gradient(135deg, var(--blue-400), var(--violet-400), var(--purple-400));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            background-size: 200% 200%;
-            animation: gradientShift 4s ease infinite;
-            filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.2));
         }
 
         .section-subtitle {
-            font-size: 1.125rem;
-            color: rgba(156, 163, 175, 1);
-            max-width: 48rem;
+            font-size: 1.0625rem;
+            color: var(--text-muted);
+            max-width: 540px;
             margin: 0 auto;
             line-height: 1.7;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            max-width: 80rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            max-width: 1100px;
             margin: 0 auto;
+            position: relative;
         }
 
         .feature-card {
-            position: relative;
-            height: 100%;
-            padding: 2.5rem;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            background: linear-gradient(135deg, var(--blue-500), var(--violet-500));
-            opacity: 0;
-            filter: blur(30px);
-            transition: opacity 0.5s ease;
-            z-index: -1;
-        }
-
-        .feature-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--blue-500), var(--violet-500), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            padding: 2rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
         }
 
         .feature-card:hover {
-            border-color: rgba(59, 130, 246, 0.4);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(59, 130, 246, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: rgba(59, 130, 246, 0.25);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-4px);
         }
 
-        .feature-card:hover::before {
-            opacity: 0.3;
-        }
-
-        .feature-card:hover::after {
-            opacity: 1;
-        }
-
-        .feature-card:focus-visible {
-            outline: 2px solid var(--blue-500);
-            outline-offset: 4px;
-        }
-
-        .feature-icon-wrapper {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, var(--blue-500), var(--cyan-500));
-            padding: 2px;
-            margin-bottom: 1.5rem;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon-wrapper {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .feature-icon-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, var(--blue-400), var(--cyan-400));
-            opacity: 0;
-            filter: blur(8px);
-            transition: opacity 0.3s ease;
-            z-index: -1;
-        }
-
-        .feature-card:hover .feature-icon-wrapper::before {
-            opacity: 0.6;
-        }
-
-        .feature-icon-wrapper.violet {
-            background: linear-gradient(to right, var(--violet-500), var(--purple-400));
-        }
-
-        .feature-icon-wrapper.amber {
-            background: linear-gradient(to right, #f59e0b, #f97316);
-        }
-
-        .feature-icon-wrapper.green {
-            background: linear-gradient(to right, #10b981, #059669);
-        }
-
-        .feature-icon-wrapper.pink {
-            background: linear-gradient(to right, #ec4899, #f43f5e);
-        }
-
-        .feature-icon-wrapper.indigo {
-            background: linear-gradient(to right, #6366f1, var(--blue-500));
-        }
-
-        .feature-icon-wrapper.cyan {
-            background: linear-gradient(to right, var(--cyan-500), var(--cyan-400));
-        }
-
-        .feature-icon-inner {
-            width: 100%;
-            height: 100%;
-            background: var(--bg-primary);
-            border-radius: 10px;
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, var(--blue-500), var(--cyan-500));
         }
 
-        .feature-icon-inner svg {
+        .feature-icon svg {
             width: 20px;
             height: 20px;
-            color: var(--text-primary);
+            color: white;
+            stroke: white;
         }
+
+        .feature-icon.violet { background: linear-gradient(135deg, var(--violet-500), var(--purple-400)); }
+        .feature-icon.amber { background: linear-gradient(135deg, #f59e0b, #f97316); }
+        .feature-icon.green { background: linear-gradient(135deg, #10b981, #059669); }
+        .feature-icon.pink { background: linear-gradient(135deg, #ec4899, #f43f5e); }
+        .feature-icon.indigo { background: linear-gradient(135deg, #6366f1, var(--blue-500)); }
 
         .feature-card h3 {
-            font-size: 1.375rem;
+            font-size: 1.125rem;
             font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-            letter-spacing: -0.02em;
-        }
-
-        .feature-card:hover h3 {
-            color: var(--blue-400);
-            transform: translateX(4px);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
         }
 
         .feature-card p {
-            color: rgba(156, 163, 175, 1);
-            line-height: 1.7;
-        }
-
-        /* Screenshots Section */
-        .screenshots {
-            padding: 80px 24px;
-            position: relative;
-        }
-
-        .screenshot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 88rem;
-            margin: 0 auto;
-        }
-
-        .screenshot-item {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        }
-
-        .screenshot-item::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, var(--blue-500), var(--violet-500));
-            opacity: 0;
-            filter: blur(20px);
-            transition: opacity 0.4s ease;
-            z-index: -1;
-        }
-
-        .screenshot-item:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 
-                0 24px 48px rgba(0, 0, 0, 0.3),
-                0 0 0 2px rgba(59, 130, 246, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .screenshot-item:hover::before {
-            opacity: 0.3;
-        }
-
-        .screenshot-item:focus-visible {
-            outline: 2px solid var(--blue-500);
-            outline-offset: 4px;
-        }
-
-        .screenshot-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
-        .screenshot-item:hover img {
-            transform: scale(1.02);
-        }
-
-        .screenshot-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .screenshot-item:hover .screenshot-overlay {
-            opacity: 1;
-        }
-
-        .screenshot-caption {
-            margin-top: 1rem;
-            text-align: center;
-        }
-
-        .screenshot-caption h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-        }
-
-        .screenshot-caption p {
             font-size: 0.875rem;
-            color: rgba(156, 163, 175, 1);
+            color: var(--text-muted);
+            line-height: 1.65;
         }
 
-        /* How It Works Section */
-        .how-it-works {
-            padding: 80px 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .how-it-works::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-        }
-
-        .how-it-works-blur-1 {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 384px;
-            height: 384px;
-            background: rgba(37, 99, 235, 0.1);
-            border-radius: 50%;
-            filter: blur(100px);
-            transform: translateY(-50%);
-        }
-
-        .how-it-works-blur-2 {
-            position: absolute;
-            top: 50%;
-            right: 0;
-            width: 384px;
-            height: 384px;
-            background: rgba(124, 58, 237, 0.1);
-            border-radius: 50%;
-            filter: blur(100px);
-            transform: translateY(-50%);
-        }
-
-        .how-it-works-content {
-            max-width: 80rem;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .how-it-works-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .how-it-works-header .badge {
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--violet-400);
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            max-width: 80rem;
-            margin: 0 auto;
-        }
-
-        .step-item {
-            position: relative;
-            text-align: center;
-        }
-
-        .step-connector {
-            display: none;
-        }
-
-        @media (min-width: 1024px) {
-            .step-connector {
-                display: block;
-                position: absolute;
-                top: 48px;
-                left: 60%;
-                width: 80%;
-                height: 1px;
-                background: linear-gradient(to right, rgba(255, 255, 255, 0.2), transparent);
-            }
-        }
-
-        .step-icon-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 1.5rem;
-        }
-
-        .step-icon-box {
-            width: 96px;
-            height: 96px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .step-icon-box::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            background: linear-gradient(135deg, var(--blue-500), var(--violet-500));
-            opacity: 0;
-            filter: blur(20px);
-            transition: opacity 0.4s ease;
-            z-index: -1;
-        }
-
-        .step-icon-box:hover {
-            transform: scale(1.1) rotate(5deg);
-            border-color: rgba(59, 130, 246, 0.4);
-            box-shadow: 
-                0 16px 40px rgba(59, 130, 246, 0.3),
-                0 0 0 2px rgba(59, 130, 246, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        }
-
-        .step-icon-box:hover::before {
-            opacity: 0.4;
-        }
-
-        .step-icon-box::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .step-icon-box:hover {
-            border-color: var(--border-hover);
-        }
-
-        .step-icon-box:hover::before {
-            opacity: 1;
-        }
-
-        .step-icon-box svg {
-            width: 40px;
-            height: 40px;
-            color: var(--text-primary);
-            position: relative;
-            z-index: 10;
-        }
-
-        .step-number {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--blue-500), var(--violet-500));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            box-shadow: 
-                0 8px 20px rgba(59, 130, 246, 0.4),
-                0 0 0 2px rgba(15, 23, 42, 0.8),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .step-item:hover .step-number {
-            transform: scale(1.15) rotate(10deg);
-            box-shadow: 
-                0 12px 32px rgba(59, 130, 246, 0.5),
-                0 0 0 3px rgba(15, 23, 42, 0.8),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .step-item h3 {
-            font-size: 1.375rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.02em;
-            transition: color 0.3s ease;
-        }
-
-        .step-item:hover h3 {
-            color: var(--blue-400);
-        }
-
-        .step-item p {
-            color: rgba(156, 163, 175, 1);
-            line-height: 1.7;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 112px 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-        }
-
-        .cta-blur-1 {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 384px;
-            height: 384px;
-            background: rgba(37, 99, 235, 0.1);
-            border-radius: 50%;
-            filter: blur(100px);
-            transform: translateY(-50%);
-        }
-
-        .cta-blur-2 {
-            position: absolute;
-            top: 50%;
-            right: 0;
-            width: 384px;
-            height: 384px;
-            background: rgba(124, 58, 237, 0.1);
-            border-radius: 50%;
-            filter: blur(100px);
-            transform: translateY(-50%);
-        }
-
-        .cta-content {
-            max-width: 80rem;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Footer */
+        /* ── Footer ── */
         footer {
-            padding: 64px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            background: linear-gradient(to top, var(--bg-secondary) 0%, rgba(8, 11, 20, 0.8) 100%);
-            position: relative;
-        }
-
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+            padding: 48px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: var(--bg-secondary);
         }
 
         .footer-content {
-            max-width: 80rem;
-            margin: 0 auto;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: space-between;
             gap: 1.5rem;
         }
 
-        @media (min-width: 768px) {
-            .footer-content {
-                flex-direction: row;
-            }
-        }
-
         .footer-left {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 12px;
         }
 
         .footer-left img {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
         }
 
         .footer-left span {
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             color: rgba(107, 114, 128, 1);
+        }
+
+        .footer-left a {
+            text-decoration: underline;
+            text-underline-offset: 3px;
         }
 
         .footer-links {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .footer-links a {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: rgba(156, 163, 175, 1);
-            text-decoration: none;
-            font-size: 0.875rem;
-            transition: color 0.2s ease;
-            cursor: pointer;
-            border-radius: 6px;
-            padding: 4px 8px;
+            gap: 6px;
+            color: var(--text-muted);
+            font-size: 0.8125rem;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: color 0.2s ease, background 0.2s ease;
         }
 
         .footer-links a:hover {
@@ -1765,95 +717,50 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .footer-links a:focus-visible {
-            outline: 2px solid var(--blue-500);
-            outline-offset: 2px;
-        }
-
         .footer-links a svg {
             width: 16px;
             height: 16px;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .nav-left {
-                gap: 0;
-            }
-
-            .hero {
-                padding: 100px 16px 60px;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-            }
-
-            .btn-primary,
-            .btn-secondary {
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .platform-indicators {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-
-            .features-grid,
-            .steps-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .databases-grid {
-                flex-direction: row;
-                gap: 0.5rem;
-            }
+        /* ── Animations ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Loading state for images */
-        img {
+        .reveal {
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        img.loaded {
+        .reveal.visible {
             opacity: 1;
+            transform: translateY(0);
         }
 
-        /* Improved focus styles for better accessibility */
-        *:focus-visible {
-            outline-width: 2px;
-            outline-style: solid;
-            outline-color: var(--blue-500);
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
-        /* Smooth scroll padding for anchor links */
-        section[id] {
-            scroll-margin-top: 80px;
+        @media (max-width: 640px) {
+            .hero { padding: 120px 16px 60px; }
+
+            .hero-buttons { flex-direction: column; }
+            .btn-primary, .btn-secondary { width: 100%; max-width: 280px; justify-content: center; }
+
+            .platforms { flex-wrap: wrap; gap: 0.75rem; }
+
+            .features-grid { grid-template-columns: 1fr; }
+
+            .footer-content { flex-direction: column; text-align: center; }
+
         }
 
-        /* Better text selection */
-        ::selection {
-            background: rgba(59, 130, 246, 0.3);
-            color: var(--text-primary);
-        }
-
-        /* Improved link styles */
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        /* Skip to main content link for accessibility */
+        /* ── Accessibility ── */
         .skip-to-main {
             position: absolute;
             top: -100px;
@@ -1866,412 +773,197 @@
             font-weight: 600;
         }
 
-        .skip-to-main:focus {
-            top: 0;
+        .skip-to-main:focus { top: 0; }
+
+        *:focus-visible {
+            outline: 2px solid var(--blue-500);
+            outline-offset: 2px;
         }
 
-        /* Scroll-triggered animations */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        html { scroll-behavior: smooth; }
 
-        .animate-on-scroll {
+        img {
             opacity: 0;
-            animation: slideInUp 0.6s ease-out forwards;
+            transition: opacity 0.4s ease;
         }
 
-        .animate-on-scroll.animated {
-            opacity: 1;
-        }
-
-        /* Premium glow effects */
-        .glow-effect {
-            position: relative;
-        }
-
-        .glow-effect::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: inherit;
-            background: linear-gradient(135deg, var(--blue-500), var(--violet-500));
-            opacity: 0;
-            filter: blur(20px);
-            transition: opacity 0.3s ease;
-            z-index: -1;
-        }
-
-        .glow-effect:hover::after {
-            opacity: 0.3;
-        }
-
-        /* Enhanced section backgrounds */
-        .features,
-        .how-it-works,
-        .screenshots {
-            position: relative;
-        }
-
-        .features::before,
-        .how-it-works::before,
-        .screenshots::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
-            pointer-events: none;
-        }
+        img.loaded { opacity: 1; }
     </style>
 </head>
 <body>
     <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
     <header role="banner">
         <nav class="container" role="navigation" aria-label="Main navigation">
-            <div class="nav-left">
-                <a href="#" class="logo" aria-label="VectorDBZ Home">
-                    <img src="assets/icon.png" alt="VectorDBZ Logo" loading="eager" width="32" height="32">
-                    <span class="logo-text">Vector<span class="logo-accent">DBZ</span></span>
-                </a>
-                <ul class="nav-links" role="list">
-                    <li role="listitem"><a href="#databases" aria-label="View supported databases">Integrations</a></li>
-                    <li role="listitem"><a href="#features" aria-label="View features">Features</a></li>
-                    <li role="listitem"><a href="#how-it-works" aria-label="View getting started guide">Guide</a></li>
-                </ul>
-            </div>
-            <a href="https://github.com/vectordbz/vectordbz" class="github-icon" target="_blank" rel="noopener noreferrer" aria-label="Visit VectorDBZ on GitHub">
-                <svg height="32" aria-hidden="true" viewBox="0 0 24 24" version="1.1" width="32" data-view-component="true" class="octicon octicon-mark-github v-align-middle">
-                    <path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"></path>
-                </svg>
+            <a href="#" class="logo" aria-label="VectorDBZ Home">
+                <img src="assets/icon.png" alt="VectorDBZ Logo" width="30" height="30" loading="eager">
+                <span>Vector<span class="accent">DBZ</span></span>
+            </a>
+            <a href="https://github.com/vectordbz/vectordbz" class="github-link" target="_blank" rel="noopener noreferrer" aria-label="VectorDBZ on GitHub">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"/></svg>
             </a>
         </nav>
     </header>
 
     <main id="main-content">
-    <section class="hero" aria-label="Hero section">
-        <div class="hero-bg">
-            <div class="hero-gradient"></div>
-            <div class="hero-gradient-mesh"></div>
-            <div class="hero-blur-1"></div>
-            <div class="hero-blur-2"></div>
-            <div class="hero-blur-3"></div>
-        </div>
-        <div class="hero-grid"></div>
-        <div class="grid-particles">
-            <div class="grid-particle"></div>
-            <div class="grid-particle"></div>
-            <div class="grid-particle"></div>
-            <div class="grid-particle"></div>
-            <div class="grid-particle"></div>
-            <div class="grid-particle"></div>
-            <div class="grid-particle"></div>
-            <div class="grid-particle"></div>
-        </div>
-        <div class="grid-lines">
-            <div class="grid-line" style="top: 20%; left: 0; animation-delay: 0s;"></div>
-            <div class="grid-line" style="top: 40%; left: 0; animation-delay: 1s;"></div>
-            <div class="grid-line" style="top: 60%; left: 0; animation-delay: 2s;"></div>
-            <div class="grid-line" style="top: 80%; left: 0; animation-delay: 3s;"></div>
-            <div class="grid-line vertical" style="top: 0; left: 25%; animation-delay: 0.5s;"></div>
-            <div class="grid-line vertical" style="top: 0; left: 50%; animation-delay: 1.5s;"></div>
-            <div class="grid-line vertical" style="top: 0; left: 75%; animation-delay: 2.5s;"></div>
-        </div>
-        <div class="grid-glow"></div>
-        <div class="grid-glow"></div>
-        <div class="grid-glow"></div>
-        <div class="grid-glow"></div>
-        <div class="grid-glow"></div>
-        <div class="grid-glow"></div>
-        <div class="hero-content">
-            <div class="top-badge">
-                <svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
-                    <path d="M20 3v4"></path>
-                    <path d="M22 5h-4"></path>
-                    <path d="M4 17v2"></path>
-                    <path d="M5 18H3"></path>
-                </svg>
-                <span>Made for Developers, by Developers</span>
-            </div>
-            <h1 class="hero-logo">
-                <img src="assets/icon.png" alt="VectorDBZ Logo" class="logo-image" width="75" height="75" loading="eager">
-                <span class="logo-text-hero">
-                    <span class="logo-vector">Vector</span><span class="logo-dbz">DBZ</span>
-                </span>
-            </h1>
-            <p class="hero-subtitle">Desktop Application for Vector Database Management & Analysis</p>
-            <p>Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector (PostgreSQL), Elasticsearch, and more. Explore collections, analyze embeddings, and visualize your data—all from a unified interface.</p>
-            <div class="hero-buttons">
-                <a href="https://github.com/vectordbz/vectordbz/releases" class="btn-primary" target="_blank" rel="noopener noreferrer" aria-label="Download VectorDBZ">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" x2="12" y1="15" y2="3"></line>
-                    </svg>
-                    Download
-                </a>
-                <a href="https://github.com/vectordbz/vectordbz" class="btn-secondary" target="_blank" rel="noopener noreferrer" aria-label="Star VectorDBZ on GitHub">
-                    Star on GitHub
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M5 12h14"></path>
-                        <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                </a>
-            </div>
-            <div class="platform-indicators">
-                <div class="platform-item">
-                    <div class="platform-dot"></div>
-                    <span>macOS</span>
-                </div>
-                <div class="platform-item">
-                    <div class="platform-dot"></div>
-                    <span>Windows</span>
-                </div>
-                <div class="platform-item">
-                    <div class="platform-dot"></div>
-                    <span>Linux</span>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="databases-section" id="databases" aria-labelledby="databases-heading">
-        <div class="container">
-            <h2 class="databases-header" id="databases-heading">Supported Vector Databases</h2>
-            <div class="databases-grid" role="list" aria-label="List of supported vector databases">
-                <div class="database-card" role="listitem" aria-label="Qdrant - Supported">
-                    <div class="status-dot" aria-hidden="true"></div>
-                    <span>Qdrant</span>
-                </div>
-                <div class="database-card" role="listitem" aria-label="Weaviate - Supported">
-                    <div class="status-dot" aria-hidden="true"></div>
-                    <span>Weaviate</span>
-                </div>
-                <div class="database-card" role="listitem" aria-label="Milvus - Supported">
-                    <div class="status-dot" aria-hidden="true"></div>
-                    <span>Milvus</span>
-                </div>
-                <div class="database-card" role="listitem" aria-label="ChromaDB - Supported">
-                    <div class="status-dot" aria-hidden="true"></div>
-                    <span>ChromaDB</span>
-                </div>
-                <div class="database-card" role="listitem" aria-label="Pinecone - Supported">
-                    <div class="status-dot" aria-hidden="true"></div>
-                    <span>Pinecone</span>
-                </div>
-                <div class="database-card" role="listitem" aria-label="pgvector PostgreSQL - Supported">
-                    <div class="status-dot" aria-hidden="true"></div>
-                    <span>pgvector (PostgreSQL)</span>
-                </div>
-                <div class="database-card" role="listitem" aria-label="Elasticsearch - Supported">
-                    <div class="status-dot" aria-hidden="true"></div>
-                    <span>Elasticsearch</span>
-                </div>
+        <!-- ── Hero ── -->
+        <section class="hero" aria-label="Hero">
+            <div class="hero-bg" aria-hidden="true">
+                <div class="hero-gradient"></div>
+                <div class="hero-gradient-mesh"></div>
+                <div class="hero-blur-1"></div>
+                <div class="hero-blur-2"></div>
+                <div class="hero-blur-3"></div>
             </div>
-        </div>
-    </section>
+            <div class="hero-grid" aria-hidden="true"></div>
+            <div class="grid-particles" aria-hidden="true">
+                <div class="grid-particle"></div>
+                <div class="grid-particle"></div>
+                <div class="grid-particle"></div>
+                <div class="grid-particle"></div>
+                <div class="grid-particle"></div>
+                <div class="grid-particle"></div>
+                <div class="grid-particle"></div>
+                <div class="grid-particle"></div>
+            </div>
+            <div class="grid-lines" aria-hidden="true">
+                <div class="grid-line" style="top: 20%; left: 0; animation-delay: 0s;"></div>
+                <div class="grid-line" style="top: 40%; left: 0; animation-delay: 1s;"></div>
+                <div class="grid-line" style="top: 60%; left: 0; animation-delay: 2s;"></div>
+                <div class="grid-line" style="top: 80%; left: 0; animation-delay: 3s;"></div>
+                <div class="grid-line vertical" style="top: 0; left: 25%; animation-delay: 0.5s;"></div>
+                <div class="grid-line vertical" style="top: 0; left: 50%; animation-delay: 1.5s;"></div>
+                <div class="grid-line vertical" style="top: 0; left: 75%; animation-delay: 2.5s;"></div>
+            </div>
+            <div class="grid-glow" aria-hidden="true"></div>
+            <div class="grid-glow" aria-hidden="true"></div>
+            <div class="grid-glow" aria-hidden="true"></div>
+            <div class="grid-glow" aria-hidden="true"></div>
+            <div class="grid-glow" aria-hidden="true"></div>
+            <div class="grid-glow" aria-hidden="true"></div>
 
-    <section class="features" id="features" aria-labelledby="features-heading">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title" id="features-heading">Everything you need to <span class="gradient">manage your vectors</span></h2>
-                <p class="section-subtitle">A powerful desktop application built for developers who work with vector databases. Connect, explore, analyze, and optimize—all in one place.</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper">
-                        <div class="feature-icon-inner">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
-                                <path d="M3 12A9 3 0 0 0 21 12"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Multi-Database Support</h3>
-                    <p>Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector (PostgreSQL), Elasticsearch, and other vector databases. Manage multiple connections with encrypted credential storage and connection pooling.</p>
+            <div class="hero-content">
+                <div class="badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                    <span>Open Source Desktop App</span>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper violet">
-                        <div class="feature-icon-inner">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Advanced Visualizations</h3>
-                    <p>Interactive visualizations powered by ECharts. Analyze vector space relationships through dimensionality reduction and clustering visualizations.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper amber">
-                        <div class="feature-icon-inner">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Real-time Analysis</h3>
-                    <p>Monitor analysis progress with live indicators. Execute batch operations with configurable parameters for large-scale datasets and vector analysis.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper green">
-                        <div class="feature-icon-inner">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Enterprise Security</h3>
-                    <p>HTTPS/TLS support with encrypted credential management. Local-first architecture ensures your data remains secure and private.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper pink">
-                        <div class="feature-icon-inner">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
-                                <path d="M18 17V9"></path>
-                                <path d="M13 17V5"></path>
-                                <path d="M8 17v-3"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Multiple Distance Metrics</h3>
-                    <p>Support for Cosine Similarity, Euclidean Distance, and Dot Product metrics. Select the optimal metric for your use case and data characteristics.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper indigo">
-                        <div class="feature-icon-inner">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
-                                <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
-                                <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Scalable Operations</h3>
-                    <p>Load sample datasets for testing and validation. Process large-scale collections efficiently with intelligent sampling and pagination.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="how-it-works" id="how-it-works" aria-labelledby="how-it-works-heading">
-        <div class="how-it-works-blur-1" aria-hidden="true"></div>
-        <div class="how-it-works-blur-2" aria-hidden="true"></div>
-        <div class="how-it-works-content">
-            <div class="how-it-works-header">
-                <span class="badge" aria-hidden="true">Getting Started</span>
-                <h2 class="section-title" id="how-it-works-heading">Deploy and analyze in <span class="gradient">minutes</span></h2>
-                <p class="section-subtitle">A streamlined workflow for connecting to your vector databases and extracting actionable insights.</p>
-            </div>
-            <div class="steps-grid">
-                <div class="step-item">
-                    <div class="step-connector"></div>
-                    <div class="step-icon-wrapper">
-                        <div class="step-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" x2="12" y1="15" y2="3"></line>
-                            </svg>
-                        </div>
-                        <div class="step-number">01</div>
-                    </div>
-                    <h3>Download & Install</h3>
-                    <p>Download VectorDBZ for your platform. Available for macOS, Windows, and Linux with native performance.</p>
+                <h1 class="hero-title">
+                    <img src="assets/icon.png" alt="" width="72" height="72" loading="eager">
+                    <span class="hero-title-text">Vector<span class="gradient">DBZ</span></span>
+                </h1>
+
+                <p class="hero-subtitle">Explore, search, and visualize your vector databases.</p>
+                <p class="hero-description">Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector, Elasticsearch, RedisSearch, and more. Browse collections, run vector and hybrid searches, and visualize embeddings in 2D/3D.</p>
+
+                <div class="hero-buttons">
+                    <a href="https://github.com/vectordbz/vectordbz/releases" class="btn-primary" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                        Download
+                    </a>
+                    <a href="https://github.com/vectordbz/vectordbz" class="btn-secondary" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px"><path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"/></svg>
+                        Star on GitHub
+                    </a>
                 </div>
-                <div class="step-item">
-                    <div class="step-connector"></div>
-                    <div class="step-icon-wrapper">
-                        <div class="step-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
-                                <path d="M3 12A9 3 0 0 0 21 12"></path>
-                            </svg>
-                        </div>
-                        <div class="step-number">02</div>
-                    </div>
-                    <h3>Connect Your Database</h3>
-                    <p>Configure connections to your vector databases with encrypted credential storage. Manage multiple connections simultaneously.</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-connector"></div>
-                    <div class="step-icon-wrapper">
-                        <div class="step-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <path d="m21 21-4.3-4.3"></path>
-                            </svg>
-                        </div>
-                        <div class="step-number">03</div>
-                    </div>
-                    <h3>Search & Explore</h3>
-                    <p>Generate embeddings from text or files using custom functions, then explore your collections and perform semantic searches across your vectors.</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-connector"></div>
-                    <div class="step-icon-wrapper">
-                        <div class="step-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="6 3 20 12 6 21 6 3"></polygon>
-                            </svg>
-                        </div>
-                        <div class="step-number">04</div>
-                    </div>
-                    <h3>Run Analysis</h3>
-                    <p>Perform vector analysis and configure parameters to generate comprehensive insights about your vector data.</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-icon-wrapper">
-                        <div class="step-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
-                                <path d="M18 17V9"></path>
-                                <path d="M13 17V5"></path>
-                                <path d="M8 17v-3"></path>
-                            </svg>
-                        </div>
-                        <div class="step-number">05</div>
-                    </div>
-                    <h3>Visualize & Export</h3>
-                    <p>Review results through interactive visualizations. Export data and reports for team collaboration and documentation.</p>
+
+                <div class="platforms">
+                    <div class="platform-item"><div class="platform-dot"></div><span>macOS</span></div>
+                    <div class="platform-item"><div class="platform-dot"></div><span>Windows</span></div>
+                    <div class="platform-item"><div class="platform-dot"></div><span>Linux</span></div>
                 </div>
             </div>
-        </div>
-    </section>
+
+        </section>
+
+        <!-- ── Supported Databases ── -->
+        <section class="databases" aria-labelledby="databases-heading">
+            <div class="container">
+                <p class="databases-label" id="databases-heading">Supported Databases</p>
+                <div class="databases-grid reveal" role="list" aria-label="Supported vector databases">
+                    <div class="db-pill" role="listitem"><div class="db-dot" aria-hidden="true"></div><span>Qdrant</span></div>
+                    <div class="db-pill" role="listitem"><div class="db-dot" aria-hidden="true"></div><span>Weaviate</span></div>
+                    <div class="db-pill" role="listitem"><div class="db-dot" aria-hidden="true"></div><span>Milvus</span></div>
+                    <div class="db-pill" role="listitem"><div class="db-dot" aria-hidden="true"></div><span>ChromaDB</span></div>
+                    <div class="db-pill" role="listitem"><div class="db-dot" aria-hidden="true"></div><span>Pinecone</span></div>
+                    <div class="db-pill" role="listitem"><div class="db-dot" aria-hidden="true"></div><span>pgvector (PostgreSQL)</span></div>
+                    <div class="db-pill" role="listitem"><div class="db-dot" aria-hidden="true"></div><span>Elasticsearch</span></div>
+                    <div class="db-pill" role="listitem"><div class="db-dot" aria-hidden="true"></div><span>RedisSearch</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Features ── -->
+        <section class="features" aria-labelledby="features-heading">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="section-title" id="features-heading">Features</h2>
+                    <p class="section-subtitle">Connects directly to your databases. No cloud proxy, no data leaving your machine, no subscription.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card reveal">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+                        </div>
+                        <h3>Multi-Database Support</h3>
+                        <p>Connect to 8+ vector databases. Manage multiple named connections with encrypted credential storage.</p>
+                    </div>
+                    <div class="feature-card reveal">
+                        <div class="feature-icon violet">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                        </div>
+                        <h3>Advanced Visualizations</h3>
+                        <p>Interactive 2D/3D scatter plots with UMAP, t-SNE, PCA dimensionality reduction and K-means/DBSCAN clustering.</p>
+                    </div>
+                    <div class="feature-card reveal">
+                        <div class="feature-icon amber">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+                        </div>
+                        <h3>Embedding Functions</h3>
+                        <p>Write custom JavaScript embedding functions. Templates for OpenAI, Cohere, Hugging Face, and a local test server.</p>
+                    </div>
+                    <div class="feature-card reveal">
+                        <div class="feature-icon green">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+                        </div>
+                        <h3>Privacy First</h3>
+                        <p>Local-first architecture with HTTPS/TLS and encrypted credentials. Your data never leaves your machine.</p>
+                    </div>
+                    <div class="feature-card reveal">
+                        <div class="feature-icon pink">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                        </div>
+                        <h3>Distance Metrics</h3>
+                        <p>Cosine Similarity, Euclidean Distance, and Dot Product. Choose the right metric for your data.</p>
+                    </div>
+                    <div class="feature-card reveal">
+                        <div class="feature-icon indigo">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg>
+                        </div>
+                        <h3>Vector & Hybrid Search</h3>
+                        <p>Similarity search with metadata filters, result comparison, and BM25/lexical search on supported databases.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </main>
+
     <footer role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-left">
-                    <img src="assets/icon.png" alt="VectorDBZ" width="32" height="32" loading="lazy">
-                    <span>© 2025 VectorDBZ. All rights reserved.</span>
+                    <img src="assets/icon.png" alt="VectorDBZ" width="28" height="28" loading="lazy">
+                    <span>&copy; 2026 VectorDBZ. Released under the <a href="https://github.com/vectordbz/vectordbz/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>.</span>
                 </div>
                 <div class="footer-links">
                     <a href="https://github.com/vectordbz/vectordbz/releases" target="_blank" rel="noopener noreferrer" aria-label="Download VectorDBZ">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" x2="12" y1="15" y2="3"></line>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                         Download
                     </a>
-                    <a href="https://github.com/vectordbz/vectordbz" target="_blank" rel="noopener noreferrer" aria-label="Visit VectorDBZ on GitHub">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-                            <path d="M9 18c-4.51 2-5-2-7-2"></path>
-                        </svg>
+                    <a href="https://github.com/vectordbz/vectordbz" target="_blank" rel="noopener noreferrer" aria-label="VectorDBZ on GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
                         GitHub
                     </a>
                 </div>
@@ -2279,7 +971,6 @@
         </div>
     </footer>
 
-    <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -2292,7 +983,7 @@
             "price": "0",
             "priceCurrency": "USD"
         },
-        "description": "Professional desktop application for managing and analyzing vector databases. Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector (PostgreSQL), Elasticsearch, and more. Enterprise-grade features for vector analysis, visualization, and performance optimization.",
+        "description": "Open-source desktop application for exploring, managing, and analyzing vector databases. Connect to Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector (PostgreSQL), Elasticsearch, RedisSearch, and more.",
         "url": "https://github.com/vectordbz/vectordbz",
         "downloadUrl": "https://github.com/vectordbz/vectordbz/releases",
         "softwareVersion": "latest",
@@ -2300,11 +991,6 @@
         "author": {
             "@type": "Organization",
             "name": "VectorDBZ"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "5",
-            "ratingCount": "1"
         },
         "featureList": [
             "Multi-database support (Qdrant, Weaviate, Milvus, ChromaDB, Pinecone, pgvector, Elasticsearch)",
@@ -2317,128 +1003,35 @@
     }
     </script>
     <script>
-        // Image loading optimization
         document.addEventListener('DOMContentLoaded', function() {
-            const images = document.querySelectorAll('img');
-            images.forEach(img => {
+            document.querySelectorAll('img').forEach(function(img) {
                 if (img.complete) {
                     img.classList.add('loaded');
                 } else {
-                    img.addEventListener('load', function() {
-                        this.classList.add('loaded');
-                    });
-                    img.addEventListener('error', function() {
-                        this.classList.add('loaded');
-                    });
+                    img.addEventListener('load', function() { this.classList.add('loaded'); });
+                    img.addEventListener('error', function() { this.classList.add('loaded'); });
                 }
             });
+
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+            document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
         });
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href === '#') return;
-                
-                e.preventDefault();
-                const target = document.querySelector(href);
-                if (target) {
-                    const headerOffset = 80;
-                    const elementPosition = target.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Header scroll effect
-        let lastScroll = 0;
-        const header = document.querySelector('header');
-        
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            if (currentScroll > 50) {
+        window.addEventListener('scroll', function() {
+            var header = document.querySelector('header');
+            if (window.pageYOffset > 40) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
-            lastScroll = currentScroll;
         });
-
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
-            });
-        }, observerOptions);
-
-        // Observe elements for animation
-        document.querySelectorAll('.feature-card, .step-item, .screenshot-item, .database-card').forEach(el => {
-            el.classList.add('animate-on-scroll');
-            observer.observe(el);
-        });
-
-        // Parallax effect for hero background
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const hero = document.querySelector('.hero');
-            if (hero) {
-                const heroBg = hero.querySelector('.hero-bg');
-                if (heroBg) {
-                    heroBg.style.transform = `translateY(${scrolled * 0.5}px)`;
-                }
-                // Parallax grid
-                const heroGrid = hero.querySelector('.hero-grid');
-                if (heroGrid) {
-                    heroGrid.style.transform = `translateY(${scrolled * 0.3}px)`;
-                }
-            }
-        });
-
-        // Mouse interaction with grid
-        const hero = document.querySelector('.hero');
-        if (hero) {
-            hero.addEventListener('mousemove', (e) => {
-                const rect = hero.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                
-                const grid = hero.querySelector('.hero-grid');
-                if (grid) {
-                    const intensity = 0.02;
-                    grid.style.transform = `translate(${(x - 50) * intensity}px, ${(y - 50) * intensity}px)`;
-                }
-
-                // Move particles towards cursor
-                const particles = hero.querySelectorAll('.grid-particle');
-                particles.forEach((particle, index) => {
-                    const delay = index * 0.1;
-                    setTimeout(() => {
-                        const particleX = (x - parseFloat(particle.style.left || '50')) * 0.01;
-                        const particleY = (y - parseFloat(particle.style.top || '50')) * 0.01;
-                        particle.style.transform = `translate(${particleX}px, ${particleY}px)`;
-                    }, delay * 1000);
-                });
-            });
-
-            hero.addEventListener('mouseleave', () => {
-                const grid = hero.querySelector('.hero-grid');
-                if (grid) {
-                    grid.style.transform = '';
-                }
-            });
-        }
     </script>
 </body>
 </html>
