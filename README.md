@@ -39,6 +39,15 @@ VectorDBZ lets you connect to local or cloud vector database instances, explore 
 
 ## Installation
 
+### Homebrew (macOS)
+
+```bash
+brew tap vectordbz/vectordbz
+brew install --cask vectordbz
+```
+
+### Direct Download
+
 **[Download the latest release →](https://github.com/vectordbz/vectordbz/releases/latest)**
 
 | Platform | Package |
