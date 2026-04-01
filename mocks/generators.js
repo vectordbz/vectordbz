@@ -403,6 +403,52 @@ export function generateBinaryImages(count, binaryDimension = 256) {
   }));
 }
 
+// ============================================
+// User Memories (mem0 / agent memory store)
+// ============================================
+
+export function generateUserMemories(count, dimension = 1536) {
+  const categories = ['personal', 'work', 'health', 'finance', 'social', 'learning'];
+
+  return Array.from({ length: count }, () => {
+    const id = faker.string.uuid();
+    const userId = faker.string.uuid();
+    const agentId = faker.string.uuid();
+    const runId = faker.string.uuid();
+    const hash = faker.string.uuid();
+    const createdAt = faker.date.recent({ days: 30 }).toISOString();
+    const updatedAt = faker.date.recent({ days: 7 }).toISOString();
+    const category = faker.helpers.arrayElement(categories);
+    const data = faker.lorem.paragraph();
+
+    return {
+      vector: generateVector(dimension),
+      ids: id,
+      hash,
+      metadata: JSON.stringify({ source: faker.word.noun(), importance: faker.number.int({ min: 1, max: 5 }) }),
+      data,
+      created_at: createdAt,
+      category,
+      updated_at: updatedAt,
+      user_id: userId,
+      agent_id: agentId,
+      run_id: runId,
+      score: faker.number.float({ min: 0, max: 1, fractionDigits: 4 }),
+      payload: {
+        updated_at: updatedAt,
+        data,
+        user_id: userId,
+        agent_id: agentId,
+        category,
+        hash,
+        run_id: runId,
+        id,
+        created_at: createdAt,
+      },
+    };
+  });
+}
+
 // Documents with binary fingerprints (for near-duplicate detection)
 export function generateBinaryDocuments(count, binaryDimension = 512) {
   const docTypes = ['article', 'report', 'manual', 'guide'];

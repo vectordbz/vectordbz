@@ -80,12 +80,28 @@ body:
       required: true
 
   - type: textarea
-    id: logs
+    id: node_logs
     attributes:
-      label: Relevant Logs or Screenshots
+      label: Node.js / Main Process Logs
       description: |
-        Paste any relevant error messages. Log files are at:
+        Paste the contents of the app log file (main process / Node.js backend). Log files are at:
         - Windows: `%APPDATA%\vectordbz\logs\main.log`
         - macOS: `~/Library/Logs/vectordbz/main.log`
         - Linux: `~/.config/vectordbz/logs/main.log`
+
+        You can also find the exact path in the app: open **Settings → About** and click **Open Log File**.
       render: shell
+
+  - type: textarea
+    id: console_logs
+    attributes:
+      label: Browser Console Logs
+      description: |
+        Open DevTools with **F12**, go to the **Console** tab, reproduce the bug, then paste any errors or warnings here.
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain the problem. You can drag and drop images directly into this field.

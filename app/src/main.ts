@@ -174,38 +174,23 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      // Disable DevTools in production
-      devTools: !isProduction,
+      devTools: true,
     },
   });
 
-  // Production hardening
   if (isProduction) {
-    // Remove application menu to hide DevTools/reload menu items
     Menu.setApplicationMenu(null);
 
-    // Block keyboard shortcuts for refresh and DevTools
+    // Block accidental reload shortcuts (Ctrl+R, Cmd+R, F5) — reloading loses all connection state
     mainWindow.webContents.on('before-input-event', (event, input) => {
-      // Block refresh shortcuts: Ctrl+R, Cmd+R, F5
       const isRefresh =
         (input.control && input.key.toLowerCase() === 'r') ||
         (input.meta && input.key.toLowerCase() === 'r') ||
         input.key === 'F5';
 
-      // Block DevTools shortcuts: Ctrl+Shift+I, Cmd+Option+I, F12
-      const isDevTools =
-        (input.control && input.shift && input.key.toLowerCase() === 'i') ||
-        (input.meta && input.alt && input.key.toLowerCase() === 'i') ||
-        input.key === 'F12';
-
-      if (isRefresh || isDevTools) {
+      if (isRefresh) {
         event.preventDefault();
       }
-    });
-
-    // Disable right-click context menu
-    mainWindow.webContents.on('context-menu', (event) => {
-      event.preventDefault();
     });
   }
 

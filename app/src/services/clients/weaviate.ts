@@ -615,7 +615,9 @@ export class WeaviateClient implements VectorDBClient {
       const classSchema = schemaResponse.data.classes?.find(
         (c: { class: string }) => c.class === collection,
       );
-      const properties = classSchema?.properties?.map((p: { name: string }) => p.name) || [];
+      const schemaProps: Array<{ name: string; dataType: string[]; nestedProperties?: any[] }> =
+        classSchema?.properties || [];
+      const propertyNames: string[] = schemaProps.map(p => p.name);
       let vectorKeys = ['vector'];
       if (classSchema?.vectorConfig) {
         vectorKeys = Object.keys(classSchema.vectorConfig);
@@ -637,23 +639,17 @@ export class WeaviateClient implements VectorDBClient {
 
       // Build sort clause for Weaviate (supports sorting by primitive properties)
       if (options?.sort && options.sort.length > 0) {
-        // Weaviate supports sorting by multiple properties
         const sortFields = options.sort.map(sort => {
-          // Weaviate primary key is always 'id' and is sortable
-          // Also allow sorting by properties in the schema
-          if (sort.field === 'id' || properties.find((p: string) => p === sort.field)) {
+          if (sort.field === 'id' || propertyNames.includes(sort.field)) {
             return `{path: ["${sort.field}"], order: ${sort.order === 'asc' ? 'asc' : 'desc'}}`;
           }
-          // For other fields (like 'score'), try to sort anyway - might be a computed field
-          // If it fails, the error will be caught and returned
           return `{path: ["${sort.field}"], order: ${sort.order === 'asc' ? 'asc' : 'desc'}}`;
         });
         queryParams.push(`sort: [${sortFields.join(', ')}]`);
       }
 
-      // Build properties query - filter out any undefined/null values
-      const validProperties = properties.filter((p: string) => p && typeof p === 'string');
-      const propertiesQuery = validProperties.length > 0 ? validProperties.join('\n            ') : '';
+      // Build properties query — object-typed fields need a sub-selection with nested fields
+      const propertiesQuery = this.buildPropertiesQuery(schemaProps);
 
       // Build the query - ensure proper formatting even with no properties
       const query = `{
@@ -714,8 +710,9 @@ export class WeaviateClient implements VectorDBClient {
       if (classSchema?.vectorConfig) {
         vectorKeys = Object.keys(classSchema.vectorConfig);
       }
-      const propertyNames = classSchema?.properties?.map((p: { name: string }) => p.name) || [];
-      const propertiesQuery = propertyNames.length > 0 ? propertyNames.join('\n              ') : '';
+      const searchSchemaProps: Array<{ name: string; dataType: string[]; nestedProperties?: any[] }> =
+        classSchema?.properties || [];
+      const propertiesQuery = this.buildPropertiesQuery(searchSchemaProps, '              ');
 
       const whereClause = options?.filter ? this.buildWeaviateWhere(options.filter) : '';
       const dataRequirementsClause = options?.dataRequirements ? `tenant: "${options.dataRequirements.tenant}"` : '';
@@ -1120,6 +1117,28 @@ export class WeaviateClient implements VectorDBClient {
 
   getCreateCollectionSchema(): DynamicFormSchema {
     return weaviateCreateCollectionSchema;
+  }
+
+  /**
+   * Builds a GraphQL field selection string from schema properties.
+   * Object-typed properties require a sub-selection with their nested fields;
+   * all other data types are emitted as plain scalar names.
+   */
+  private buildPropertiesQuery(
+    properties: Array<{ name: string; dataType: string[]; nestedProperties?: Array<any> }>,
+    indent = '            ',
+  ): string {
+    return properties
+      .filter(p => p?.name)
+      .map(prop => {
+        const dataType = prop.dataType?.[0]?.toLowerCase() || '';
+        if ((dataType === 'object' || dataType === 'object[]') && prop.nestedProperties?.length) {
+          const nested = this.buildPropertiesQuery(prop.nestedProperties, indent + '  ');
+          return `${prop.name} {\n${indent}  ${nested}\n${indent}}`;
+        }
+        return prop.name;
+      })
+      .join(`\n${indent}`);
   }
 
   private recordToDocument(result: any): Document {
