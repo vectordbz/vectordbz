@@ -13,7 +13,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --fix --ext .ts,.tsx,.js,.jsx",
-    "prepare": "cd .. && husky install app/.husky",
+    "prepare": "cd .. && husky install app/.husky || true",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
