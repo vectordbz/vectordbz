@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Progress, Space, Typography } from 'antd';
-import { 
-  DownloadOutlined, 
-  ReloadOutlined, 
+import {
+  DownloadOutlined,
+  ReloadOutlined,
   CloseOutlined,
   CheckCircleOutlined,
-  SyncOutlined 
+  SyncOutlined,
 } from '@ant-design/icons';
 import { useTheme, getThemeColors } from '../contexts/ThemeContext';
 
@@ -83,7 +83,9 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
           bodyStyle={{ padding: 16 }}
         >
           <Space direction="vertical" size="small" style={{ width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
+            >
               <Space direction="vertical" size={4} style={{ flex: 1 }}>
                 <Text strong style={{ color: colors.text, fontSize: 14 }}>
                   Update Available
@@ -219,7 +221,9 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
           bodyStyle={{ padding: 16 }}
         >
           <Space direction="vertical" size="small" style={{ width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
+            >
               <Space direction="vertical" size={4} style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <CheckCircleOutlined style={{ color: colors.success, fontSize: 16 }} />
@@ -294,4 +298,3 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
 };
 
 export default UpdateNotification;
-

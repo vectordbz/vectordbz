@@ -65,19 +65,19 @@ const OPERATORS = {
     { value: 'lt', label: 'less than', symbol: '<' },
     { value: 'lte', label: 'less or equal', symbol: '≤' },
   ],
-  boolean: [
-    { value: 'eq', label: 'equals', symbol: '=' },
-  ],
+  boolean: [{ value: 'eq', label: 'equals', symbol: '=' }],
 };
 
 const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
   const [conditions, setConditions] = useState<InternalFilterCondition[]>([]);
   const [logic, setLogic] = useState<'and' | 'or'>('and');
-  const [fields, setFields] = useState<{ name: string; type: 'string' | 'number' | 'boolean' }[]>([]);
+  const [fields, setFields] = useState<{ name: string; type: 'string' | 'number' | 'boolean' }[]>(
+    [],
+  );
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [appliedConditions, setAppliedConditions] = useState<InternalFilterCondition[]>([]);
   const [appliedLogic, setAppliedLogic] = useState<'and' | 'or'>('and');
-  
+
   useEffect(() => {
     if (!schema?.fields) return;
 
@@ -110,29 +110,31 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
   };
 
   const updateCondition = (id: string, updates: Partial<InternalFilterCondition>) => {
-    setConditions(conditions.map(c => {
-      if (c.id !== id) return c;
+    setConditions(
+      conditions.map((c) => {
+        if (c.id !== id) return c;
 
-      // If field changed, reset operator and value based on new field type
-      if (updates.field) {
-        const newField = fields.find(f => f.name === updates.field);
-        if (newField && newField.type !== c.valueType) {
-          return {
-            ...c,
-            field: updates.field,
-            operator: 'eq',
-            value: newField.type === 'boolean' ? true : newField.type === 'number' ? 0 : '',
-            valueType: newField.type,
-          };
+        // If field changed, reset operator and value based on new field type
+        if (updates.field) {
+          const newField = fields.find((f) => f.name === updates.field);
+          if (newField && newField.type !== c.valueType) {
+            return {
+              ...c,
+              field: updates.field,
+              operator: 'eq',
+              value: newField.type === 'boolean' ? true : newField.type === 'number' ? 0 : '',
+              valueType: newField.type,
+            };
+          }
         }
-      }
 
-      return { ...c, ...updates };
-    }));
+        return { ...c, ...updates };
+      }),
+    );
   };
 
   const removeCondition = (id: string) => {
-    setConditions(conditions.filter(c => c.id !== id));
+    setConditions(conditions.filter((c) => c.id !== id));
   };
 
   const clearAll = () => {
@@ -162,26 +164,32 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
   };
 
   const getFieldType = (fieldName: string) => {
-    return fields.find(f => f.name === fieldName)?.type || 'string';
+    return fields.find((f) => f.name === fieldName)?.type || 'string';
   };
 
   const getOperatorSymbol = (type: 'string' | 'number' | 'boolean', op: string) => {
-    return OPERATORS[type].find(o => o.value === op)?.symbol || '=';
+    return OPERATORS[type].find((o) => o.value === op)?.symbol || '=';
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'number': return '#4fc3f7';
-      case 'boolean': return '#81c784';
-      default: return '#ffa726';
+      case 'number':
+        return '#4fc3f7';
+      case 'boolean':
+        return '#81c784';
+      default:
+        return '#ffa726';
     }
   };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'number': return '#';
-      case 'boolean': return '◐';
-      default: return 'T';
+      case 'number':
+        return '#';
+      case 'boolean':
+        return '◐';
+      default:
+        return 'T';
     }
   };
 
@@ -211,21 +219,23 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
           size="small"
           styles={{ popup: { root: { background: 'var(--bg-elevated)' } } }}
         >
-          {fields.map(f => (
+          {fields.map((f) => (
             <Select.Option key={f.name} value={f.name}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{
-                  width: 16,
-                  height: 16,
-                  borderRadius: 3,
-                  background: `${getTypeColor(f.type)}20`,
-                  color: getTypeColor(f.type),
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 9,
-                  fontWeight: 600,
-                }}>
+                <span
+                  style={{
+                    width: 16,
+                    height: 16,
+                    borderRadius: 3,
+                    background: `${getTypeColor(f.type)}20`,
+                    color: getTypeColor(f.type),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 9,
+                    fontWeight: 600,
+                  }}
+                >
                   {getTypeIcon(f.type)}
                 </span>
                 <span>{f.name}</span>
@@ -242,7 +252,7 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
           styles={{ popup: { root: { background: 'var(--bg-elevated)' } } }}
           size="small"
         >
-          {operators.map(op => (
+          {operators.map((op) => (
             <Select.Option key={op.value} value={op.value}>
               {op.value}
             </Select.Option>
@@ -318,7 +328,9 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
           >
             {i > 0 && <span style={{ color: '#6366f1', marginRight: 4 }}>{logic}</span>}
             <span style={{ color: 'var(--text-secondary)' }}>{c.field}</span>
-            <span style={{ color: '#6366f1', margin: '0 4px' }}>{getOperatorSymbol(c.valueType, c.operator)}</span>
+            <span style={{ color: '#6366f1', margin: '0 4px' }}>
+              {getOperatorSymbol(c.valueType, c.operator)}
+            </span>
             <span style={{ color: 'var(--text-primary)' }}>
               {typeof c.value === 'boolean' ? (c.value ? 'true' : 'false') : String(c.value)}
             </span>
@@ -344,7 +356,7 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
               AVAILABLE FIELDS
             </Text>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {fields.map(f => (
+              {fields.map((f) => (
                 <Tag
                   key={f.name}
                   style={{
@@ -367,11 +379,13 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
                     ]);
                   }}
                 >
-                  <span style={{
-                    color: getTypeColor(f.type),
-                    marginRight: 4,
-                    fontSize: 10,
-                  }}>
+                  <span
+                    style={{
+                      color: getTypeColor(f.type),
+                      marginRight: 4,
+                      fontSize: 10,
+                    }}
+                  >
                     {getTypeIcon(f.type)}
                   </span>
                   {f.name}
@@ -384,18 +398,22 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
 
           {/* Active conditions */}
           <div style={{ marginBottom: 12, flex: 1, overflow: 'auto' }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 10,
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 10,
+              }}
+            >
               <Text type="secondary" style={{ fontSize: 10 }}>
                 ACTIVE FILTERS
               </Text>
               {conditions.length > 1 && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Text type="secondary" style={{ fontSize: 10 }}>Match:</Text>
+                  <Text type="secondary" style={{ fontSize: 10 }}>
+                    Match:
+                  </Text>
                   <Button
                     size="small"
                     type={logic === 'and' ? 'primary' : 'default'}
@@ -432,14 +450,18 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
             </div>
 
             {conditions.length === 0 ? (
-              <div style={{
-                padding: 20,
-                textAlign: 'center',
-                background: 'var(--bg-secondary)',
-                borderRadius: 8,
-                border: '1px dashed var(--border-light)',
-              }}>
-                <FilterOutlined style={{ fontSize: 20, color: 'var(--border-light)', marginBottom: 6 }} />
+              <div
+                style={{
+                  padding: 20,
+                  textAlign: 'center',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: 8,
+                  border: '1px dashed var(--border-light)',
+                }}
+              >
+                <FilterOutlined
+                  style={{ fontSize: 20, color: 'var(--border-light)', marginBottom: 6 }}
+                />
                 <Text type="secondary" style={{ display: 'block', fontSize: 11 }}>
                   No filters added yet
                 </Text>
@@ -466,14 +488,16 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
           </Button>
 
           {/* Footer buttons */}
-          <div style={{ display: 'flex', gap: 8, borderTop: '1px solid var(--border-color)', paddingTop: 12 }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              borderTop: '1px solid var(--border-color)',
+              paddingTop: 12,
+            }}
+          >
             {conditions.length > 0 && (
-              <Button
-                icon={<ReloadOutlined />}
-                onClick={clearAll}
-                style={{ flex: 1 }}
-                size="small"
-              >
+              <Button icon={<ReloadOutlined />} onClick={clearAll} style={{ flex: 1 }} size="small">
                 Reset
               </Button>
             )}
@@ -507,7 +531,9 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
             <FilterOutlined style={{ color: '#6366f1' }} />
             <span>Filters</span>
             {activeCount > 0 && (
-              <Tag color="blue" style={{ margin: 0 }}>{activeCount}</Tag>
+              <Tag color="blue" style={{ margin: 0 }}>
+                {activeCount}
+              </Tag>
             )}
           </div>
         }

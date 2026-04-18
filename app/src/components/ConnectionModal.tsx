@@ -39,11 +39,7 @@ interface ConnectionModalProps {
   onConnect: (connectionId: string, connectionName: string, config: ConnectionConfig) => void;
 }
 
-const ConnectionModal: React.FC<ConnectionModalProps> = ({
-  open,
-  onClose,
-  onConnect,
-}) => {
+const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConnect }) => {
   const [savedConnections, setSavedConnections] = useState<SavedConnection[]>([]);
   const [form] = Form.useForm();
   const [selectedType, setSelectedType] = useState<DatabaseType>('qdrant');
@@ -55,7 +51,6 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingConnectionId, setLoadingConnectionId] = useState<string | null>(null);
-
 
   const loadSavedConnections = async () => {
     try {
@@ -73,7 +68,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
       form.resetFields();
       // Reset all state to initial values
       setSelectedType('qdrant');
-      handleDatabaseTypeChange(databaseOptions.find(db => db.value === 'qdrant')!);
+      handleDatabaseTypeChange(databaseOptions.find((db) => db.value === 'qdrant')!);
       setUseHttps(false);
       setSaveConnection(false);
       setConnectionName('');
@@ -106,7 +101,6 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
         user: values.user?.trim() || undefined,
         password: values.password?.trim() || undefined,
       };
-
 
       const result = await window.electronAPI.db.testConnection(config);
 
@@ -158,9 +152,18 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
     }
   };
 
-  const generateConnectionId = () => `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  const generateConnectionId = () =>
+    `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-  const handleSubmit = async (values: { host?: string; port?: number; apiKey?: string; tenant?: string; database?: string; user?: string; password?: string; }) => {
+  const handleSubmit = async (values: {
+    host?: string;
+    port?: number;
+    apiKey?: string;
+    tenant?: string;
+    database?: string;
+    user?: string;
+    password?: string;
+  }) => {
     let displayName = connectionName;
     if (!displayName) {
       if (selectedType === 'pinecone') {
@@ -181,7 +184,12 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
     await handleConnect(connectionId, config, displayName, saveConnection);
   };
 
-  const handleConnect = async (connectionId: string, config: ConnectionConfig, connectionDisplayName: string, saveConnection: boolean) => {
+  const handleConnect = async (
+    connectionId: string,
+    config: ConnectionConfig,
+    connectionDisplayName: string,
+    saveConnection: boolean,
+  ) => {
     try {
       setLoading(true);
       const result = await window.electronAPI.db.connect(connectionId, {
@@ -206,18 +214,15 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
         throw new Error(result.error || 'Connection failed');
       }
     } catch (error) {
-      message.error('Connection failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
-    }
-    finally {
+      message.error(
+        'Connection failed: ' + (error instanceof Error ? error.message : 'Unknown error'),
+      );
+    } finally {
       setLoading(false);
     }
 
-    onConnect(
-      connectionId,
-      connectionDisplayName,
-      config,
-    );
-  }
+    onConnect(connectionId, connectionDisplayName, config);
+  };
 
   const handleDatabaseTypeChange = (db: DatabaseOption) => {
     form.setFieldsValue(db.presets);
@@ -225,8 +230,8 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
   };
 
   const shouldShowField = (field: string) => {
-    return databaseOptions.find(db => db.value === selectedType)?.fields.includes(field);
-  }
+    return databaseOptions.find((db) => db.value === selectedType)?.fields.includes(field);
+  };
 
   return (
     <Modal
@@ -282,7 +287,10 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
               children: (
                 <>
                   <div style={{ marginBottom: 20 }}>
-                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 10 }}>
+                    <Text
+                      type="secondary"
+                      style={{ fontSize: 12, display: 'block', marginBottom: 10 }}
+                    >
                       Database Type
                     </Text>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -296,7 +304,8 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                             fontSize: 12,
                             padding: '4px 6px',
                             background: selectedType === db.value ? db.color : 'var(--bg-elevated)',
-                            borderColor: selectedType === db.value ? db.color : 'var(--border-color)',
+                            borderColor:
+                              selectedType === db.value ? db.color : 'var(--border-color)',
                             color: selectedType === db.value ? '#fff' : 'var(--text-secondary)',
                           }}
                         >
@@ -306,18 +315,17 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                     </div>
                   </div>
 
-                  <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={handleSubmit}
-                    initialValues={{}}
-                  >
+                  <Form form={form} layout="vertical" onFinish={handleSubmit} initialValues={{}}>
                     {shouldShowField('host') && (
                       <>
                         <div style={{ display: 'flex', gap: 12 }}>
                           <Form.Item
                             name="host"
-                            label={<Text type="secondary" style={{ fontSize: 12 }}>Host</Text>}
+                            label={
+                              <Text type="secondary" style={{ fontSize: 12 }}>
+                                Host
+                              </Text>
+                            }
                             rules={[{ required: false, message: 'Required' }]}
                             style={{ flex: 1, marginBottom: 16 }}
                           >
@@ -330,7 +338,11 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
 
                           <Form.Item
                             name="port"
-                            label={<Text type="secondary" style={{ fontSize: 12 }}>Port</Text>}
+                            label={
+                              <Text type="secondary" style={{ fontSize: 12 }}>
+                                Port
+                              </Text>
+                            }
                             rules={[{ required: false, message: 'Required' }]}
                             style={{ width: 100, marginBottom: 16 }}
                           >
@@ -341,38 +353,50 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                             />
                           </Form.Item>
                         </div>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 16, marginLeft: 0 }}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            gap: 8,
+                            alignItems: 'center',
+                            marginBottom: 16,
+                            marginLeft: 0,
+                          }}
+                        >
                           <SafetyOutlined style={{ color: 'var(--text-muted)' }} />
-                          <Text type="secondary" style={{ fontSize: 12 }}>Use HTTPS</Text>
-                          <Switch
-                            size="small"
-                            checked={useHttps}
-                            onChange={setUseHttps}
-                          />
+                          <Text type="secondary" style={{ fontSize: 12 }}>
+                            Use HTTPS
+                          </Text>
+                          <Switch size="small" checked={useHttps} onChange={setUseHttps} />
                         </div>
                       </>
                     )}
 
-                    {
-                      shouldShowField('apiKey') && (
-                        <Form.Item
-                          name="apiKey"
-                          label={<Text type="secondary" style={{ fontSize: 12 }}>API Key</Text>}
-                          style={{ marginBottom: 16 }}
-                        >
-                          <Input.Password
-                            prefix={<LockOutlined style={{ color: 'var(--text-muted)' }} />}
-                            placeholder="Enter API key if required"
-                            style={{ borderRadius: 8 }}
-                          />
-                        </Form.Item>
-                      )
-                    }
+                    {shouldShowField('apiKey') && (
+                      <Form.Item
+                        name="apiKey"
+                        label={
+                          <Text type="secondary" style={{ fontSize: 12 }}>
+                            API Key
+                          </Text>
+                        }
+                        style={{ marginBottom: 16 }}
+                      >
+                        <Input.Password
+                          prefix={<LockOutlined style={{ color: 'var(--text-muted)' }} />}
+                          placeholder="Enter API key if required"
+                          style={{ borderRadius: 8 }}
+                        />
+                      </Form.Item>
+                    )}
                     <div style={{ display: 'flex', gap: 12 }}>
                       {shouldShowField('tenant') && (
                         <Form.Item
                           name="tenant"
-                          label={<Text type="secondary" style={{ fontSize: 12 }}>Tenant</Text>}
+                          label={
+                            <Text type="secondary" style={{ fontSize: 12 }}>
+                              Tenant
+                            </Text>
+                          }
                           rules={[{ required: false, message: 'Required' }]}
                           style={{ flex: 1, marginBottom: 16 }}
                         >
@@ -386,7 +410,11 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                       {shouldShowField('database') && (
                         <Form.Item
                           name="database"
-                          label={<Text type="secondary" style={{ fontSize: 12 }}>Database</Text>}
+                          label={
+                            <Text type="secondary" style={{ fontSize: 12 }}>
+                              Database
+                            </Text>
+                          }
                           rules={[{ required: false, message: 'Required' }]}
                           style={{ flex: 1, marginBottom: 16 }}
                         >
@@ -400,7 +428,11 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                       {shouldShowField('user') && (
                         <Form.Item
                           name="user"
-                          label={<Text type="secondary" style={{ fontSize: 12 }}>User</Text>}
+                          label={
+                            <Text type="secondary" style={{ fontSize: 12 }}>
+                              User
+                            </Text>
+                          }
                           rules={[{ required: false, message: 'Required' }]}
                           style={{ flex: 1, marginBottom: 16 }}
                         >
@@ -414,7 +446,11 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                       {shouldShowField('password') && (
                         <Form.Item
                           name="password"
-                          label={<Text type="secondary" style={{ fontSize: 12 }}>Password</Text>}
+                          label={
+                            <Text type="secondary" style={{ fontSize: 12 }}>
+                              Password
+                            </Text>
+                          }
                           rules={[{ required: false, message: 'Required' }]}
                           style={{ flex: 1, marginBottom: 16 }}
                         >
@@ -428,13 +464,13 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                     </div>
                     <Divider style={{ margin: '16px 0', borderColor: 'var(--border-color)' }} />
 
-                    <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 16 }}>
-                      <Switch
-                        size="small"
-                        checked={saveConnection}
-                        onChange={setSaveConnection}
-                      />
-                      <Text type="secondary" style={{ fontSize: 12 }}>Save this connection</Text>
+                    <div
+                      style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 16 }}
+                    >
+                      <Switch size="small" checked={saveConnection} onChange={setSaveConnection} />
+                      <Text type="secondary" style={{ fontSize: 12 }}>
+                        Save this connection
+                      </Text>
                     </div>
 
                     {saveConnection && (
@@ -483,7 +519,11 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                           style={{
                             height: 44,
                             borderRadius: 10,
-                            color: testResult?.success ? '#52c41a' : testResult?.success === false ? '#ff4d4f' : 'var(--text-secondary)',
+                            color: testResult?.success
+                              ? '#52c41a'
+                              : testResult?.success === false
+                                ? '#ff4d4f'
+                                : 'var(--text-secondary)',
                           }}
                           title={testResult?.message || 'Test connection'}
                         >
@@ -507,7 +547,9 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                 <div style={{ maxHeight: 400, overflow: 'auto' }}>
                   {savedConnections.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: 40 }}>
-                      <HistoryOutlined style={{ fontSize: 48, color: 'var(--border-light)', marginBottom: 16 }} />
+                      <HistoryOutlined
+                        style={{ fontSize: 48, color: 'var(--border-light)', marginBottom: 16 }}
+                      />
                       <Text type="secondary" style={{ display: 'block' }}>
                         No saved connections yet
                       </Text>
@@ -534,7 +576,9 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                               size="small"
                               onClick={() => handleUseSavedConnection(conn)}
                               loading={loadingConnectionId === conn.id}
-                              disabled={loadingConnectionId !== null && loadingConnectionId !== conn.id}
+                              disabled={
+                                loadingConnectionId !== null && loadingConnectionId !== conn.id
+                              }
                             >
                               Connect
                             </Button>,
@@ -545,25 +589,22 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({
                               okText="Delete"
                               cancelText="Cancel"
                             >
-                              <Button
-                                type="text"
-                                danger
-                                size="small"
-                                icon={<DeleteOutlined />}
-                              />
+                              <Button type="text" danger size="small" icon={<DeleteOutlined />} />
                             </Popconfirm>,
                           ]}
                         >
                           <List.Item.Meta
                             title={
-                              <Text style={{ color: 'var(--text-primary)' }}>
-                                {conn.name}
-                              </Text>
+                              <Text style={{ color: 'var(--text-primary)' }}>{conn.name}</Text>
                             }
                             description={
                               <Space orientation="vertical" size={0}>
                                 <Text type="secondary" style={{ fontSize: 11 }}>
-                                  {conn.type} • {conn.host}{conn.port ? `:${conn.port}` : ''} {conn.tenant && conn.database ? `@${conn.tenant}/${conn.database}` : ''}
+                                  {conn.type} • {conn.host}
+                                  {conn.port ? `:${conn.port}` : ''}{' '}
+                                  {conn.tenant && conn.database
+                                    ? `@${conn.tenant}/${conn.database}`
+                                    : ''}
                                 </Text>
                               </Space>
                             }

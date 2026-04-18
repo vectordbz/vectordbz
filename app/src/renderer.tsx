@@ -25,10 +25,7 @@ const posthogOptions = {
 root.render(
   <React.StrictMode>
     {posthogApiKey ? (
-      <PostHogProvider 
-        apiKey={posthogApiKey} 
-        options={posthogOptions}
-      >
+      <PostHogProvider apiKey={posthogApiKey} options={posthogOptions}>
         <ThemeProvider>
           <App />
         </ThemeProvider>
@@ -38,5 +35,5 @@ root.render(
         <App />
       </ThemeProvider>
     )}
-  </React.StrictMode>
+  </React.StrictMode>,
 );

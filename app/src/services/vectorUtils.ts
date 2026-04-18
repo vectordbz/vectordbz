@@ -14,15 +14,16 @@ import { DocumentVector, COLLECTION_DEFAULT_VECTOR } from '../types';
  * @param size - The size/dimension of the vector (for dense/binary)
  * @returns JSON string representation of the generated vector
  */
-export function generateRandomVector(vectorType: 'dense' | 'sparse' | 'binary', size?: number): string {
+export function generateRandomVector(
+  vectorType: 'dense' | 'sparse' | 'binary',
+  size?: number,
+): string {
   if (vectorType === 'dense') {
     // Dense vector: generate array of random floats [-1, 1]
     if (!size) {
       throw new Error('Size is required for dense vectors');
     }
-    const vec = Array.from({ length: size }, () =>
-      Number((Math.random() * 2 - 1).toFixed(6)),
-    );
+    const vec = Array.from({ length: size }, () => Number((Math.random() * 2 - 1).toFixed(6)));
     return JSON.stringify(vec);
   } else if (vectorType === 'binary') {
     // Binary vector: generate array of random bytes [0-255]
@@ -30,16 +31,14 @@ export function generateRandomVector(vectorType: 'dense' | 'sparse' | 'binary', 
       throw new Error('Size is required for binary vectors');
     }
     const numBytes = Math.ceil(size / 8); // Convert bits to bytes
-    const vec = Array.from({ length: numBytes }, () =>
-      Math.floor(Math.random() * 256),
-    );
+    const vec = Array.from({ length: numBytes }, () => Math.floor(Math.random() * 256));
     return JSON.stringify(vec);
   } else if (vectorType === 'sparse') {
     // Sparse vector: generate random indices and values
     // Generate 10-20 non-zero values for demonstration
     const nnz = Math.floor(Math.random() * 11) + 10; // 10-20 non-zero values
     const maxIndex = 10000; // Assume sparse vectors can have up to 10k dimensions
-    
+
     // Generate unique random indices
     const indices: number[] = [];
     while (indices.length < nnz) {
@@ -49,16 +48,14 @@ export function generateRandomVector(vectorType: 'dense' | 'sparse' | 'binary', 
       }
     }
     indices.sort((a, b) => a - b); // Sort indices
-    
+
     // Generate random values
-    const values = Array.from({ length: nnz }, () =>
-      Number((Math.random() * 2 - 1).toFixed(6)),
-    );
-    
+    const values = Array.from({ length: nnz }, () => Number((Math.random() * 2 - 1).toFixed(6)));
+
     const sparseVec = { indices, values };
     return JSON.stringify(sparseVec, null, 2);
   }
-  
+
   throw new Error(`Unknown vector type: ${vectorType}`);
 }
 
@@ -71,7 +68,7 @@ export function generateRandomVector(vectorType: 'dense' | 'sparse' | 'binary', 
  */
 export function getVectorLabel(vector: DocumentVector): string {
   const name = vector.key === COLLECTION_DEFAULT_VECTOR ? 'vector' : vector.key;
-  
+
   if (vector.vectorType === 'dense' || vector.vectorType === 'binary') {
     const size = vector.size || ('data' in vector.value ? vector.value.data.length : 0);
     return `${name} (${size}D ${vector.vectorType})`;
@@ -79,7 +76,7 @@ export function getVectorLabel(vector: DocumentVector): string {
     const nnz = 'indices' in vector.value ? vector.value.indices.length : 0;
     return `${name} (sparse: ${nnz} nnz)`;
   }
-  
+
   return name;
 }
 
@@ -94,7 +91,7 @@ export function getVectorShortLabel(vector: DocumentVector): string {
     const nnz = 'indices' in vector.value ? vector.value.indices.length : 0;
     return `[sparse: ${nnz} nnz]`;
   }
-  
+
   return '—';
 }
 
@@ -109,7 +106,7 @@ export function formatVectorForDisplay(vector: DocumentVector, maxElements = 50)
     // Dense and binary vectors have value.data array
     const data = 'data' in vector.value ? vector.value.data : [];
     const truncated = data.slice(0, maxElements);
-    const formatted = truncated.map(v => v.toFixed(6)).join(', ');
+    const formatted = truncated.map((v) => v.toFixed(6)).join(', ');
     return `[${formatted}${data.length > maxElements ? ', ...' : ''}]`;
   } else if (vector.vectorType === 'sparse') {
     // Sparse vectors have value.indices and value.values
@@ -118,7 +115,7 @@ export function formatVectorForDisplay(vector: DocumentVector, maxElements = 50)
     const pairs = indices.slice(0, maxElements).map((idx, i) => `${idx}:${values[i].toFixed(6)}`);
     return `{${pairs.join(', ')}${indices.length > maxElements ? ', ...' : ''}}`;
   }
-  
+
   return '—';
 }
 
@@ -132,7 +129,7 @@ export function formatVectorForDisplay(vector: DocumentVector, maxElements = 50)
 export function isVector(value: unknown): value is number[] {
   if (!Array.isArray(value)) return false;
   if (value.length === 0) return false;
-  if (!value.every(n => typeof n === "number" && Number.isFinite(n))) {
+  if (!value.every((n) => typeof n === 'number' && Number.isFinite(n))) {
     return false;
   }
 
@@ -140,9 +137,7 @@ export function isVector(value: unknown): value is number[] {
   if (value.length < 32) return false;
 
   // common embedding sizes
-  const commonDims = new Set([
-    32, 64, 96, 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072
-  ]);
+  const commonDims = new Set([32, 64, 96, 128, 256, 384, 512, 768, 1024, 1536, 2048, 3072]);
   if (!commonDims.has(value.length)) {
     // not required, but increases confidence
     // if the dimension is extremely large or extremely small, likely not an embedding
@@ -150,7 +145,7 @@ export function isVector(value: unknown): value is number[] {
   }
 
   // value range heuristic: embeddings rarely have huge spikes
-  const outOfRange = value.some(n => Math.abs(n) > 20);
+  const outOfRange = value.some((n) => Math.abs(n) > 20);
   if (outOfRange) return false;
 
   return true;
@@ -241,7 +236,7 @@ export function hasNonZeroMagnitude(arr: number[] | Float32Array | null | undefi
 export function performKMeansVectors(
   vectors: number[][],
   k: number,
-  distanceFn: (a: number[], b: number[]) => number
+  distanceFn: (a: number[], b: number[]) => number,
 ): number[] {
   if (vectors.length === 0 || k <= 0) return [];
   if (k >= vectors.length) {
@@ -312,7 +307,7 @@ export function performKMeansVectors(
 export function performKMeans2D(
   points: Array<{ x: number; y: number }>,
   k: number,
-  maxIterations = 100
+  maxIterations = 100,
 ): number[] {
   if (points.length === 0 || k <= 0) return [];
   if (k >= points.length) {
@@ -383,7 +378,7 @@ export function performDBSCANVectors(
   vectors: number[][],
   eps: number,
   minPts: number,
-  distanceFn: (a: number[], b: number[]) => number
+  distanceFn: (a: number[], b: number[]) => number,
 ): number[] {
   const n = vectors.length;
   const visited = new Array(n).fill(false);
@@ -439,7 +434,7 @@ export function performDBSCANVectors(
 export function performDBSCAN2D(
   points: Array<{ x: number; y: number }>,
   eps: number,
-  minPts = 4
+  minPts = 4,
 ): number[] {
   if (points.length === 0) return [];
 
@@ -516,35 +511,37 @@ export function performDBSCAN2D(
  * Calculate Kernel Density Estimation (KDE) for a dataset
  * Uses Gaussian kernel with Silverman's rule of thumb for bandwidth
  */
-export function calculateKDE(data: number[], bandwidth?: number): { x: number[], y: number[] } {
+export function calculateKDE(data: number[], bandwidth?: number): { x: number[]; y: number[] } {
   if (data.length === 0) return { x: [], y: [] };
-  
+
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min;
   const n = data.length;
-  
+
   // Silverman's rule of thumb for bandwidth
-  const std = Math.sqrt(data.reduce((sum, x) => {
-    const mean = data.reduce((a, b) => a + b, 0) / n;
-    return sum + Math.pow(x - mean, 2);
-  }, 0) / n);
+  const std = Math.sqrt(
+    data.reduce((sum, x) => {
+      const mean = data.reduce((a, b) => a + b, 0) / n;
+      return sum + Math.pow(x - mean, 2);
+    }, 0) / n,
+  );
   const h = bandwidth || 1.06 * std * Math.pow(n, -0.2);
-  
+
   // Create evaluation points
   const numPoints = 100;
   const step = range / (numPoints - 1);
   const x = Array.from({ length: numPoints }, (_, i) => min + i * step);
-  
+
   // Gaussian kernel
   const kernel = (u: number) => Math.exp(-0.5 * u * u) / Math.sqrt(2 * Math.PI);
-  
+
   // Calculate density at each point
-  const y = x.map(xi => {
+  const y = x.map((xi) => {
     const density = data.reduce((sum, di) => sum + kernel((xi - di) / h), 0) / (n * h);
     return density;
   });
-  
+
   return { x, y };
 }
 
@@ -557,14 +554,14 @@ export function calculateBoxPlotStats(data: number[]) {
   const q1Idx = Math.floor(n * 0.25);
   const q2Idx = Math.floor(n * 0.5);
   const q3Idx = Math.floor(n * 0.75);
-  
+
   const q1 = sorted[q1Idx];
   const median = sorted[q2Idx];
   const q3 = sorted[q3Idx];
   const iqr = q3 - q1;
   const lowerWhisker = Math.max(sorted[0], q1 - 1.5 * iqr);
   const upperWhisker = Math.min(sorted[n - 1], q3 + 1.5 * iqr);
-  
+
   return { q1, median, q3, lowerWhisker, upperWhisker, min: sorted[0], max: sorted[n - 1] };
 }
 
@@ -585,22 +582,23 @@ export function cosineSimilarity(a: number[], b: number[]): number {
 export function calculateSilhouetteScore(
   vectors: number[][],
   clusters: number[],
-  distanceFn: (a: number[], b: number[]) => number
+  distanceFn: (a: number[], b: number[]) => number,
 ): number {
   const n = vectors.length;
   if (n === 0) return 0;
 
   let totalScore = 0;
-  const clusterIds = Array.from(new Set(clusters)).filter(c => c !== -1);
+  const clusterIds = Array.from(new Set(clusters)).filter((c) => c !== -1);
 
   for (let i = 0; i < n; i++) {
     if (clusters[i] === -1) continue; // Skip noise points
 
     // Calculate average distance to points in same cluster (a_i)
     const sameCluster = vectors.filter((_, idx) => clusters[idx] === clusters[i] && idx !== i);
-    const a_i = sameCluster.length > 0
-      ? sameCluster.reduce((sum, v) => sum + distanceFn(vectors[i], v), 0) / sameCluster.length
-      : 0;
+    const a_i =
+      sameCluster.length > 0
+        ? sameCluster.reduce((sum, v) => sum + distanceFn(vectors[i], v), 0) / sameCluster.length
+        : 0;
 
     // Calculate minimum average distance to other clusters (b_i)
     let minB = Infinity;
@@ -608,7 +606,8 @@ export function calculateSilhouetteScore(
       if (clusterId === clusters[i]) continue;
       const otherCluster = vectors.filter((_, idx) => clusters[idx] === clusterId);
       if (otherCluster.length > 0) {
-        const avgDist = otherCluster.reduce((sum, v) => sum + distanceFn(vectors[i], v), 0) / otherCluster.length;
+        const avgDist =
+          otherCluster.reduce((sum, v) => sum + distanceFn(vectors[i], v), 0) / otherCluster.length;
         minB = Math.min(minB, avgDist);
       }
     }
@@ -645,7 +644,7 @@ export function performPCA(vectors: number[][], dimensions = 2): number[][] {
     mean[j] /= n;
   }
 
-  const centered = vectors.map(v => v.map((val, idx) => val - mean[idx]));
+  const centered = vectors.map((v) => v.map((val, idx) => val - mean[idx]));
 
   // Compute covariance matrix
   const cov = new Array(dim).fill(0).map(() => new Array(dim).fill(0));
@@ -674,7 +673,7 @@ export function performPCA(vectors: number[][], dimensions = 2): number[][] {
     return projections;
   }
 
-  return centered.map(v => v.slice(0, dimensions));
+  return centered.map((v) => v.slice(0, dimensions));
 }
 
 // ============================================================================
@@ -694,7 +693,7 @@ export async function performUMAP(
     nNeighbors?: number;
     minDist?: number;
     spread?: number;
-  }
+  },
 ): Promise<number[][]> {
   if (vectors.length === 0) return [];
 
@@ -724,7 +723,7 @@ export async function performUMAP(
 /**
  * t-SNE implementation for dimensionality reduction using tsne-js
  * Great at preserving local neighborhoods, shows clusters very clearly
- * 
+ *
  * Note: Uses dynamic import to avoid bundling issues in Electron main process
  */
 export async function performTSNE(
@@ -734,7 +733,7 @@ export async function performTSNE(
     perplexity?: number;
     epsilon?: number;
     iterations?: number;
-  }
+  },
 ): Promise<number[][]> {
   if (vectors.length === 0) return [];
 
@@ -764,9 +763,7 @@ export async function performTSNE(
 
     tsne.run();
     const output = tsne.getOutput();
-    
+
     resolve(output);
   });
 }
-
-

@@ -81,12 +81,7 @@ describe('RedisSearch Client Integration Tests', () => {
         throw new Error('Collection must be created first');
       }
 
-      const testDocs = await testDocumentInsertion(
-        client,
-        workingCollectionName,
-        schema,
-        128
-      );
+      const testDocs = await testDocumentInsertion(client, workingCollectionName, schema, 128);
       expect(testDocs.length).toBe(12);
       (client as any).__testDocs = testDocs;
     }, 60000);
@@ -112,9 +107,7 @@ describe('RedisSearch Client Integration Tests', () => {
       expect(result.documents?.length).toBeGreaterThan(0);
 
       // At least one document should have a decoded vector
-      const docsWithVectors = result.documents?.filter(
-        (d) => Object.keys(d.vectors).length > 0
-      );
+      const docsWithVectors = result.documents?.filter((d) => Object.keys(d.vectors).length > 0);
       expect(docsWithVectors?.length).toBeGreaterThan(0);
 
       const firstVecEntry = Object.values(docsWithVectors![0].vectors)[0];

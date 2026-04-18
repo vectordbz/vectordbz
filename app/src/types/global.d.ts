@@ -11,16 +11,12 @@ declare module 'tsne-js' {
       metric?: string;
     });
 
-    init(data: {
-      data: number[][];
-      type: 'dense' | 'sparse';
-    }): void;
+    init(data: { data: number[][]; type: 'dense' | 'sparse' }): void;
 
     run(): void;
-    
+
     getOutput(): number[][];
-    
+
     getOutputScaled(): number[][];
   }
 }
-

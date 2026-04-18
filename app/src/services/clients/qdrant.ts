@@ -82,7 +82,12 @@ export const qdrantCreateCollectionSchema: DynamicFormSchema = {
           description: 'Unique name for your collection',
           rules: [
             { type: 'minLength', value: 1, message: 'Collection name is required' },
-            { type: 'pattern', value: '^[a-zA-Z_][a-zA-Z0-9_]*$', message: 'Must start with letter or underscore, only alphanumeric and underscores allowed' },
+            {
+              type: 'pattern',
+              value: '^[a-zA-Z_][a-zA-Z0-9_]*$',
+              message:
+                'Must start with letter or underscore, only alphanumeric and underscores allowed',
+            },
           ],
         },
       ],
@@ -99,8 +104,16 @@ export const qdrantCreateCollectionSchema: DynamicFormSchema = {
           direction: 'vertical',
           defaultValue: 'single',
           options: [
-            { label: 'Single Vector', value: 'single', description: 'One vector per point (most common)' },
-            { label: 'Named Vectors', value: 'named', description: 'Multiple named vectors per point' },
+            {
+              label: 'Single Vector',
+              value: 'single',
+              description: 'One vector per point (most common)',
+            },
+            {
+              label: 'Named Vectors',
+              value: 'named',
+              description: 'Multiple named vectors per point',
+            },
           ],
         },
         {
@@ -133,9 +146,30 @@ export const qdrantCreateCollectionSchema: DynamicFormSchema = {
           showWhen: { field: 'vectorType', operator: 'equals', value: 'named' },
           minItems: 1,
           itemFields: [
-            { key: 'name', label: 'Vector Name', type: 'text', required: true, placeholder: 'default' },
-            { key: 'size', label: 'Dimensions', type: 'number', required: true, defaultValue: QDRANT_DEFAULTS.vectorSize, min: 1, max: 65535 },
-            { key: 'distance', label: 'Distance', type: 'select', required: true, defaultValue: QDRANT_DEFAULTS.distance, options: [...QDRANT_DISTANCE_METRICS] },
+            {
+              key: 'name',
+              label: 'Vector Name',
+              type: 'text',
+              required: true,
+              placeholder: 'default',
+            },
+            {
+              key: 'size',
+              label: 'Dimensions',
+              type: 'number',
+              required: true,
+              defaultValue: QDRANT_DEFAULTS.vectorSize,
+              min: 1,
+              max: 65535,
+            },
+            {
+              key: 'distance',
+              label: 'Distance',
+              type: 'select',
+              required: true,
+              defaultValue: QDRANT_DEFAULTS.distance,
+              options: [...QDRANT_DISTANCE_METRICS],
+            },
           ],
           addButtonText: 'Add Vector',
         },
@@ -148,10 +182,39 @@ export const qdrantCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'hnsw_m', label: 'M (Max Connections)', type: 'number', defaultValue: QDRANT_DEFAULTS.hnswM, min: 4, max: 128, description: 'Number of edges per node. Higher = better recall but slower build' },
-        { key: 'hnsw_ef_construct', label: 'EF Construct', type: 'number', defaultValue: QDRANT_DEFAULTS.hnswEfConstruct, min: 4, max: 512, description: 'Search width during index build. Higher = better quality but slower' },
-        { key: 'hnsw_full_scan_threshold', label: 'Full Scan Threshold', type: 'number', defaultValue: QDRANT_DEFAULTS.hnswFullScanThreshold, min: 1, description: 'Max collection size before HNSW index is built' },
-        { key: 'on_disk', label: 'Store on Disk', type: 'switch', defaultValue: false, description: 'Store vectors on disk instead of RAM (slower but uses less memory)' },
+        {
+          key: 'hnsw_m',
+          label: 'M (Max Connections)',
+          type: 'number',
+          defaultValue: QDRANT_DEFAULTS.hnswM,
+          min: 4,
+          max: 128,
+          description: 'Number of edges per node. Higher = better recall but slower build',
+        },
+        {
+          key: 'hnsw_ef_construct',
+          label: 'EF Construct',
+          type: 'number',
+          defaultValue: QDRANT_DEFAULTS.hnswEfConstruct,
+          min: 4,
+          max: 512,
+          description: 'Search width during index build. Higher = better quality but slower',
+        },
+        {
+          key: 'hnsw_full_scan_threshold',
+          label: 'Full Scan Threshold',
+          type: 'number',
+          defaultValue: QDRANT_DEFAULTS.hnswFullScanThreshold,
+          min: 1,
+          description: 'Max collection size before HNSW index is built',
+        },
+        {
+          key: 'on_disk',
+          label: 'Store on Disk',
+          type: 'switch',
+          defaultValue: false,
+          description: 'Store vectors on disk instead of RAM (slower but uses less memory)',
+        },
       ],
     },
     {
@@ -161,9 +224,28 @@ export const qdrantCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'quantization_enabled', label: 'Enable Quantization', type: 'switch', defaultValue: false },
-        { key: 'quantization_type', label: 'Quantization Type', type: 'select', defaultValue: 'scalar', showWhen: { field: 'quantization_enabled', operator: 'equals', value: true }, options: [...QDRANT_QUANTIZATION_TYPES] },
-        { key: 'quantization_always_ram', label: 'Keep Quantized in RAM', type: 'switch', defaultValue: true, showWhen: { field: 'quantization_enabled', operator: 'equals', value: true }, description: 'Keep quantized vectors in RAM even if on_disk is enabled' },
+        {
+          key: 'quantization_enabled',
+          label: 'Enable Quantization',
+          type: 'switch',
+          defaultValue: false,
+        },
+        {
+          key: 'quantization_type',
+          label: 'Quantization Type',
+          type: 'select',
+          defaultValue: 'scalar',
+          showWhen: { field: 'quantization_enabled', operator: 'equals', value: true },
+          options: [...QDRANT_QUANTIZATION_TYPES],
+        },
+        {
+          key: 'quantization_always_ram',
+          label: 'Keep Quantized in RAM',
+          type: 'switch',
+          defaultValue: true,
+          showWhen: { field: 'quantization_enabled', operator: 'equals', value: true },
+          description: 'Keep quantized vectors in RAM even if on_disk is enabled',
+        },
       ],
     },
     {
@@ -173,16 +255,39 @@ export const qdrantCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'shard_number', label: 'Number of Shards', type: 'number', defaultValue: QDRANT_DEFAULTS.shardNumber, min: 1, max: 128, description: 'Split collection across multiple shards' },
-        { key: 'replication_factor', label: 'Replication Factor', type: 'number', defaultValue: QDRANT_DEFAULTS.replicationFactor, min: 1, max: 16, description: 'Number of replicas for each shard' },
-        { key: 'write_consistency_factor', label: 'Write Consistency Factor', type: 'number', defaultValue: QDRANT_DEFAULTS.writeConsistencyFactor, min: 1, description: 'Minimum replicas that must confirm write' },
+        {
+          key: 'shard_number',
+          label: 'Number of Shards',
+          type: 'number',
+          defaultValue: QDRANT_DEFAULTS.shardNumber,
+          min: 1,
+          max: 128,
+          description: 'Split collection across multiple shards',
+        },
+        {
+          key: 'replication_factor',
+          label: 'Replication Factor',
+          type: 'number',
+          defaultValue: QDRANT_DEFAULTS.replicationFactor,
+          min: 1,
+          max: 16,
+          description: 'Number of replicas for each shard',
+        },
+        {
+          key: 'write_consistency_factor',
+          label: 'Write Consistency Factor',
+          type: 'number',
+          defaultValue: QDRANT_DEFAULTS.writeConsistencyFactor,
+          min: 1,
+          description: 'Minimum replicas that must confirm write',
+        },
       ],
     },
   ],
   showSubmit: true,
   showCancel: true,
   submitText: 'Create Collection',
-}
+};
 
 // Qdrant-specific types
 interface QdrantFilterCondition {
@@ -206,12 +311,12 @@ interface QdrantFilter {
 // Convert our filter format to Qdrant filter format
 function buildQdrantFilter(filter: FilterQuery): QdrantFilter {
   // Separate ID conditions from payload conditions
-  const idConditions = filter.conditions.filter(cond => cond.field === 'id');
-  const payloadConditions = filter.conditions.filter(cond => cond.field !== 'id');
+  const idConditions = filter.conditions.filter((cond) => cond.field === 'id');
+  const payloadConditions = filter.conditions.filter((cond) => cond.field !== 'id');
 
   const qdrantConditions: QdrantFilterCondition[] = payloadConditions
-    .filter(cond => cond.operator !== 'neq')
-    .map(cond => {
+    .filter((cond) => cond.operator !== 'neq')
+    .map((cond) => {
       const condition: QdrantFilterCondition = { key: cond.field };
 
       if (cond.valueType === 'number') {
@@ -255,13 +360,14 @@ function buildQdrantFilter(filter: FilterQuery): QdrantFilter {
   const hasIdValues: (string | number)[] = [];
   const hasIdNotValues: (string | number)[] = [];
 
-  idConditions.forEach(cond => {
+  idConditions.forEach((cond) => {
     // Convert ID value to appropriate type (number or string)
-    const idValue = cond.valueType === 'number' 
-      ? Number(cond.value) 
-      : /^\d+$/.test(String(cond.value)) 
-        ? parseInt(String(cond.value), 10) 
-        : String(cond.value);
+    const idValue =
+      cond.valueType === 'number'
+        ? Number(cond.value)
+        : /^\d+$/.test(String(cond.value))
+          ? parseInt(String(cond.value), 10)
+          : String(cond.value);
 
     if (cond.operator === 'eq') {
       hasIdValues.push(idValue);
@@ -284,17 +390,25 @@ function buildQdrantFilter(filter: FilterQuery): QdrantFilter {
 
   // Handle neq operators for payload fields by putting them in must_not
   const mustNotConditions = payloadConditions
-    .filter(c => c.operator === 'neq')
-    .map(cond => ({
+    .filter((c) => c.operator === 'neq')
+    .map((cond) => ({
       key: cond.field,
-      match: { value: cond.valueType === 'number' ? Number(cond.value) : cond.value } as { value: string | number | boolean },
+      match: { value: cond.valueType === 'number' ? Number(cond.value) : cond.value } as {
+        value: string | number | boolean;
+      },
     }));
 
   const result: QdrantFilter = {};
 
   // Combine ID conditions with payload conditions
-  const allMustConditions: (QdrantFilterCondition | { has_id: (string | number)[] })[] = [...qdrantConditions, ...hasIdConditions];
-  const allMustNotConditions: (QdrantFilterCondition | { has_id: (string | number)[] })[] = [...mustNotConditions, ...hasIdNotConditions];
+  const allMustConditions: (QdrantFilterCondition | { has_id: (string | number)[] })[] = [
+    ...qdrantConditions,
+    ...hasIdConditions,
+  ];
+  const allMustNotConditions: (QdrantFilterCondition | { has_id: (string | number)[] })[] = [
+    ...mustNotConditions,
+    ...hasIdNotConditions,
+  ];
 
   if (filter.logic === 'and') {
     if (allMustConditions.length > 0) result.must = allMustConditions;
@@ -317,7 +431,6 @@ export class QdrantClient implements VectorDBClient {
 
     const protocol = config.https ? 'https' : 'http';
     const url = `${protocol}://${config.host}${config.port ? `:${config.port}` : ''}`;
-
 
     // Ensure API key is properly set (trim whitespace)
     const clientConfig: {
@@ -343,7 +456,6 @@ export class QdrantClient implements VectorDBClient {
 
   async testConnection(): Promise<ConnectionResult> {
     try {
-
       const result = await this.client.getCollections();
       log.info('Qdrant connection successful:', {
         collectionsCount: result.collections?.length || 0,
@@ -351,16 +463,22 @@ export class QdrantClient implements VectorDBClient {
 
       return {
         success: true,
-        version: 'Qdrant (SDK)'
+        version: 'Qdrant (SDK)',
       };
     } catch (error: any) {
       let message = error instanceof Error ? error.message : 'Unknown error';
 
       // Provide more specific error messages
       if (error?.status === 403 || message?.includes('Forbidden') || message?.includes('403')) {
-        message = 'Forbidden: Check your API key and ensure it has the correct permissions. Verify the URL format matches: https://host:port';
-      } else if (error?.status === 401 || message?.includes('Unauthorized') || message?.includes('401')) {
-        message = 'Unauthorized: Invalid API key. Verify the API key is correct and has no extra spaces.';
+        message =
+          'Forbidden: Check your API key and ensure it has the correct permissions. Verify the URL format matches: https://host:port';
+      } else if (
+        error?.status === 401 ||
+        message?.includes('Unauthorized') ||
+        message?.includes('401')
+      ) {
+        message =
+          'Unauthorized: Invalid API key. Verify the API key is correct and has no extra spaces.';
       } else if (message?.includes('fetch failed') || message?.includes('ECONNREFUSED')) {
         message = `Connection failed: Unable to reach. Check host, port, and network connectivity.`;
       }
@@ -385,7 +503,7 @@ export class QdrantClient implements VectorDBClient {
           };
 
           return collection;
-        })
+        }),
       );
 
       return { success: true, collections };
@@ -439,24 +557,24 @@ export class QdrantClient implements VectorDBClient {
         }
 
         // Qdrant doesn't support BM25 text search, fields are filterable but not searchable
-        fields[name] = { 
-          name, 
+        fields[name] = {
+          name,
           type,
           searchable: false,
         };
-      })
+      });
 
       const vectorConfigs = info.config?.params?.vectors;
       const sparseVectorConfigs = info.config?.params?.sparse_vectors;
       const vectors: Record<string, VectorSchemaField> = {};
-      
+
       // Parse dense vectors
       if (vectorConfigs) {
         if (vectorConfigs.size) {
           // Single unnamed vector
-          vectors[COLLECTION_DEFAULT_VECTOR] = { 
-            name: COLLECTION_DEFAULT_VECTOR, 
-            type: 'vector', 
+          vectors[COLLECTION_DEFAULT_VECTOR] = {
+            name: COLLECTION_DEFAULT_VECTOR,
+            type: 'vector',
             vectorType: 'dense',
             size: vectorConfigs.size as number,
             distance: vectorConfigs.distance as string,
@@ -464,9 +582,9 @@ export class QdrantClient implements VectorDBClient {
         } else {
           // Named dense vectors
           Object.entries(vectorConfigs).forEach(([key, value]: any) => {
-            vectors[key] = { 
-              name: key, 
-              type: 'vector', 
+            vectors[key] = {
+              name: key,
+              type: 'vector',
               vectorType: 'dense',
               size: value.size as number,
               distance: value.distance as string,
@@ -474,13 +592,13 @@ export class QdrantClient implements VectorDBClient {
           });
         }
       }
-      
+
       // Parse sparse vectors
       if (sparseVectorConfigs) {
         Object.entries(sparseVectorConfigs).forEach(([key]: any) => {
-          vectors[key] = { 
-            name: key, 
-            type: 'vector', 
+          vectors[key] = {
+            name: key,
+            type: 'vector',
             vectorType: 'sparse',
           };
         });
@@ -495,7 +613,7 @@ export class QdrantClient implements VectorDBClient {
           vectors,
           multipleVectors: totalVectors > 1,
           hasVectors: totalVectors > 0,
-        }
+        },
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to fetch collection schema';
@@ -503,17 +621,23 @@ export class QdrantClient implements VectorDBClient {
     }
   }
 
-  async getSearchCapabilities(_collection: string, schema?: CollectionSchema | null): Promise<SearchCapabilities> {
+  async getSearchCapabilities(
+    _collection: string,
+    schema?: CollectionSchema | null,
+  ): Promise<SearchCapabilities> {
     return mergeWithDefault(
       {
         sparse: true,
         fusionStrategies: ['rrf', 'weighted', 'server'],
       },
-      schema
+      schema,
     );
   }
 
-  async upsertDocument(collection: string, data: UpsertDocumentData): Promise<UpsertDocumentResult> {
+  async upsertDocument(
+    collection: string,
+    data: UpsertDocumentData,
+  ): Promise<UpsertDocumentResult> {
     try {
       // Generate ID if not provided
       const { document } = data;
@@ -521,7 +645,7 @@ export class QdrantClient implements VectorDBClient {
       const upsertData: any = {
         vector: {},
         payload,
-      }
+      };
       if (primary) {
         upsertData[primary.name] = primary.value;
       } else {
@@ -542,7 +666,7 @@ export class QdrantClient implements VectorDBClient {
       if (vectors) {
         Object.entries(vectors).forEach(([key, vectorData]) => {
           let vectorValue: any;
-          
+
           // Convert DocumentVector to Qdrant format
           if (vectorData.vectorType === 'dense') {
             vectorValue = vectorData.value.data;
@@ -555,7 +679,7 @@ export class QdrantClient implements VectorDBClient {
             // Qdrant doesn't support binary vectors, this shouldn't happen
             throw new Error('Qdrant does not support binary vectors');
           }
-          
+
           if (key === COLLECTION_DEFAULT_VECTOR) {
             upsertData.vector = vectorValue;
           } else {
@@ -564,13 +688,9 @@ export class QdrantClient implements VectorDBClient {
         });
       }
 
-
-
       await this.client.upsert(collection, {
         wait: true,
-        points: [
-          upsertData,
-        ],
+        points: [upsertData],
       });
       return { success: true, document: upsertData };
     } catch (error) {
@@ -580,7 +700,10 @@ export class QdrantClient implements VectorDBClient {
     }
   }
 
-  async getDocuments(collection: string, options?: GetDocumentsOptions): Promise<GetDocumentsResult> {
+  async getDocuments(
+    collection: string,
+    options?: GetDocumentsOptions,
+  ): Promise<GetDocumentsResult> {
     try {
       const limit = options?.limit || 50;
       const qdrantFilter = options?.filter ? buildQdrantFilter(options.filter) : undefined;
@@ -589,8 +712,9 @@ export class QdrantClient implements VectorDBClient {
       // It cannot sort by 'id' (primary key) or 'score' (computed field)
       // For these fields, we need to fetch and sort client-side
       const firstSort = options?.sort && options.sort.length > 0 ? options.sort[0] : null;
-      const isSortableByQdrant = firstSort && firstSort.field !== 'id' && firstSort.field !== 'score';
-      
+      const isSortableByQdrant =
+        firstSort && firstSort.field !== 'id' && firstSort.field !== 'score';
+
       // Build order_by for Qdrant (only for payload fields)
       let orderBy: any = undefined;
       if (isSortableByQdrant) {
@@ -610,7 +734,7 @@ export class QdrantClient implements VectorDBClient {
       });
 
       // Return Qdrant's native format - preserve all fields
-      let documents: Document[] = (result.points || []).map((point: QdrantSchemas["Record"]) => {
+      let documents: Document[] = (result.points || []).map((point: QdrantSchemas['Record']) => {
         const doc: Document = this.recordToDocument(point);
         return doc;
       });
@@ -623,9 +747,10 @@ export class QdrantClient implements VectorDBClient {
       return {
         success: true,
         documents,
-        nextOffset: (result.next_page_offset && typeof result.next_page_offset !== 'object')
-          ? result.next_page_offset as string | number
-          : null,
+        nextOffset:
+          result.next_page_offset && typeof result.next_page_offset !== 'object'
+            ? (result.next_page_offset as string | number)
+            : null,
       };
     } catch (error) {
       // If order_by failed (e.g., field not indexed), try fetching without order_by and sort client-side
@@ -633,7 +758,7 @@ export class QdrantClient implements VectorDBClient {
         try {
           const limit = options?.limit || 50;
           const qdrantFilter = options?.filter ? buildQdrantFilter(options.filter) : undefined;
-          
+
           const result = await this.client.scroll(collection, {
             limit,
             offset: options?.offset || undefined,
@@ -642,10 +767,12 @@ export class QdrantClient implements VectorDBClient {
             ...(qdrantFilter && { filter: qdrantFilter as any }),
           });
 
-          let documents: Document[] = (result.points || []).map((point: QdrantSchemas["Record"]) => {
-            const doc: Document = this.recordToDocument(point);
-            return doc;
-          });
+          let documents: Document[] = (result.points || []).map(
+            (point: QdrantSchemas['Record']) => {
+              const doc: Document = this.recordToDocument(point);
+              return doc;
+            },
+          );
 
           // Sort client-side as fallback
           documents = sortDocuments(documents, options.sort);
@@ -653,16 +780,18 @@ export class QdrantClient implements VectorDBClient {
           return {
             success: true,
             documents,
-            nextOffset: (result.next_page_offset && typeof result.next_page_offset !== 'object')
-              ? result.next_page_offset as string | number
-              : null,
+            nextOffset:
+              result.next_page_offset && typeof result.next_page_offset !== 'object'
+                ? (result.next_page_offset as string | number)
+                : null,
           };
         } catch (fallbackError) {
-          const message = fallbackError instanceof Error ? fallbackError.message : 'Failed to fetch items';
+          const message =
+            fallbackError instanceof Error ? fallbackError.message : 'Failed to fetch items';
           return { success: false, error: message };
         }
       }
-      
+
       const message = error instanceof Error ? error.message : 'Failed to fetch items';
       return { success: false, error: message };
     }
@@ -671,21 +800,19 @@ export class QdrantClient implements VectorDBClient {
   async search(
     collection: string,
     vectors: Record<string, DocumentVector>,
-    options?: SearchOptions
+    options?: SearchOptions,
   ): Promise<SearchResult> {
     const startTime = performance.now();
     try {
-      const qdrantFilter = options?.filter
-        ? buildQdrantFilter(options.filter)
-        : undefined;
+      const qdrantFilter = options?.filter ? buildQdrantFilter(options.filter) : undefined;
 
       const vectorKeys = Object.keys(vectors);
-      
+
       if (vectorKeys.length > 1) {
-        const queries = vectorKeys.map(key => {
+        const queries = vectorKeys.map((key) => {
           const vectorData = vectors[key];
           let queryVector: any;
-          
+
           if (vectorData.vectorType === 'dense') {
             queryVector = {
               query: vectorData.value.data,
@@ -700,10 +827,10 @@ export class QdrantClient implements VectorDBClient {
               using: key,
             };
           }
-          
+
           return queryVector;
         });
-        
+
         const payload: any = {
           prefetch: queries,
           limit: options?.limit || 10,
@@ -714,37 +841,38 @@ export class QdrantClient implements VectorDBClient {
           }),
           ...(qdrantFilter && { filter: qdrantFilter }),
         };
-        
+
         const results = await this.client.query(collection, payload);
         const searchTimeMs = performance.now() - startTime;
-        
+
         const mappedResults: Document[] = (results.points || []).map((result: any) =>
-          this.recordToDocument(result)
+          this.recordToDocument(result),
         );
-        
-        return { 
-          success: true, 
-          documents: mappedResults, 
-          metadata: { searchTimeMs } 
+
+        return {
+          success: true,
+          documents: mappedResults,
+          metadata: { searchTimeMs },
         };
-      } 
-      
-      else {
+      } else {
         const vectorKey = vectorKeys[0];
         const vectorData = vectors[vectorKey];
-        
+
         if (!vectorData || !vectorData.value) {
           return { success: false, error: 'Invalid vector data provided' };
         }
-        
+
         let searchVector: any;
-        
+
         if (vectorData.vectorType === 'dense') {
           // Dense vector search
           if (!('data' in vectorData.value) || !Array.isArray(vectorData.value.data)) {
-            return { success: false, error: 'Invalid dense vector format: expected array in value.data' };
+            return {
+              success: false,
+              error: 'Invalid dense vector format: expected array in value.data',
+            };
           }
-          
+
           if (vectorKey === COLLECTION_DEFAULT_VECTOR) {
             // Default/unnamed vector: use search API with just the array
             searchVector = vectorData.value.data;
@@ -761,18 +889,18 @@ export class QdrantClient implements VectorDBClient {
               }),
               ...(qdrantFilter && { filter: qdrantFilter }),
             };
-            
+
             const results = await this.client.query(collection, payload);
             const searchTimeMs = performance.now() - startTime;
-            
+
             const mappedResults: Document[] = (results.points || []).map((result: any) =>
-              this.recordToDocument(result)
+              this.recordToDocument(result),
             );
-            
-            return { 
-              success: true, 
-              documents: mappedResults, 
-              metadata: { searchTimeMs } 
+
+            return {
+              success: true,
+              documents: mappedResults,
+              metadata: { searchTimeMs },
             };
           }
         } else if (vectorData.vectorType === 'sparse') {
@@ -791,21 +919,21 @@ export class QdrantClient implements VectorDBClient {
             }),
             ...(qdrantFilter && { filter: qdrantFilter }),
           };
-          
+
           const results = await this.client.query(collection, payload);
           const searchTimeMs = performance.now() - startTime;
-          
+
           const mappedResults: Document[] = (results.points || []).map((result: any) =>
-            this.recordToDocument(result)
+            this.recordToDocument(result),
           );
-          
-          return { 
-            success: true, 
-            documents: mappedResults, 
-            metadata: { searchTimeMs } 
+
+          return {
+            success: true,
+            documents: mappedResults,
+            metadata: { searchTimeMs },
           };
         }
-        
+
         const payload: any = {
           vector: searchVector,
           limit: options?.limit || 10,
@@ -816,32 +944,36 @@ export class QdrantClient implements VectorDBClient {
           }),
           ...(qdrantFilter && { filter: qdrantFilter as any }),
         };
-        
+
         const results = await this.client.search(collection, payload);
         const searchTimeMs = performance.now() - startTime;
-        
+
         const mappedResults: Document[] = (results || []).map((result) =>
-          this.recordToDocument(result)
+          this.recordToDocument(result),
         );
-        
-        return { 
-          success: true, 
-          documents: mappedResults, 
-          metadata: { searchTimeMs } 
+
+        return {
+          success: true,
+          documents: mappedResults,
+          metadata: { searchTimeMs },
         };
       }
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Search failed";
+      const message = error instanceof Error ? error.message : 'Search failed';
       return { success: false, error: message };
     }
   }
 
-  async deleteDocument(collection: string, primary: Document['primary']): Promise<DeleteDocumentResult> {
+  async deleteDocument(
+    collection: string,
+    primary: Document['primary'],
+  ): Promise<DeleteDocumentResult> {
     try {
       // Qdrant IDs can be integers or UUIDs
       // If it's a numeric string, convert to number
-      const pointId = /^\d+$/.test(String(primary.value)) ? parseInt(String(primary.value), 10) : String(primary.value);
+      const pointId = /^\d+$/.test(String(primary.value))
+        ? parseInt(String(primary.value), 10)
+        : String(primary.value);
 
       await this.client.delete(collection, {
         points: [pointId],
@@ -881,9 +1013,10 @@ export class QdrantClient implements VectorDBClient {
           });
           deleted += ids.length;
 
-          offset = (scrollResult.next_page_offset && typeof scrollResult.next_page_offset !== 'object')
-            ? scrollResult.next_page_offset as string | number
-            : undefined;
+          offset =
+            scrollResult.next_page_offset && typeof scrollResult.next_page_offset !== 'object'
+              ? (scrollResult.next_page_offset as string | number)
+              : undefined;
         } while (offset);
 
         return { success: true, deletedCount: deleted };
@@ -953,7 +1086,11 @@ export class QdrantClient implements VectorDBClient {
 
       if (vectorType === 'named') {
         // Named vectors configuration
-        const namedVectors = config.namedVectors as Array<{ name: string; size: number; distance: string }>;
+        const namedVectors = config.namedVectors as Array<{
+          name: string;
+          size: number;
+          distance: string;
+        }>;
         vectors = {};
         for (const vec of namedVectors || []) {
           vectors[vec.name] = {
@@ -970,7 +1107,7 @@ export class QdrantClient implements VectorDBClient {
           on_disk: config.on_disk || false,
         };
       }
-      
+
       // Add sparse vectors if specified
       let sparseVectors: any = undefined;
       if (config.sparseVectors) {
@@ -985,7 +1122,8 @@ export class QdrantClient implements VectorDBClient {
       const hnswConfig: any = {};
       if (config.hnsw_m) hnswConfig.m = config.hnsw_m;
       if (config.hnsw_ef_construct) hnswConfig.ef_construct = config.hnsw_ef_construct;
-      if (config.hnsw_full_scan_threshold) hnswConfig.full_scan_threshold = config.hnsw_full_scan_threshold;
+      if (config.hnsw_full_scan_threshold)
+        hnswConfig.full_scan_threshold = config.hnsw_full_scan_threshold;
 
       // Build quantization config
       let quantizationConfig: any = undefined;
@@ -1049,9 +1187,9 @@ export class QdrantClient implements VectorDBClient {
     return qdrantCreateCollectionSchema;
   }
 
-  private recordToDocument(point: QdrantSchemas["Record"] & { score?: number }): Document {
+  private recordToDocument(point: QdrantSchemas['Record'] & { score?: number }): Document {
     const vectors: Record<string, DocumentVector> = {};
-    
+
     if (Array.isArray(point.vector)) {
       // Single unnamed dense vector
       vectors[COLLECTION_DEFAULT_VECTOR] = {

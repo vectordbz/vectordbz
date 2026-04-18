@@ -90,7 +90,7 @@ function escapeTextPhrase(val: string): string {
 
 function buildConditionClause(
   cond: FilterCondition,
-  fieldTypes: Record<string, RedisFieldType>
+  fieldTypes: Record<string, RedisFieldType>,
 ): string {
   const field = cond.field;
   const val = cond.value;
@@ -104,15 +104,15 @@ function buildConditionClause(
   switch (cond.operator) {
     case 'eq':
       if (isNumeric) return `@${field}:[${val} ${val}]`;
-      if (isTag)     return `@${field}:{${escapeTagValue(String(val))}}`;
-      if (isText)    return `@${field}:"${escapeTextPhrase(String(val))}"`;
+      if (isTag) return `@${field}:{${escapeTagValue(String(val))}}`;
+      if (isText) return `@${field}:"${escapeTextPhrase(String(val))}"`;
       // Unknown field type — prefer TAG (exact) for short values, TEXT phrase otherwise
       return `@${field}:{${escapeTagValue(String(val))}}`;
 
     case 'neq':
       if (isNumeric) return `-@${field}:[${val} ${val}]`;
-      if (isTag)     return `-@${field}:{${escapeTagValue(String(val))}}`;
-      if (isText)    return `-@${field}:"${escapeTextPhrase(String(val))}"`;
+      if (isTag) return `-@${field}:{${escapeTagValue(String(val))}}`;
+      if (isText) return `-@${field}:"${escapeTextPhrase(String(val))}"`;
       return `-@${field}:{${escapeTagValue(String(val))}}`;
 
     case 'gt':
@@ -136,7 +136,7 @@ function buildConditionClause(
 
 function buildRedisFilter(
   filter: FilterQuery,
-  fieldTypes: Record<string, RedisFieldType> = {}
+  fieldTypes: Record<string, RedisFieldType> = {},
 ): string {
   if (!filter.conditions || filter.conditions.length === 0) return '*';
   const clauses = filter.conditions
@@ -195,8 +195,7 @@ function parseSchemaFromInfo(info: any): ParsedSchema {
     }
   }
 
-  const numDocs =
-    parseInt(String(info.numDocs ?? info['num_docs'] ?? info.NUM_DOCS ?? 0), 10) || 0;
+  const numDocs = parseInt(String(info.numDocs ?? info['num_docs'] ?? info.NUM_DOCS ?? 0), 10) || 0;
 
   return { vectorFields, payloadFields, searchableTextFields, fieldTypes, numDocs };
 }
@@ -256,7 +255,11 @@ export const redissearchCreateCollectionSchema: DynamicFormSchema = {
           description: 'Unique name (lowercase, alphanumeric, underscores or hyphens)',
           rules: [
             { type: 'minLength', value: 1, message: 'Index name is required' },
-            { type: 'pattern', value: '^[a-z0-9_:-]+$', message: 'Must be lowercase letters, numbers, underscores, colons or hyphens' },
+            {
+              type: 'pattern',
+              value: '^[a-z0-9_:-]+$',
+              message: 'Must be lowercase letters, numbers, underscores, colons or hyphens',
+            },
           ],
         },
       ],
@@ -273,7 +276,11 @@ export const redissearchCreateCollectionSchema: DynamicFormSchema = {
           direction: 'vertical',
           defaultValue: 'single',
           options: [
-            { label: 'Single Vector', value: 'single', description: 'One vector field per document' },
+            {
+              label: 'Single Vector',
+              value: 'single',
+              description: 'One vector field per document',
+            },
             { label: 'Named Vectors', value: 'named', description: 'Multiple named vector fields' },
           ],
         },
@@ -317,10 +324,38 @@ export const redissearchCreateCollectionSchema: DynamicFormSchema = {
           showWhen: { field: 'vectorType', operator: 'equals', value: 'named' },
           minItems: 1,
           itemFields: [
-            { key: 'name', label: 'Field Name', type: 'text', required: true, placeholder: 'embedding' },
-            { key: 'size', label: 'Dimensions', type: 'number', required: true, defaultValue: REDISSEARCH_DEFAULTS.vectorSize, min: 1, max: 32768 },
-            { key: 'algorithm', label: 'Algorithm', type: 'select', required: true, defaultValue: REDISSEARCH_DEFAULTS.algorithm, options: [...REDISSEARCH_ALGORITHMS] },
-            { key: 'distanceMetric', label: 'Metric', type: 'select', required: true, defaultValue: REDISSEARCH_DEFAULTS.distanceMetric, options: [...REDISSEARCH_DISTANCE_METRICS] },
+            {
+              key: 'name',
+              label: 'Field Name',
+              type: 'text',
+              required: true,
+              placeholder: 'embedding',
+            },
+            {
+              key: 'size',
+              label: 'Dimensions',
+              type: 'number',
+              required: true,
+              defaultValue: REDISSEARCH_DEFAULTS.vectorSize,
+              min: 1,
+              max: 32768,
+            },
+            {
+              key: 'algorithm',
+              label: 'Algorithm',
+              type: 'select',
+              required: true,
+              defaultValue: REDISSEARCH_DEFAULTS.algorithm,
+              options: [...REDISSEARCH_ALGORITHMS],
+            },
+            {
+              key: 'distanceMetric',
+              label: 'Metric',
+              type: 'select',
+              required: true,
+              defaultValue: REDISSEARCH_DEFAULTS.distanceMetric,
+              options: [...REDISSEARCH_DISTANCE_METRICS],
+            },
           ],
           addButtonText: 'Add Vector',
         },
@@ -375,7 +410,13 @@ export class RedisSearchClient implements VectorDBClient {
       const info = await this.client.ft.info(index);
       return parseSchemaFromInfo(info);
     } catch {
-      return { vectorFields: {}, payloadFields: [], searchableTextFields: [], fieldTypes: {}, numDocs: 0 };
+      return {
+        vectorFields: {},
+        payloadFields: [],
+        searchableTextFields: [],
+        fieldTypes: {},
+        numDocs: 0,
+      };
     }
   }
 
@@ -415,7 +456,7 @@ export class RedisSearchClient implements VectorDBClient {
           } catch {
             return { name, count: 0 };
           }
-        })
+        }),
       );
       return { success: true, collections };
     } catch (err: any) {
@@ -471,7 +512,10 @@ export class RedisSearchClient implements VectorDBClient {
       const totalVectors = Object.keys(vectors).length;
       if (totalVectors === 1) {
         const [onlyKey] = Object.keys(vectors);
-        vectors[COLLECTION_DEFAULT_VECTOR] = { ...vectors[onlyKey], name: COLLECTION_DEFAULT_VECTOR };
+        vectors[COLLECTION_DEFAULT_VECTOR] = {
+          ...vectors[onlyKey],
+          name: COLLECTION_DEFAULT_VECTOR,
+        };
       }
 
       return {
@@ -479,9 +523,18 @@ export class RedisSearchClient implements VectorDBClient {
         schema: {
           primary: { name: 'id', type: 'string', autoID: false },
           fields,
-          vectors: totalVectors > 0
-            ? vectors
-            : { [COLLECTION_DEFAULT_VECTOR]: { name: COLLECTION_DEFAULT_VECTOR, type: 'vector', vectorType: 'dense', size: 0, distance: 'cosine' } },
+          vectors:
+            totalVectors > 0
+              ? vectors
+              : {
+                  [COLLECTION_DEFAULT_VECTOR]: {
+                    name: COLLECTION_DEFAULT_VECTOR,
+                    type: 'vector',
+                    vectorType: 'dense',
+                    size: 0,
+                    distance: 'cosine',
+                  },
+                },
           multipleVectors: totalVectors > 1,
           hasVectors: totalVectors > 0,
         },
@@ -497,7 +550,7 @@ export class RedisSearchClient implements VectorDBClient {
 
   async getSearchCapabilities(
     _collection: string,
-    schema?: CollectionSchema | null
+    schema?: CollectionSchema | null,
   ): Promise<SearchCapabilities> {
     return mergeWithDefault(
       {
@@ -507,7 +560,7 @@ export class RedisSearchClient implements VectorDBClient {
         clientSideFusion: true,
         fusionStrategies: ['rrf', 'weighted'],
       },
-      schema
+      schema,
     );
   }
 
@@ -517,7 +570,7 @@ export class RedisSearchClient implements VectorDBClient {
 
   async getDocuments(
     collection: string,
-    options?: GetDocumentsOptions
+    options?: GetDocumentsOptions,
   ): Promise<GetDocumentsResult> {
     const index = toIndexName(collection);
     const limit = options?.limit ?? 50;
@@ -527,7 +580,9 @@ export class RedisSearchClient implements VectorDBClient {
       await this.ensureConnected();
 
       const parsed = await this.getSchemaInternal(index);
-      const filterQuery = options?.filter ? buildRedisFilter(options.filter, parsed.fieldTypes) : '*';
+      const filterQuery = options?.filter
+        ? buildRedisFilter(options.filter, parsed.fieldTypes)
+        : '*';
       const vecFieldNames = Object.keys(parsed.vectorFields);
 
       const searchOpts: any = {
@@ -560,10 +615,10 @@ export class RedisSearchClient implements VectorDBClient {
           const vectors: Record<string, DocumentVector> = {};
           if (vecFieldNames.length > 0) {
             try {
-              const hashBufs = await this.client.hGetAll(
+              const hashBufs = (await this.client.hGetAll(
                 commandOptions({ returnBuffers: true }),
-                key
-              ) as unknown as Record<string, Buffer>;
+                key,
+              )) as unknown as Record<string, Buffer>;
 
               for (const vecName of vecFieldNames) {
                 const buf = hashBufs[vecName];
@@ -588,11 +643,12 @@ export class RedisSearchClient implements VectorDBClient {
             vectors,
             payload,
           };
-        })
+        }),
       );
 
       const total = result.total;
-      const nextOffset = offset + result.documents.length < total ? offset + result.documents.length : null;
+      const nextOffset =
+        offset + result.documents.length < total ? offset + result.documents.length : null;
 
       return { success: true, documents, nextOffset, totalCount: total };
     } catch (err: any) {
@@ -607,7 +663,7 @@ export class RedisSearchClient implements VectorDBClient {
   async search(
     collection: string,
     vectors: Record<string, DocumentVector>,
-    options?: SearchOptions
+    options?: SearchOptions,
   ): Promise<SearchResult> {
     const startTime = performance.now();
     const index = toIndexName(collection);
@@ -618,14 +674,14 @@ export class RedisSearchClient implements VectorDBClient {
       const parsed = await this.getSchemaInternal(index);
       const vecFieldNames = Object.keys(parsed.vectorFields);
       const limit = options?.limit ?? 10;
-      const filterQuery = options?.filter ? buildRedisFilter(options.filter, parsed.fieldTypes) : '*';
+      const filterQuery = options?.filter
+        ? buildRedisFilter(options.filter, parsed.fieldTypes)
+        : '*';
 
       const denseKey = Object.keys(vectors).find((k) => vectors[k].vectorType === 'dense');
       const denseVec = denseKey ? vectors[denseKey] : null;
       const vectorArray =
-        denseVec?.vectorType === 'dense' && 'data' in denseVec.value
-          ? denseVec.value.data
-          : null;
+        denseVec?.vectorType === 'dense' && 'data' in denseVec.value ? denseVec.value.data : null;
 
       const useDense = Boolean(vectorArray && hasNonZeroMagnitude(vectorArray));
       const useLexical = Boolean(options?.lexicalQuery?.trim());
@@ -657,10 +713,7 @@ export class RedisSearchClient implements VectorDBClient {
         const baseQuery = filterQuery === '*' ? '*' : filterQuery;
         const knnQuery = `${baseQuery}=>[KNN ${limit} @${targetField} $BLOB AS __score]`;
 
-        const returnFields = [
-          ...parsed.payloadFields,
-          '__score',
-        ];
+        const returnFields = [...parsed.payloadFields, '__score'];
 
         const knnResult = await this.client.ft.search(index, knnQuery, {
           PARAMS: { BLOB: vecBuf },
@@ -687,20 +740,28 @@ export class RedisSearchClient implements VectorDBClient {
             const docVectors: Record<string, DocumentVector> = {};
             if (vecFieldNames.length > 0) {
               try {
-                const hashBufs = await this.client.hGetAll(
+                const hashBufs = (await this.client.hGetAll(
                   commandOptions({ returnBuffers: true }),
-                  key
-                ) as unknown as Record<string, Buffer>;
+                  key,
+                )) as unknown as Record<string, Buffer>;
 
                 for (const vecName of vecFieldNames) {
                   const buf = hashBufs[vecName];
                   if (Buffer.isBuffer(buf) && buf.byteLength > 0 && buf.byteLength % 4 === 0) {
                     const data = bufferToFloat32Array(buf);
-                    const fieldKey = vecFieldNames.length === 1 ? COLLECTION_DEFAULT_VECTOR : vecName;
-                    docVectors[fieldKey] = { key: fieldKey, vectorType: 'dense', size: data.length, value: { data } };
+                    const fieldKey =
+                      vecFieldNames.length === 1 ? COLLECTION_DEFAULT_VECTOR : vecName;
+                    docVectors[fieldKey] = {
+                      key: fieldKey,
+                      vectorType: 'dense',
+                      size: data.length,
+                      value: { data },
+                    };
                   }
                 }
-              } catch { /* non-fatal */ }
+              } catch {
+                /* non-fatal */
+              }
             }
 
             return {
@@ -709,7 +770,7 @@ export class RedisSearchClient implements VectorDBClient {
               vectors: docVectors,
               payload,
             };
-          })
+          }),
         );
 
         if (options?.scoreThreshold != null) {
@@ -746,7 +807,7 @@ export class RedisSearchClient implements VectorDBClient {
               vectors: {},
               payload,
             };
-          })
+          }),
         );
       }
 
@@ -767,11 +828,12 @@ export class RedisSearchClient implements VectorDBClient {
 
   async upsertDocument(
     collection: string,
-    data: UpsertDocumentData
+    data: UpsertDocumentData,
   ): Promise<UpsertDocumentResult> {
     const index = toIndexName(collection);
     const { document } = data;
-    const docId = document?.primary?.value != null ? String(document.primary.value) : `doc_${Date.now()}`;
+    const docId =
+      document?.primary?.value != null ? String(document.primary.value) : `doc_${Date.now()}`;
     const key = `${keyPrefix(index)}${docId}`;
 
     try {
@@ -809,7 +871,7 @@ export class RedisSearchClient implements VectorDBClient {
 
   async deleteDocument(
     collection: string,
-    primary: Document['primary']
+    primary: Document['primary'],
   ): Promise<DeleteDocumentResult> {
     const index = toIndexName(collection);
     const key = `${keyPrefix(index)}${primary.value}`;
@@ -826,16 +888,15 @@ export class RedisSearchClient implements VectorDBClient {
   // deleteDocuments
   // ============================================
 
-  async deleteDocuments(
-    collection: string,
-    filter: FilterQuery
-  ): Promise<DeleteDocumentsResult> {
+  async deleteDocuments(collection: string, filter: FilterQuery): Promise<DeleteDocumentsResult> {
     const index = toIndexName(collection);
     try {
       await this.ensureConnected();
 
       const parsed = await this.getSchemaInternal(index);
-      const filterQuery = filter.conditions?.length ? buildRedisFilter(filter, parsed.fieldTypes) : '*';
+      const filterQuery = filter.conditions?.length
+        ? buildRedisFilter(filter, parsed.fieldTypes)
+        : '*';
 
       // Fetch matching document keys (no fields needed, just IDs)
       let from = 0;

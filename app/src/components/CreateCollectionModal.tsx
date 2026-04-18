@@ -25,7 +25,8 @@ const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
   useEffect(() => {
     if (open && !schema) {
       setSchemaLoading(true);
-      window.electronAPI.db.getCreateCollectionSchema(connectionId)
+      window.electronAPI.db
+        .getCreateCollectionSchema(connectionId)
         .then(setSchema)
         .catch((err) => {
           console.error('Failed to load schema:', err);
@@ -83,16 +84,21 @@ const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
       }}
       title={
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>
-            {connectionName}
-          </span>
+          <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{connectionName}</span>
           <span style={{ color: 'var(--text-muted)' }}>→</span>
           <span>New Collection</span>
         </div>
       }
     >
       {schemaLoading || !schema ? (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: 200,
+          }}
+        >
           <Spin size="large" />
         </div>
       ) : (
@@ -113,4 +119,3 @@ const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
 };
 
 export default CreateCollectionModal;
-

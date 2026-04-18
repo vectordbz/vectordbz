@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Popover,
-  Select,
-  Typography,
-  Tag,
-  Empty,
-  Space,
-} from 'antd';
+import { Button, Popover, Select, Typography, Tag, Empty, Space } from 'antd';
 import {
   SortAscendingOutlined,
   SortDescendingOutlined,
@@ -26,10 +18,17 @@ interface SortBuilderProps {
   onSortChange: (sort: Array<{ field: string; order: 'asc' | 'desc' }> | undefined) => void;
 }
 
-const SortBuilder: React.FC<SortBuilderProps> = ({ collectionSchema, documents, activeSort, onSortChange }) => {
+const SortBuilder: React.FC<SortBuilderProps> = ({
+  collectionSchema,
+  documents,
+  activeSort,
+  onSortChange,
+}) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedField, setSelectedField] = useState<string>(activeSort?.[0]?.field || '');
-  const [selectedOrder, setSelectedOrder] = useState<'asc' | 'desc'>(activeSort?.[0]?.order || 'desc');
+  const [selectedOrder, setSelectedOrder] = useState<'asc' | 'desc'>(
+    activeSort?.[0]?.order || 'desc',
+  );
 
   // Sync local state when activeSort changes externally
   useEffect(() => {
@@ -46,14 +45,19 @@ const SortBuilder: React.FC<SortBuilderProps> = ({ collectionSchema, documents, 
   const getSortableFields = (): string[] => {
     if (!collectionSchema?.fields) return [];
     const fields: string[] = [];
-      if (collectionSchema.primary) {
-        fields.push(collectionSchema.primary.name);
+    if (collectionSchema.primary) {
+      fields.push(collectionSchema.primary.name);
+    }
+    Object.entries(collectionSchema.fields).forEach(([key, value]) => {
+      if (
+        value.type === 'string' ||
+        value.type === 'number' ||
+        value.type === 'boolean' ||
+        value.type === 'date'
+      ) {
+        fields.push(value.name);
       }
-      Object.entries(collectionSchema.fields).forEach(([key, value]) => {
-        if (value.type === 'string' || value.type === 'number' || value.type === 'boolean' || value.type === 'date') {
-          fields.push(value.name);
-        }
-      });
+    });
     return fields;
   };
 
@@ -98,8 +102,10 @@ const SortBuilder: React.FC<SortBuilderProps> = ({ collectionSchema, documents, 
               value={selectedField || undefined}
               onChange={setSelectedField}
             >
-              {sortableFields.map(field => (
-                <Option key={field} value={field}>{field}</Option>
+              {sortableFields.map((field) => (
+                <Option key={field} value={field}>
+                  {field}
+                </Option>
               ))}
             </Select>
           </div>
@@ -117,7 +123,10 @@ const SortBuilder: React.FC<SortBuilderProps> = ({ collectionSchema, documents, 
                 onClick={() => setSelectedOrder('asc')}
                 style={{
                   flex: 1,
-                  background: selectedOrder === 'asc' ? 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)' : undefined,
+                  background:
+                    selectedOrder === 'asc'
+                      ? 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)'
+                      : undefined,
                   border: selectedOrder === 'asc' ? 'none' : undefined,
                 }}
               >
@@ -130,7 +139,10 @@ const SortBuilder: React.FC<SortBuilderProps> = ({ collectionSchema, documents, 
                 onClick={() => setSelectedOrder('desc')}
                 style={{
                   flex: 1,
-                  background: selectedOrder === 'desc' ? 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)' : undefined,
+                  background:
+                    selectedOrder === 'desc'
+                      ? 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)'
+                      : undefined,
                   border: selectedOrder === 'desc' ? 'none' : undefined,
                 }}
               >
@@ -140,7 +152,14 @@ const SortBuilder: React.FC<SortBuilderProps> = ({ collectionSchema, documents, 
           </div>
 
           {/* Footer buttons */}
-          <div style={{ display: 'flex', gap: 8, borderTop: '1px solid var(--border-color)', paddingTop: 12 }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              borderTop: '1px solid var(--border-color)',
+              paddingTop: 12,
+            }}
+          >
             {hasActiveSort && (
               <Button
                 icon={<ReloadOutlined />}
@@ -180,7 +199,9 @@ const SortBuilder: React.FC<SortBuilderProps> = ({ collectionSchema, documents, 
           <SortAscendingOutlined style={{ color: '#6366f1' }} />
           <span>Sort</span>
           {hasActiveSort && (
-            <Tag color="blue" style={{ margin: 0 }}>1</Tag>
+            <Tag color="blue" style={{ margin: 0 }}>
+              1
+            </Tag>
           )}
         </div>
       }
@@ -214,4 +235,3 @@ const SortBuilder: React.FC<SortBuilderProps> = ({ collectionSchema, documents, 
 };
 
 export default SortBuilder;
-

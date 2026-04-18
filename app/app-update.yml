@@ -1,5 +1,1 @@
-{
-  "owner": "vectordbz",
-  "repo": "vectordbz",
-  "provider": "github"
-}
+{ 'owner': 'vectordbz', 'repo': 'vectordbz', 'provider': 'github' }

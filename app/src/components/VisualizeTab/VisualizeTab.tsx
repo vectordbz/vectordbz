@@ -22,7 +22,15 @@ import {
   RightOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
-import { Document, TabInfo, FilterQuery, CollectionSchema, COLLECTION_DEFAULT_VECTOR, DocumentVector, ProjectedPoint } from '../../types';
+import {
+  Document,
+  TabInfo,
+  FilterQuery,
+  CollectionSchema,
+  COLLECTION_DEFAULT_VECTOR,
+  DocumentVector,
+  ProjectedPoint,
+} from '../../types';
 import FilterBuilder from '../FilterBuilder';
 import { useTheme } from '../../contexts/ThemeContext';
 import PlotlyScatterView from './PlotlyScatterView';
@@ -67,7 +75,11 @@ interface ProjectionConfig {
   showProgress: boolean;
   params: ProjectionParam[];
   tooltipInfo: string;
-  perform: (vectors: number[][], dimensions: number, params: Record<string, number>) => Promise<number[][]> | number[][];
+  perform: (
+    vectors: number[][],
+    dimensions: number,
+    params: Record<string, number>,
+  ) => Promise<number[][]> | number[][];
 }
 
 const PROJECTION_CONFIGS: Record<ProjectionMethod, ProjectionConfig> = {
@@ -77,7 +89,8 @@ const PROJECTION_CONFIGS: Record<ProjectionMethod, ProjectionConfig> = {
     async: false,
     showProgress: false,
     params: [],
-    tooltipInfo: 'Points that are close in the original space may appear far apart in this 2D projection because PCA reduces dimensions and loses information. The green lines show true neighbors from the vector database. Consider using UMAP or t-SNE for better cluster visualization.',
+    tooltipInfo:
+      'Points that are close in the original space may appear far apart in this 2D projection because PCA reduces dimensions and loses information. The green lines show true neighbors from the vector database. Consider using UMAP or t-SNE for better cluster visualization.',
     perform: (vectors, dimensions) => Promise.resolve(performPCA(vectors, dimensions)),
   },
   umap: {
@@ -89,7 +102,8 @@ const PROJECTION_CONFIGS: Record<ProjectionMethod, ProjectionConfig> = {
       {
         key: 'nNeighbors',
         label: 'N NEIGHBORS',
-        tooltip: 'Number of neighbors to consider. Higher values preserve more global structure, lower values preserve more local structure.',
+        tooltip:
+          'Number of neighbors to consider. Higher values preserve more global structure, lower values preserve more local structure.',
         min: 5,
         max: 50,
         step: 5,
@@ -99,7 +113,8 @@ const PROJECTION_CONFIGS: Record<ProjectionMethod, ProjectionConfig> = {
       {
         key: 'minDist',
         label: 'MIN DIST',
-        tooltip: 'Minimum distance between points in the projection. Lower values create tighter clusters.',
+        tooltip:
+          'Minimum distance between points in the projection. Lower values create tighter clusters.',
         min: 0.0,
         max: 1.0,
         step: 0.05,
@@ -107,7 +122,8 @@ const PROJECTION_CONFIGS: Record<ProjectionMethod, ProjectionConfig> = {
         width: 80,
       },
     ],
-    tooltipInfo: 'UMAP preserves neighborhood structure better than PCA. Points that are close in this 2D projection should also be close in the original high-dimensional space. Green lines show true neighbors from the vector database.',
+    tooltipInfo:
+      'UMAP preserves neighborhood structure better than PCA. Points that are close in this 2D projection should also be close in the original high-dimensional space. Green lines show true neighbors from the vector database.',
     perform: (vectors, dimensions, params) =>
       performUMAP(vectors, dimensions, {
         nNeighbors: params.nNeighbors,
@@ -123,7 +139,8 @@ const PROJECTION_CONFIGS: Record<ProjectionMethod, ProjectionConfig> = {
       {
         key: 'perplexity',
         label: 'PERPLEXITY',
-        tooltip: 'Balance between local and global structure. Higher values consider more neighbors.',
+        tooltip:
+          'Balance between local and global structure. Higher values consider more neighbors.',
         min: 5,
         max: 50,
         step: 5,
@@ -133,7 +150,8 @@ const PROJECTION_CONFIGS: Record<ProjectionMethod, ProjectionConfig> = {
       {
         key: 'epsilon',
         label: 'LEARNING RATE',
-        tooltip: 'Learning rate for optimization. Higher values may converge faster but be less stable.',
+        tooltip:
+          'Learning rate for optimization. Higher values may converge faster but be less stable.',
         min: 1,
         max: 200,
         step: 10,
@@ -151,7 +169,8 @@ const PROJECTION_CONFIGS: Record<ProjectionMethod, ProjectionConfig> = {
         width: 80,
       },
     ],
-    tooltipInfo: 't-SNE excels at revealing local cluster structure. Points that are close together form tight, well-separated clusters. However, distances between clusters are not meaningful. Green lines show true neighbors from the vector database.',
+    tooltipInfo:
+      't-SNE excels at revealing local cluster structure. Points that are close together form tight, well-separated clusters. However, distances between clusters are not meaningful. Green lines show true neighbors from the vector database.',
     perform: (vectors, dimensions, params) =>
       performTSNE(vectors, dimensions, {
         perplexity: params.perplexity,
@@ -172,7 +191,6 @@ function generateClusterColors(numClusters: number): string[] {
   return colors;
 }
 
-
 const VisualizeTab: React.FC<VisualizeTabProps> = ({
   tab,
   collectionSchema,
@@ -186,7 +204,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
   const [colorBy, setColorBy] = useState<string>('none');
   const [pointSize, setPointSize] = useState(10);
   const [selectedPoint, setSelectedPoint] = useState<ProjectedPoint | null>(null);
-  const [nearestNeighbors, setNearestNeighbors] = useState<Array<{ point: ProjectedPoint; distance: number; similarity: number }>>([]);
+  const [nearestNeighbors, setNearestNeighbors] = useState<
+    Array<{ point: ProjectedPoint; distance: number; similarity: number }>
+  >([]);
   const [hoveredNeighbor, setHoveredNeighbor] = useState<ProjectedPoint | null>(null);
   const [showFullPayload, setShowFullPayload] = useState(false);
   const [showNeighbors, setShowNeighbors] = useState(false);
@@ -197,7 +217,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
   const [numClusters, setNumClusters] = useState(5);
   const [dbscanEps, setDbscanEps] = useState(0.3);
   const [dbscanMinPts, setDbscanMinPts] = useState(4);
-  const [selectedVectorField, setSelectedVectorField] = useState<string | null>(Object.keys(collectionSchema.vectors)?.[0] || null);
+  const [selectedVectorField, setSelectedVectorField] = useState<string | null>(
+    Object.keys(collectionSchema.vectors)?.[0] || null,
+  );
   const [clusteringLoading, setClusteringLoading] = useState(false);
   const [projectionMethod, setProjectionMethod] = useState<ProjectionMethod>('umap');
   const [viewMode, setViewMode] = useState<'scatter2d' | 'scatter3d'>('scatter3d');
@@ -206,7 +228,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
     // Initialize with default values from config
     const params: Record<string, number> = {};
     Object.entries(PROJECTION_CONFIGS).forEach(([method, config]) => {
-      config.params.forEach(param => {
+      config.params.forEach((param) => {
         params[`${method}_${param.key}`] = param.default;
       });
     });
@@ -222,7 +244,10 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
   // because PCA/UMAP/t-SNE require dense vectors. The dimension is computed from
   // all loaded documents to ensure consistency. For very high-dimensional sparse vectors,
   // consider using only non-zero dimensions or sparse-aware dimensionality reduction.
-  const sparseToDense = (sparseVector: { indices: number[]; values: number[] }, maxDimension: number): number[] => {
+  const sparseToDense = (
+    sparseVector: { indices: number[]; values: number[] },
+    maxDimension: number,
+  ): number[] => {
     if (!sparseVector || !sparseVector.indices || !sparseVector.values || maxDimension <= 0) {
       return [];
     }
@@ -280,7 +305,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
     } else if (vector.vectorType === 'binary') {
       // Binary vectors: normalize bytes (0-255) to [-1, 1] range for visualization
       if ('data' in vector.value && Array.isArray(vector.value.data)) {
-        return vector.value.data.map(byte => (byte / 127.5) - 1);
+        return vector.value.data.map((byte) => byte / 127.5 - 1);
       }
       return null;
     } else if (vector.vectorType === 'sparse') {
@@ -314,8 +339,10 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
     try {
       // Check cache (include dimension so 2D and 3D projections are cached separately)
       const vectorFieldKey = selectedVectorField || 'default';
-      const currentParams = config.params.map(p => projectionParams[`${projectionMethod}_${p.key}`]).join('-');
-      const cacheKey = `${projectionMethod}-${projectionDimension}-${currentParams}-${vectorFieldKey}-${documentsToProject.length}-${documentsToProject.map(i => i.primary.value).join(',')}`;
+      const currentParams = config.params
+        .map((p) => projectionParams[`${projectionMethod}_${p.key}`])
+        .join('-');
+      const cacheKey = `${projectionMethod}-${projectionDimension}-${currentParams}-${vectorFieldKey}-${documentsToProject.length}-${documentsToProject.map((i) => i.primary.value).join(',')}`;
 
       if (projectionCache.current.has(cacheKey)) {
         const cachedPoints = projectionCache.current.get(cacheKey)!;
@@ -329,7 +356,8 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
 
       // First, determine if we're dealing with sparse vectors and compute max dimension
       let sparseMaxDimension = 0;
-      const vectorField = selectedVectorField || Object.keys(documentsToProject[0]?.vectors || {})[0];
+      const vectorField =
+        selectedVectorField || Object.keys(documentsToProject[0]?.vectors || {})[0];
       if (vectorField) {
         const firstVector = documentsToProject[0]?.vectors[vectorField];
         if (firstVector?.vectorType === 'sparse') {
@@ -359,13 +387,13 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
         message.loading({
           content: `Computing ${config.label} projection...`,
           key: progressKey,
-          duration: 0
+          duration: 0,
         });
       }
 
       // Gather parameters for this method
       const methodParams: Record<string, number> = {};
-      config.params.forEach(param => {
+      config.params.forEach((param) => {
         methodParams[param.key] = projectionParams[`${projectionMethod}_${param.key}`];
       });
 
@@ -402,7 +430,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
       message.error('Failed to perform dimensionality reduction');
       message.destroy(progressKey);
     }
-  }
+  };
 
   const loadDocuments = async (): Promise<Document[]> => {
     let result: any;
@@ -419,7 +447,10 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
       if (vectorField && vectorsLength > 1) {
         vector = navigationState.highlightDocument.vectors[vectorField];
       } else {
-        vector = navigationState.highlightDocument.vectors[Object.keys(navigationState.highlightDocument.vectors)[0]];
+        vector =
+          navigationState.highlightDocument.vectors[
+            Object.keys(navigationState.highlightDocument.vectors)[0]
+          ];
       }
 
       if (!vector) {
@@ -460,7 +491,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
       message.error(result.error || 'Failed to load documents');
       return [];
     }
-  }
+  };
 
   // Handle load button click - loads and visualizes
   const handleLoad = async () => {
@@ -473,7 +504,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
     setTimeout(() => {
       setLoading(false);
     }, 100);
-  }
+  };
 
   // Auto re-project when vector field, projection method, params, or view dimension change (if documents are loaded)
   useEffect(() => {
@@ -495,7 +526,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
     setSelectedPoint(null);
     setNearestNeighbors([]);
     setHoveredNeighbor(null);
-  }
+  };
 
   // Handle navigation state - set vector field and trigger load if needed
   useEffect(() => {
@@ -521,7 +552,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
   useEffect(() => {
     if (navigationState?.highlightDocument && projectedPoints.length > 0) {
       const projectedPoint = projectedPoints.find(
-        p => String(p.id) === String(navigationState.highlightDocument?.primary.value)
+        (p) => String(p.id) === String(navigationState.highlightDocument?.primary.value),
       );
       if (projectedPoint) {
         setSelectedPoint(projectedPoint);
@@ -541,12 +572,13 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
     try {
       // Extract original high-dimensional vectors
       // First compute sparse max dimension if needed
-      const vectorField = selectedVectorField || Object.keys(projectedPoints[0]?.document.vectors || {})[0];
+      const vectorField =
+        selectedVectorField || Object.keys(projectedPoints[0]?.document.vectors || {})[0];
       let sparseMaxDimension = 0;
       if (vectorField) {
         const firstVector = projectedPoints[0]?.document.vectors[vectorField];
         if (firstVector?.vectorType === 'sparse') {
-          const allDocs = projectedPoints.map(p => p.document);
+          const allDocs = projectedPoints.map((p) => p.document);
           sparseMaxDimension = computeSparseMaxDimension(allDocs, vectorField);
         }
       }
@@ -576,7 +608,15 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
       // Use setTimeout to ensure UI updates after clustering completes
       setTimeout(() => setClusteringLoading(false), 100);
     }
-  }, [showClusterPreview, projectedPoints, clusteringMethod, numClusters, dbscanEps, dbscanMinPts, selectedVectorField]);
+  }, [
+    showClusterPreview,
+    projectedPoints,
+    clusteringMethod,
+    numClusters,
+    dbscanEps,
+    dbscanMinPts,
+    selectedVectorField,
+  ]);
 
   // Compute nearest neighbors using database search (original vector space, not 2D projection)
   const computeNearestNeighbors = async (point: ProjectedPoint) => {
@@ -619,10 +659,10 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
         // Map search results to projected points
         const neighbors = searchResult.documents
           .slice(1) // Skip first (self)
-          .map(doc => {
+          .map((doc) => {
             // Find the corresponding projected point
             const projectedPoint = projectedPoints.find(
-              p => String(p.document.primary.value) === String(doc.primary.value)
+              (p) => String(p.document.primary.value) === String(doc.primary.value),
             );
 
             if (projectedPoint) {
@@ -658,7 +698,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
       if (clusterId === -1) {
         return '#999999';
       }
-      const uniqueClusterIds = Array.from(new Set(pointClusters.filter(c => c !== -1))).sort((a, b) => a - b);
+      const uniqueClusterIds = Array.from(new Set(pointClusters.filter((c) => c !== -1))).sort(
+        (a, b) => a - b,
+      );
       if (uniqueClusterIds.length > 0) {
         const clusterIndex = uniqueClusterIds.indexOf(clusterId);
         if (clusterIndex >= 0) {
@@ -680,17 +722,19 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
     }
 
     if (typeof value === 'number') {
-      const min = Math.min(...documents.map(i => (i.payload[colorBy] as number) || 0));
-      const max = Math.max(...documents.map(i => (i.payload[colorBy] as number) || 0));
+      const min = Math.min(...documents.map((i) => (i.payload[colorBy] as number) || 0));
+      const max = Math.max(...documents.map((i) => (i.payload[colorBy] as number) || 0));
       const normalized = (value - min) / (max - min || 1);
       const hue = (1 - normalized) * 240;
       return `hsl(${hue}, 70%, 50%)`;
     } else if (typeof value === 'boolean') {
       return value ? '#52c41a' : '#ff4d4f';
     } else {
-      const hash = String(value).split('').reduce((acc, char) => {
-        return char.charCodeAt(0) + ((acc << 5) - acc);
-      }, 0);
+      const hash = String(value)
+        .split('')
+        .reduce((acc, char) => {
+          return char.charCodeAt(0) + ((acc << 5) - acc);
+        }, 0);
       const hue = Math.abs(hash) % 360;
       return `hsl(${hue}, 70%, 50%)`;
     }
@@ -702,15 +746,17 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
   };
 
   return (
-    <div style={{
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      padding: 16,
-      gap: 12,
-      background: 'var(--bg-primary)',
-      overflow: 'hidden',
-    }}>
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 16,
+        gap: 12,
+        background: 'var(--bg-primary)',
+        overflow: 'hidden',
+      }}
+    >
       {/* Compact Header Controls */}
       <Card
         size="small"
@@ -724,7 +770,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
         <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end', flexWrap: 'wrap' }}>
           {/* Sample Size */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>SAMPLE SIZE</Text>
+            <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+              SAMPLE SIZE
+            </Text>
             <Select
               value={sampleSize}
               onChange={setSampleSize}
@@ -750,7 +798,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
 
           {/* View mode */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>VIEW</Text>
+            <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+              VIEW
+            </Text>
             <Segmented
               value={viewMode}
               onChange={(v) => v && setViewMode(v as 'scatter2d' | 'scatter3d')}
@@ -780,13 +830,15 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             {/* Vector Field Selector */}
             {collectionSchema?.multipleVectors && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>VECTOR FIELD</Text>
+                <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                  VECTOR FIELD
+                </Text>
                 <Select
                   value={selectedVectorField}
                   onChange={setSelectedVectorField}
                   style={{ width: 180 }}
                   size="small"
-                  options={Object.values(collectionSchema.vectors).map(field => {
+                  options={Object.values(collectionSchema.vectors).map((field) => {
                     if (field.vectorType === 'sparse') {
                       return {
                         label: `${field.name} (sparse)`,
@@ -813,8 +865,14 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
                 PROJECTION METHOD
-                <Tooltip title={Object.entries(PROJECTION_CONFIGS).map(([k, v]) => `${v.label}: ${v.description}`).join('. ')}>
-                  <InfoCircleOutlined style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }} />
+                <Tooltip
+                  title={Object.entries(PROJECTION_CONFIGS)
+                    .map(([k, v]) => `${v.label}: ${v.description}`)
+                    .join('. ')}
+                >
+                  <InfoCircleOutlined
+                    style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
+                  />
                 </Tooltip>
               </Text>
               <Select
@@ -830,20 +888,25 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             </div>
 
             {/* Dynamic Method Parameters */}
-            {PROJECTION_CONFIGS[projectionMethod].params.map(param => (
+            {PROJECTION_CONFIGS[projectionMethod].params.map((param) => (
               <div key={param.key} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
                   {param.label}
                   <Tooltip title={param.tooltip}>
-                    <InfoCircleOutlined style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }} />
+                    <InfoCircleOutlined
+                      style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
+                    />
                   </Tooltip>
                 </Text>
                 <InputNumber
                   value={projectionParams[`${projectionMethod}_${param.key}`]}
-                  onChange={(v) => v !== null && setProjectionParams(prev => ({
-                    ...prev,
-                    [`${projectionMethod}_${param.key}`]: v,
-                  }))}
+                  onChange={(v) =>
+                    v !== null &&
+                    setProjectionParams((prev) => ({
+                      ...prev,
+                      [`${projectionMethod}_${param.key}`]: v,
+                    }))
+                  }
                   min={param.min}
                   max={param.max}
                   step={param.step}
@@ -856,9 +919,12 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             {/* Color By */}
             {Object.keys(collectionSchema.fields).length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>COLOR BY
+                <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                  COLOR BY
                   <Tooltip title="Disabled when cluster preview is shown">
-                    <InfoCircleOutlined style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }} />
+                    <InfoCircleOutlined
+                      style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
+                    />
                   </Tooltip>
                 </Text>
                 <Select
@@ -869,14 +935,19 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                   size="small"
                   options={[
                     { label: 'None', value: 'none' },
-                    ...Object.values(collectionSchema.fields).map(field => ({ label: field.name, value: field.name })),
+                    ...Object.values(collectionSchema.fields).map((field) => ({
+                      label: field.name,
+                      value: field.name,
+                    })),
                   ]}
                 />
               </div>
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 200 }}>
-              <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>POINT SIZE</Text>
+              <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                POINT SIZE
+              </Text>
               <div style={{ height: 24, display: 'flex', alignItems: 'center' }}>
                 <Slider
                   min={2}
@@ -893,7 +964,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
               <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
                 CLUSTERING (HD)
                 <Tooltip title="Clustering is performed on original high-dimensional vectors, not the 2D projection. This provides semantically meaningful clusters.">
-                  <InfoCircleOutlined style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }} />
+                  <InfoCircleOutlined
+                    style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
+                  />
                 </Tooltip>
               </Text>
               <div style={{ height: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -903,14 +976,20 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                   size="small"
                   loading={clusteringLoading}
                 />
-                {clusteringLoading && <Text type="secondary" style={{ fontSize: 10 }}>Computing...</Text>}
+                {clusteringLoading && (
+                  <Text type="secondary" style={{ fontSize: 10 }}>
+                    Computing...
+                  </Text>
+                )}
               </div>
             </div>
 
             {showClusterPreview && (
               <>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>METHOD</Text>
+                  <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                    METHOD
+                  </Text>
                   <Select
                     value={clusteringMethod}
                     onChange={setClusteringMethod}
@@ -924,7 +1003,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                 </div>
                 {clusteringMethod === 'kmeans' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>CLUSTERS</Text>
+                    <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                      CLUSTERS
+                    </Text>
                     <InputNumber
                       value={numClusters}
                       onChange={(v) => v && setNumClusters(v)}
@@ -941,7 +1022,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                       <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
                         EPS
                         <Tooltip title="Maximum distance for points to be considered neighbors (cosine distance)">
-                          <InfoCircleOutlined style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }} />
+                          <InfoCircleOutlined
+                            style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
+                          />
                         </Tooltip>
                       </Text>
                       <InputNumber
@@ -958,7 +1041,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                       <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
                         MIN PTS
                         <Tooltip title="Minimum points required to form a cluster">
-                          <InfoCircleOutlined style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }} />
+                          <InfoCircleOutlined
+                            style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
+                          />
                         </Tooltip>
                       </Text>
                       <InputNumber
@@ -980,13 +1065,15 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
       </Card>
 
       {/* Chart Area */}
-      <div style={{
-        flex: '1 1 auto',
-        display: 'flex',
-        gap: 12,
-        minHeight: 0,
-        overflow: 'hidden',
-      }}>
+      <div
+        style={{
+          flex: '1 1 auto',
+          display: 'flex',
+          gap: 12,
+          minHeight: 0,
+          overflow: 'hidden',
+        }}
+      >
         <Card
           title={
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -1000,17 +1087,24 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
               <Tooltip
                 title={
                   <div style={{ maxWidth: 300 }}>
-                    <Text style={{ fontSize: 12, color: 'white', display: 'block', marginBottom: 8 }}>
-                      <strong>Important:</strong> Nearest neighbors are computed in the original high-dimensional space (e.g., 1536D).
+                    <Text
+                      style={{ fontSize: 12, color: 'white', display: 'block', marginBottom: 8 }}
+                    >
+                      <strong>Important:</strong> Nearest neighbors are computed in the original
+                      high-dimensional space (e.g., 1536D).
                     </Text>
-                    <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', display: 'block' }}>
+                    <Text
+                      style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', display: 'block' }}
+                    >
                       {PROJECTION_CONFIGS[projectionMethod].tooltipInfo}
                     </Text>
                   </div>
                 }
                 placement="bottom"
               >
-                <InfoCircleOutlined style={{ fontSize: 14, color: 'var(--text-muted)', cursor: 'help' }} />
+                <InfoCircleOutlined
+                  style={{ fontSize: 14, color: 'var(--text-muted)', cursor: 'help' }}
+                />
               </Tooltip>
             </div>
           }
@@ -1034,31 +1128,37 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             overflow: 'hidden',
           }}
         >
-          <div style={{
-            flex: 1,
-            minHeight: 0,
-            width: '100%',
-            height: '100%',
-            position: 'relative',
-          }}>
+          <div
+            style={{
+              flex: 1,
+              minHeight: 0,
+              width: '100%',
+              height: '100%',
+              position: 'relative',
+            }}
+          >
             {loading ? (
-              <div style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 400,
-              }}>
+              <div
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: 400,
+                }}
+              >
                 <Spin size="large" tip="Loading..." />
               </div>
             ) : projectedPoints.length === 0 ? (
-              <div style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 400,
-              }}>
+              <div
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: 400,
+                }}
+              >
                 <Empty description="No data to visualize" />
               </div>
             ) : (
@@ -1081,8 +1181,12 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
           <Card
             size="small"
             title={
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text strong style={{ fontSize: 13 }}>Details</Text>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <Text strong style={{ fontSize: 13 }}>
+                  Details
+                </Text>
                 <Button
                   type="text"
                   size="small"
@@ -1112,12 +1216,14 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
               overflow: 'hidden',
             }}
           >
-            <div style={{
-              flex: 1,
-              overflowY: 'auto',
-              overflowX: 'hidden',
-              padding: 16,
-            }}>
+            <div
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                padding: 16,
+              }}
+            >
               <Space direction="vertical" style={{ width: '100%' }} size="small">
                 {/* Image */}
                 {(() => {
@@ -1126,12 +1232,14 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
 
                   if (imageUrl) {
                     return (
-                      <div style={{
-                        marginBottom: 12,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
+                      <div
+                        style={{
+                          marginBottom: 12,
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
                         <img
                           src={imageUrl}
                           alt="Point image"
@@ -1167,13 +1275,20 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
 
                 {/* Document ID */}
                 <div>
-                  <Text code style={{ fontSize: 12 }}>{selectedPoint.document.primary.value}</Text>
+                  <Text code style={{ fontSize: 12 }}>
+                    {selectedPoint.document.primary.value}
+                  </Text>
                   {Object.keys(selectedPoint.document.vectors).length > 0 && (
                     <div style={{ marginTop: 6 }}>
                       {Object.values(selectedPoint.document.vectors).map((v, idx) => {
                         let label = v.key === COLLECTION_DEFAULT_VECTOR ? 'vector' : v.key;
                         if (v.vectorType === 'dense' || v.vectorType === 'binary') {
-                          const size = v.vectorType === 'dense' ? v.size : (v.size ? `${v.size} bits` : 'binary');
+                          const size =
+                            v.vectorType === 'dense'
+                              ? v.size
+                              : v.size
+                                ? `${v.size} bits`
+                                : 'binary';
                           label += ` (${size})`;
                         } else if (v.vectorType === 'sparse') {
                           const nnz = 'indices' in v.value ? v.value.indices.length : 0;
@@ -1188,7 +1303,6 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                     </div>
                   )}
                 </div>
-
 
                 {/* Payload */}
                 <div>
@@ -1211,15 +1325,17 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                     <Text style={{ fontSize: 12 }}>Payload</Text>
                   </div>
                   {showFullPayload && (
-                    <pre style={{
-                      background: 'var(--bg-secondary)',
-                      padding: 10,
-                      borderRadius: 6,
-                      fontSize: 10,
-                      overflow: 'auto',
-                      marginTop: 8,
-                      maxHeight: 300,
-                    }}>
+                    <pre
+                      style={{
+                        background: 'var(--bg-secondary)',
+                        padding: 10,
+                        borderRadius: 6,
+                        fontSize: 10,
+                        overflow: 'auto',
+                        marginTop: 8,
+                        maxHeight: 300,
+                      }}
+                    >
                       {JSON.stringify(selectedPoint.document.payload, null, 2)}
                     </pre>
                   )}

@@ -9,10 +9,7 @@ export { ElasticsearchClient } from './clients/elasticsearch';
 export { RedisSearchClient } from './clients/redissearch';
 export { connectionStore, settingsStore } from './store';
 export * from './vectorUtils';
-export {
-  mergeWithDefault,
-  getSchemaDerivedCapabilities,
-} from './searchCapabilities';
+export { mergeWithDefault, getSchemaDerivedCapabilities } from './searchCapabilities';
 import { VectorDBClient, ConnectionConfig, DatabaseType, DatabaseOption } from '../types';
 import { QdrantClient } from './clients/qdrant';
 import { WeaviateClient } from './clients/weaviate';
@@ -26,10 +23,7 @@ import { RedisSearchClient } from './clients/redissearch';
 /**
  * Factory function to create a database client based on type
  */
-export function createClient(
-  type: DatabaseType,
-  config: ConnectionConfig
-): VectorDBClient {
+export function createClient(type: DatabaseType, config: ConnectionConfig): VectorDBClient {
   switch (type) {
     case 'qdrant':
       return new QdrantClient(config);
@@ -51,4 +45,3 @@ export function createClient(
       throw new Error(`Unsupported database type: ${type}`);
   }
 }
-

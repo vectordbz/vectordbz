@@ -65,12 +65,7 @@ describe('PgVector Client Integration Tests', () => {
         throw new Error('Collection must be created first');
       }
 
-      const testDocs = await testDocumentInsertion(
-        client,
-        workingCollectionName,
-        schema,
-        1536
-      );
+      const testDocs = await testDocumentInsertion(client, workingCollectionName, schema, 1536);
       expect(testDocs.length).toBe(12);
       (client as any).__testDocs = testDocs;
     }, 60000);
@@ -168,4 +163,3 @@ describe('PgVector Client Integration Tests', () => {
     });
   }, 120000);
 });
-

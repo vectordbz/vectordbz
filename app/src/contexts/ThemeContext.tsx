@@ -64,7 +64,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [mode]);
 
   const toggleTheme = () => {
-    setMode(prev => prev === 'dark' ? 'light' : 'dark');
+    setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
   const setTheme = (newMode: ThemeMode) => {
@@ -120,36 +120,37 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
 // Export theme colors for use in inline styles
 export const getThemeColors = (mode: ThemeMode) => {
-  return mode === 'dark' ? {
-    bg: '#0f0f14',
-    bgCard: '#16161e',
-    bgElevated: '#1e1e2a',
-    bgHover: '#1a1a24',
-    border: '#2a2a3a',
-    borderLight: '#3a3a4a',
-    text: '#e4e4e7',
-    textSecondary: '#a1a1aa',
-    textMuted: '#71717a',
-    primary: '#6366f1',
-    primaryLight: '#818cf8',
-    success: '#22c55e',
-    warning: '#f59e0b',
-    danger: '#ef4444',
-  } : {
-    bg: '#f8fafc',
-    bgCard: '#ffffff',
-    bgElevated: '#ffffff',
-    bgHover: '#f1f5f9',
-    border: '#e2e8f0',
-    borderLight: '#cbd5e1',
-    text: '#1e293b',
-    textSecondary: '#64748b',
-    textMuted: '#94a3b8',
-    primary: '#6366f1',
-    primaryLight: '#818cf8',
-    success: '#22c55e',
-    warning: '#f59e0b',
-    danger: '#ef4444',
-  };
+  return mode === 'dark'
+    ? {
+        bg: '#0f0f14',
+        bgCard: '#16161e',
+        bgElevated: '#1e1e2a',
+        bgHover: '#1a1a24',
+        border: '#2a2a3a',
+        borderLight: '#3a3a4a',
+        text: '#e4e4e7',
+        textSecondary: '#a1a1aa',
+        textMuted: '#71717a',
+        primary: '#6366f1',
+        primaryLight: '#818cf8',
+        success: '#22c55e',
+        warning: '#f59e0b',
+        danger: '#ef4444',
+      }
+    : {
+        bg: '#f8fafc',
+        bgCard: '#ffffff',
+        bgElevated: '#ffffff',
+        bgHover: '#f1f5f9',
+        border: '#e2e8f0',
+        borderLight: '#cbd5e1',
+        text: '#1e293b',
+        textSecondary: '#64748b',
+        textMuted: '#94a3b8',
+        primary: '#6366f1',
+        primaryLight: '#818cf8',
+        success: '#22c55e',
+        warning: '#f59e0b',
+        danger: '#ef4444',
+      };
 };
-

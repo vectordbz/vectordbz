@@ -4,7 +4,15 @@ import { DynamicFormSchema } from '../components/DynamicForm/types';
 // Database Types
 // ============================================
 
-export type DatabaseType = 'qdrant' | 'weaviate' | 'milvus' | 'chromadb' | 'pgvector' | 'pinecone' | 'elasticsearch' | 'redissearch';
+export type DatabaseType =
+  | 'qdrant'
+  | 'weaviate'
+  | 'milvus'
+  | 'chromadb'
+  | 'pgvector'
+  | 'pinecone'
+  | 'elasticsearch'
+  | 'redissearch';
 
 export interface DatabaseOption {
   value: DatabaseType;
@@ -44,21 +52,18 @@ export interface Collection extends Record<string, unknown> {
 
 export const COLLECTION_DEFAULT_VECTOR = '_vectordbz_default_vector';
 
-export interface Document{
+export interface Document {
   primary: {
     name: string;
     value: string | number;
-  }
+  };
   score?: number;
   vectors: Record<string, DocumentVector>;
   payload: Record<string, unknown>;
 }
 
 // Document vectors - discriminated union by type
-export type DocumentVector = 
-  | DenseDocumentVector 
-  | SparseDocumentVector
-  | BinaryDocumentVector;
+export type DocumentVector = DenseDocumentVector | SparseDocumentVector | BinaryDocumentVector;
 
 export interface DenseDocumentVector {
   key: string;
@@ -166,19 +171,19 @@ export interface GetDocumentsResult {
 export interface SearchMetadata {
   // Timing
   searchTimeMs?: number;
-  
+
   // Query stats
   requestedTopK?: number;
   returnedCount?: number;
   effectiveTopK?: number; // After threshold filtering
-  
+
   // Embedding stats
   queryVectorDimension?: number;
   queryVectorNorm?: number;
   queryVectorMean?: number;
   queryVectorVariance?: number;
   queryVectorNormalized?: boolean;
-  
+
   // Score statistics
   scoreDistribution?: {
     min: number;
@@ -189,11 +194,11 @@ export interface SearchMetadata {
   };
   scoreGapRank1Rank2?: number;
   scoreEntropy?: number;
-  
+
   // Confidence
   confidenceLevel?: 'high' | 'medium' | 'low';
   confidenceScore?: number;
-  
+
   // Filter impact
   filterApplied?: boolean;
   filterConditions?: FilterCondition[];
@@ -230,7 +235,6 @@ export interface DeleteDocumentsResult {
   error?: string;
 }
 
-
 export interface DropCollectionResult {
   success: boolean;
   error?: string;
@@ -262,8 +266,8 @@ export interface SchemaField {
 }
 
 // Vector schema fields - discriminated union by vector type
-export type VectorSchemaField = 
-  | DenseVectorSchemaField 
+export type VectorSchemaField =
+  | DenseVectorSchemaField
   | SparseVectorSchemaField
   | BinaryVectorSchemaField;
 
@@ -376,17 +380,36 @@ export interface VectorDBClient {
   getCollections(): Promise<GetCollectionsResult>;
   getCollectionInfo(collection: string): Promise<GetCollectionInfoResult>;
   getDocuments(collection: string, options?: GetDocumentsOptions): Promise<GetDocumentsResult>;
-  search(collection: string, vectors: Record<string, DocumentVector>, options?: SearchOptions): Promise<SearchResult>;
-  deleteDocument(collection: string, primary: Document['primary'], dataRequirements?: Record<string, string>): Promise<DeleteDocumentResult>;
-  deleteDocuments(collection: string, filter: FilterQuery, dataRequirements?: Record<string, string>): Promise<DeleteDocumentsResult>;
+  search(
+    collection: string,
+    vectors: Record<string, DocumentVector>,
+    options?: SearchOptions,
+  ): Promise<SearchResult>;
+  deleteDocument(
+    collection: string,
+    primary: Document['primary'],
+    dataRequirements?: Record<string, string>,
+  ): Promise<DeleteDocumentResult>;
+  deleteDocuments(
+    collection: string,
+    filter: FilterQuery,
+    dataRequirements?: Record<string, string>,
+  ): Promise<DeleteDocumentsResult>;
   dropCollection(collection: string): Promise<DropCollectionResult>;
   truncateCollection(collection: string): Promise<TruncateCollectionResult>;
   getCollectionSchema(collection: string): Promise<GetCollectionSchemaResult>;
   /** Search capabilities for this backend (dense, sparse, lexical/BM25, hybrid). Schema can refine (e.g. pgvector FTS). */
-  getSearchCapabilities(collection: string, schema?: CollectionSchema | null): Promise<SearchCapabilities>;
+  getSearchCapabilities(
+    collection: string,
+    schema?: CollectionSchema | null,
+  ): Promise<SearchCapabilities>;
   createCollection(config: Record<string, unknown>): Promise<CreateCollectionResult>;
   getCreateCollectionSchema(): DynamicFormSchema;
-  upsertDocument(collection: string, data: UpsertDocumentData, dataRequirements?: Record<string, string>): Promise<UpsertDocumentResult>;
+  upsertDocument(
+    collection: string,
+    data: UpsertDocumentData,
+    dataRequirements?: Record<string, string>,
+  ): Promise<UpsertDocumentResult>;
 }
 
 // ============================================

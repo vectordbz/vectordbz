@@ -24,7 +24,7 @@ const App: React.FC = () => {
   });
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
+
   // Update notification state
   const [updateStatus, setUpdateStatus] = useState<{
     available: boolean;
@@ -40,11 +40,13 @@ const App: React.FC = () => {
     progress: 0,
   });
 
-
-
   const generateTabId = () => `tab_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-  const onConnect = async (connectionId: string, connectionName: string, config: ConnectionConfig) => {
+  const onConnect = async (
+    connectionId: string,
+    connectionName: string,
+    config: ConnectionConfig,
+  ) => {
     const newConnection: ActiveConnection = {
       id: connectionId,
       name: connectionName,
@@ -54,32 +56,32 @@ const App: React.FC = () => {
       isLoading: true,
     };
 
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       connections: [...prev.connections, newConnection],
     }));
     // Fetch collections - ensure we're connected to the right DB
     const collectionsResult = await window.electronAPI.db.getCollections(connectionId);
     if (collectionsResult.success && collectionsResult.collections) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        connections: prev.connections.map(c =>
+        connections: prev.connections.map((c) =>
           c.id === connectionId
             ? {
-              ...c,
-              collections: collectionsResult.collections as Collection[],
-              isLoading: false
-            }
-            : c
+                ...c,
+                collections: collectionsResult.collections as Collection[],
+                isLoading: false,
+              }
+            : c,
         ),
       }));
       setConnectionModalOpen(false);
       message.success(`Connected to ${config.type}`);
     } else {
       // Remove failed connection
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        connections: prev.connections.filter(c => c.id !== connectionId),
+        connections: prev.connections.filter((c) => c.id !== connectionId),
       }));
       message.error(collectionsResult.error || 'Failed to fetch collections');
       throw new Error(collectionsResult.error || 'Failed to fetch collections');
@@ -87,19 +89,19 @@ const App: React.FC = () => {
   };
 
   const handleDisconnect = async (connectionId: string) => {
-    const connection = state.connections.find(c => c.id === connectionId);
+    const connection = state.connections.find((c) => c.id === connectionId);
     if (!connection) return;
 
     // Close all tabs for this connection
-    const tabsToClose = state.tabs.filter(t => t.connectionId === connectionId);
+    const tabsToClose = state.tabs.filter((t) => t.connectionId === connectionId);
 
-    setState(prev => {
-      const remainingTabs = prev.tabs.filter(t => t.connectionId !== connectionId);
-      const remainingConnections = prev.connections.filter(c => c.id !== connectionId);
+    setState((prev) => {
+      const remainingTabs = prev.tabs.filter((t) => t.connectionId !== connectionId);
+      const remainingConnections = prev.connections.filter((c) => c.id !== connectionId);
 
       // Update active tab if needed
       let newActiveTabId = prev.activeTabId;
-      if (tabsToClose.some(t => t.id === prev.activeTabId)) {
+      if (tabsToClose.some((t) => t.id === prev.activeTabId)) {
         newActiveTabId = remainingTabs.length > 0 ? remainingTabs[0].id : null;
       }
 
@@ -115,22 +117,22 @@ const App: React.FC = () => {
   };
 
   const handleToggleConnection = (connectionId: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      connections: prev.connections.map(c =>
-        c.id === connectionId ? { ...c, isExpanded: !c.isExpanded } : c
+      connections: prev.connections.map((c) =>
+        c.id === connectionId ? { ...c, isExpanded: !c.isExpanded } : c,
       ),
     }));
   };
 
   const handleRefreshConnection = async (connectionId: string) => {
-    const connection = state.connections.find(c => c.id === connectionId);
+    const connection = state.connections.find((c) => c.id === connectionId);
     if (!connection) return;
 
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      connections: prev.connections.map(c =>
-        c.id === connectionId ? { ...c, isLoading: true, collections: [] } : c
+      connections: prev.connections.map((c) =>
+        c.id === connectionId ? { ...c, isLoading: true, collections: [] } : c,
       ),
     }));
 
@@ -147,64 +149,67 @@ const App: React.FC = () => {
       const result = await window.electronAPI.db.getCollections(connectionId);
 
       if (result.success && result.collections) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          connections: prev.connections.map(c =>
+          connections: prev.connections.map((c) =>
             c.id === connectionId
               ? { ...c, collections: result.collections as Collection[], isLoading: false }
-              : c
+              : c,
           ),
         }));
         message.success('Collections refreshed');
       }
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        connections: prev.connections.map(c =>
-          c.id === connectionId ? { ...c, isLoading: false } : c
+        connections: prev.connections.map((c) =>
+          c.id === connectionId ? { ...c, isLoading: false } : c,
         ),
       }));
     }
   };
 
-  const handleOpenCollection = useCallback(async (connectionId: string, collection: Collection) => {
-    // Check if tab already exists
-    const existingTab = state.tabs.find(
-      t => t.connectionId === connectionId && t.collection.name === collection.name
-    );
+  const handleOpenCollection = useCallback(
+    async (connectionId: string, collection: Collection) => {
+      // Check if tab already exists
+      const existingTab = state.tabs.find(
+        (t) => t.connectionId === connectionId && t.collection.name === collection.name,
+      );
 
-    if (existingTab) {
-      setState(prev => ({ ...prev, activeTabId: existingTab.id }));
-      return;
-    }
+      if (existingTab) {
+        setState((prev) => ({ ...prev, activeTabId: existingTab.id }));
+        return;
+      }
 
-    const connection = state.connections.find(c => c.id === connectionId);
-    if (!connection) return;
+      const connection = state.connections.find((c) => c.id === connectionId);
+      if (!connection) return;
 
-    const tabId = generateTabId();
-    const newTab: TabInfo = {
-      id: tabId,
-      connectionId,
-      connectionName: connection.name,
-      connectionType: connection.config.type,
-      collection,
-    };
+      const tabId = generateTabId();
+      const newTab: TabInfo = {
+        id: tabId,
+        connectionId,
+        connectionName: connection.name,
+        connectionType: connection.config.type,
+        collection,
+      };
 
-    setState(prev => ({
-      ...prev,
-      tabs: [...prev.tabs, newTab],
-      activeTabId: tabId,
-    }));
-
-  }, [state.tabs, state.connections]);
+      setState((prev) => ({
+        ...prev,
+        tabs: [...prev.tabs, newTab],
+        activeTabId: tabId,
+      }));
+    },
+    [state.tabs, state.connections],
+  );
 
   const handleCloseTab = (tabId: string) => {
-    setState(prev => {
-      const remainingTabs = prev.tabs.filter(t => t.id !== tabId);
+    setState((prev) => {
+      const remainingTabs = prev.tabs.filter((t) => t.id !== tabId);
       let newActiveTabId = prev.activeTabId;
 
       if (prev.activeTabId === tabId) {
-        newActiveTabId = remainingTabs.length > 0 ? remainingTabs[remainingTabs.length - 1].id : null;
+        newActiveTabId =
+          remainingTabs.length > 0 ? remainingTabs[remainingTabs.length - 1].id : null;
       }
 
       return {
@@ -216,79 +221,98 @@ const App: React.FC = () => {
   };
 
   const handleChangeTab = (tabId: string) => {
-    setState(prev => ({ ...prev, activeTabId: tabId }));
+    setState((prev) => ({ ...prev, activeTabId: tabId }));
   };
 
+  const handleDropCollection = useCallback(
+    async (connectionId: string, collectionName: string) => {
+      const connection = state.connections.find((c) => c.id === connectionId);
+      if (!connection) return { success: false, error: 'Connection not found' };
 
-  const handleDropCollection = useCallback(async (connectionId: string, collectionName: string) => {
-    const connection = state.connections.find(c => c.id === connectionId);
-    if (!connection) return { success: false, error: 'Connection not found' };
+      try {
+        await window.electronAPI.db.connect(connectionId, {
+          ...connection.config,
+        });
 
-    try {
-      await window.electronAPI.db.connect(connectionId, {
-        ...connection.config,
-      });
+        const result = await window.electronAPI.db.dropCollection(connectionId, collectionName);
 
-      const result = await window.electronAPI.db.dropCollection(connectionId, collectionName);
+        if (result.success) {
+          // Close any tabs for this collection
+          setState((prev) => ({
+            ...prev,
+            tabs: prev.tabs.filter(
+              (t) => !(t.connectionId === connectionId && t.collection.name === collectionName),
+            ),
+          }));
+          // Refresh collections
+          handleRefreshConnection(connectionId);
+        }
 
-      if (result.success) {
-        // Close any tabs for this collection
-        setState(prev => ({
-          ...prev,
-          tabs: prev.tabs.filter(t => !(t.connectionId === connectionId && t.collection.name === collectionName)),
-        }));
-        // Refresh collections
-        handleRefreshConnection(connectionId);
+        return result;
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to drop collection',
+        };
       }
+    },
+    [state.connections, handleRefreshConnection],
+  );
 
-      return result;
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Failed to drop collection' };
-    }
-  }, [state.connections, handleRefreshConnection]);
+  const handleTruncateCollection = useCallback(
+    async (connectionId: string, collectionName: string) => {
+      const connection = state.connections.find((c) => c.id === connectionId);
+      if (!connection) return { success: false, error: 'Connection not found' };
 
-  const handleTruncateCollection = useCallback(async (connectionId: string, collectionName: string) => {
-    const connection = state.connections.find(c => c.id === connectionId);
-    if (!connection) return { success: false, error: 'Connection not found' };
+      try {
+        await window.electronAPI.db.connect(connectionId, {
+          ...connection.config,
+        });
 
-    try {
-      await window.electronAPI.db.connect(connectionId, {
-        ...connection.config,
-      });
+        const result = await window.electronAPI.db.truncateCollection(connectionId, collectionName);
 
-      const result = await window.electronAPI.db.truncateCollection(connectionId, collectionName);
+        if (result.success) {
+          // Refresh collections to update count
+          handleRefreshConnection(connectionId);
+        }
 
-      if (result.success) {
-        // Refresh collections to update count
-        handleRefreshConnection(connectionId);
+        return result;
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to truncate collection',
+        };
       }
+    },
+    [state.connections, state.tabs, handleRefreshConnection],
+  );
 
-      return result;
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Failed to truncate collection' };
-    }
-  }, [state.connections, state.tabs, handleRefreshConnection]);
+  const handleCreateCollection = useCallback(
+    async (connectionId: string, config: Record<string, unknown>) => {
+      const connection = state.connections.find((c) => c.id === connectionId);
+      if (!connection) return { success: false, error: 'Connection not found' };
 
-  const handleCreateCollection = useCallback(async (connectionId: string, config: Record<string, unknown>) => {
-    const connection = state.connections.find(c => c.id === connectionId);
-    if (!connection) return { success: false, error: 'Connection not found' };
+      try {
+        // Ensure we're connected
+        await window.electronAPI.db.connect(connectionId, connection.config);
 
-    try {
-      // Ensure we're connected
-      await window.electronAPI.db.connect(connectionId, connection.config);
+        const result = await window.electronAPI.db.createCollection(connectionId, config);
 
-      const result = await window.electronAPI.db.createCollection(connectionId, config);
+        if (result.success) {
+          // Refresh collections to show the new one
+          handleRefreshConnection(connectionId);
+        }
 
-      if (result.success) {
-        // Refresh collections to show the new one
-        handleRefreshConnection(connectionId);
+        return result;
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to create collection',
+        };
       }
-
-      return result;
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Failed to create collection' };
-    }
-  }, [state.connections, handleRefreshConnection]);
+    },
+    [state.connections, handleRefreshConnection],
+  );
 
   // Update notification handlers
   useEffect(() => {
@@ -319,7 +343,7 @@ const App: React.FC = () => {
     });
 
     window.electronAPI.update.onAvailable((info) => {
-      setUpdateStatus(prev => ({
+      setUpdateStatus((prev) => ({
         ...prev,
         available: true,
         downloading: false,
@@ -333,7 +357,7 @@ const App: React.FC = () => {
     });
 
     window.electronAPI.update.onDownloaded((info) => {
-      setUpdateStatus(prev => ({
+      setUpdateStatus((prev) => ({
         ...prev,
         downloaded: true,
         downloading: false,
@@ -348,7 +372,7 @@ const App: React.FC = () => {
     });
 
     window.electronAPI.update.onDownloadProgress((progress) => {
-      setUpdateStatus(prev => ({
+      setUpdateStatus((prev) => ({
         ...prev,
         downloading: true,
         progress,
@@ -369,7 +393,7 @@ const App: React.FC = () => {
   const handleUpdateNow = async () => {
     const result = await window.electronAPI?.update?.downloadUpdate();
     if (result?.success) {
-      setUpdateStatus(prev => ({ ...prev, downloading: true, progress: 0 }));
+      setUpdateStatus((prev) => ({ ...prev, downloading: true, progress: 0 }));
     } else {
       message.error(result?.error || 'Failed to start download');
     }
@@ -395,7 +419,10 @@ const App: React.FC = () => {
   // Always available in dev mode (when running from source)
   useEffect(() => {
     // Show available shortcuts in console
-    console.log('%c🧪 Dev Mode: Update Notification Test Shortcuts', 'color: #4CAF50; font-weight: bold; font-size: 14px');
+    console.log(
+      '%c🧪 Dev Mode: Update Notification Test Shortcuts',
+      'color: #4CAF50; font-weight: bold; font-size: 14px',
+    );
     console.log('%cCtrl+Shift+U - Show "Update Available"', 'color: #2196F3');
     console.log('%cCtrl+Shift+D - Show "Downloading" (with progress)', 'color: #2196F3');
     console.log('%cCtrl+Shift+R - Show "Update Downloaded"', 'color: #2196F3');
@@ -419,39 +446,39 @@ const App: React.FC = () => {
           },
         });
       }
-      
+
       // Ctrl+Shift+D: Show "Downloading" (simulate progress)
       if (e.ctrlKey && e.shiftKey && e.key === 'D') {
         e.preventDefault();
         console.log('🧪 Dev: Showing "Downloading" notification with progress');
-        setUpdateStatus(prev => ({
+        setUpdateStatus((prev) => ({
           ...prev,
           available: false,
           downloading: true,
           progress: 0,
         }));
-        
+
         // Simulate download progress
         let progress = 0;
         const interval = setInterval(() => {
           progress += 10;
           if (progress >= 100) {
             clearInterval(interval);
-            setUpdateStatus(prev => ({
+            setUpdateStatus((prev) => ({
               ...prev,
               downloading: false,
               downloaded: true,
               progress: 100,
             }));
           } else {
-            setUpdateStatus(prev => ({
+            setUpdateStatus((prev) => ({
               ...prev,
               progress,
             }));
           }
         }, 200);
       }
-      
+
       // Ctrl+Shift+R: Show "Update Downloaded"
       if (e.ctrlKey && e.shiftKey && e.key === 'R') {
         e.preventDefault();
@@ -469,7 +496,7 @@ const App: React.FC = () => {
           },
         });
       }
-      
+
       // Ctrl+Shift+H: Hide all notifications
       if (e.ctrlKey && e.shiftKey && e.key === 'H') {
         e.preventDefault();
@@ -533,7 +560,9 @@ const App: React.FC = () => {
       />
       <UpdateNotification
         visible={updateStatus.available || updateStatus.downloaded || updateStatus.downloading}
-        updateAvailable={updateStatus.available && !updateStatus.downloading && !updateStatus.downloaded}
+        updateAvailable={
+          updateStatus.available && !updateStatus.downloading && !updateStatus.downloaded
+        }
         updateDownloaded={updateStatus.downloaded}
         downloading={updateStatus.downloading}
         progress={updateStatus.progress}

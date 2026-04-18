@@ -11,23 +11,31 @@ import { Document, SortField } from '../types';
  * @returns true if the value appears to be an image URL
  */
 export function isImageUrl(value: unknown, key?: string): boolean {
-    if (typeof value !== 'string') return false;
+  if (typeof value !== 'string') return false;
 
-    // Check for data:image URLs (always images)
-    if (value.startsWith('data:image')) return true;
+  // Check for data:image URLs (always images)
+  if (value.startsWith('data:image')) return true;
 
-    // Check for http/https URLs
-    const isUrl = value.startsWith('http://') || value.startsWith('https://');
-    if (!isUrl) return false;
+  // Check for http/https URLs
+  const isUrl = value.startsWith('http://') || value.startsWith('https://');
+  if (!isUrl) return false;
 
-    // Check for image file extensions
-    const hasImageExtension = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?|$)/i.test(value);
+  // Check for image file extensions
+  const hasImageExtension = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?|$)/i.test(value);
 
-    // Check for image keywords in field name
-    const imageUrlFields = ['image_url', 'imageUrl', 'image', 'img_url', 'imgUrl', 'photo_url', 'photoUrl'];
-    const hasImageKeyword = imageUrlFields.some(field => key === field);
+  // Check for image keywords in field name
+  const imageUrlFields = [
+    'image_url',
+    'imageUrl',
+    'image',
+    'img_url',
+    'imgUrl',
+    'photo_url',
+    'photoUrl',
+  ];
+  const hasImageKeyword = imageUrlFields.some((field) => key === field);
 
-    return hasImageExtension || hasImageKeyword;
+  return hasImageExtension || hasImageKeyword;
 }
 
 /**
@@ -36,13 +44,13 @@ export function isImageUrl(value: unknown, key?: string): boolean {
  * @returns Array of image objects with key and url
  */
 export function getImages(payload: Record<string, unknown>): Array<{ key: string; url: string }> {
-    const images: Array<{ key: string; url: string }> = [];
-    Object.entries(payload).forEach(([key, value]) => {
-        if (isImageUrl(value, key)) {
-            images.push({ key, url: value as string });
-        }
-    });
-    return images;
+  const images: Array<{ key: string; url: string }> = [];
+  Object.entries(payload).forEach(([key, value]) => {
+    if (isImageUrl(value, key)) {
+      images.push({ key, url: value as string });
+    }
+  });
+  return images;
 }
 
 /**
@@ -51,8 +59,8 @@ export function getImages(payload: Record<string, unknown>): Array<{ key: string
  * @returns The first image URL found, or null if none
  */
 export function getFirstImageUrl(payload: Record<string, unknown>): string | null {
-    const images = getImages(payload);
-    return images.length > 0 ? images[0].url : null;
+  const images = getImages(payload);
+  return images.length > 0 ? images[0].url : null;
 }
 
 /**
@@ -61,7 +69,7 @@ export function getFirstImageUrl(payload: Record<string, unknown>): string | nul
  * @returns Document ID as string
  */
 export function getDocId(doc: Document): string {
-    return String(doc.primary.value);
+  return String(doc.primary.value);
 }
 
 /**
@@ -70,18 +78,18 @@ export function getDocId(doc: Document): string {
  * @returns A unique hash string for the document set
  */
 export function getDocumentSetHash(documents: Document[]): string {
-    if (documents.length === 0) return 'empty';
-    // Sort IDs to ensure consistent hash regardless of order
-    const sortedIds = documents.map(d => getDocId(d)).sort();
-    // Simple hash function (FNV-1a inspired)
-    let hash = 2166136261;
-    for (const id of sortedIds) {
-        for (let i = 0; i < id.length; i++) {
-            hash ^= id.charCodeAt(i);
-            hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
-        }
+  if (documents.length === 0) return 'empty';
+  // Sort IDs to ensure consistent hash regardless of order
+  const sortedIds = documents.map((d) => getDocId(d)).sort();
+  // Simple hash function (FNV-1a inspired)
+  let hash = 2166136261;
+  for (const id of sortedIds) {
+    for (let i = 0; i < id.length; i++) {
+      hash ^= id.charCodeAt(i);
+      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
     }
-    return hash.toString(36);
+  }
+  return hash.toString(36);
 }
 
 /**
@@ -91,15 +99,15 @@ export function getDocumentSetHash(documents: Document[]): string {
  * @returns The field value or undefined if not found
  */
 export function getDocumentFieldValue(doc: Document, field: string): any {
-    // Check primary key
-    if (doc.primary.name === field) {
-        return doc.primary.value;
-    }
-    // Check payload
-    if (doc.payload && field in doc.payload) {
-        return doc.payload[field];
-    }
-    return undefined;
+  // Check primary key
+  if (doc.primary.name === field) {
+    return doc.primary.value;
+  }
+  // Check payload
+  if (doc.payload && field in doc.payload) {
+    return doc.payload[field];
+  }
+  return undefined;
 }
 
 /**
@@ -109,29 +117,28 @@ export function getDocumentFieldValue(doc: Document, field: string): any {
  * @returns New sorted array of documents
  */
 export function sortDocuments(documents: Document[], sortFields: SortField[]): Document[] {
-    return [...documents].sort((a, b) => {
-        for (const sort of sortFields) {
-            const aValue = getDocumentFieldValue(a, sort.field);
-            const bValue = getDocumentFieldValue(b, sort.field);
+  return [...documents].sort((a, b) => {
+    for (const sort of sortFields) {
+      const aValue = getDocumentFieldValue(a, sort.field);
+      const bValue = getDocumentFieldValue(b, sort.field);
 
-            // Handle null/undefined values
-            if (aValue == null && bValue == null) continue;
-            if (aValue == null) return sort.order === 'asc' ? 1 : -1;
-            if (bValue == null) return sort.order === 'asc' ? -1 : 1;
+      // Handle null/undefined values
+      if (aValue == null && bValue == null) continue;
+      if (aValue == null) return sort.order === 'asc' ? 1 : -1;
+      if (bValue == null) return sort.order === 'asc' ? -1 : 1;
 
-            // Compare values
-            let comparison = 0;
-            if (typeof aValue === 'number' && typeof bValue === 'number') {
-                comparison = aValue - bValue;
-            } else {
-                comparison = String(aValue).localeCompare(String(bValue));
-            }
+      // Compare values
+      let comparison = 0;
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue;
+      } else {
+        comparison = String(aValue).localeCompare(String(bValue));
+      }
 
-            if (comparison !== 0) {
-                return sort.order === 'asc' ? comparison : -comparison;
-            }
-        }
-        return 0;
-    });
+      if (comparison !== 0) {
+        return sort.order === 'asc' ? comparison : -comparison;
+      }
+    }
+    return 0;
+  });
 }
-

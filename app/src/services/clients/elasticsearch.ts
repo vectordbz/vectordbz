@@ -58,8 +58,14 @@ function sparseToESQueryVector(indices: number[], values: number[]): Record<stri
 }
 
 /** Convert ES sparse_vector object back to app format (indices + values). */
-function esSparseToIndicesValues(obj: Record<string, number>): { indices: number[]; values: number[] } {
-  const keys = Object.keys(obj).map(Number).filter((n) => !Number.isNaN(n)).sort((a, b) => a - b);
+function esSparseToIndicesValues(obj: Record<string, number>): {
+  indices: number[];
+  values: number[];
+} {
+  const keys = Object.keys(obj)
+    .map(Number)
+    .filter((n) => !Number.isNaN(n))
+    .sort((a, b) => a - b);
   const indices = keys;
   const values = keys.map((k) => obj[String(k)] ?? 0);
   return { indices, values };
@@ -103,7 +109,11 @@ export const elasticsearchCreateCollectionSchema: DynamicFormSchema = {
           description: 'Unique name (lowercase, alphanumeric and underscores)',
           rules: [
             { type: 'minLength', value: 1, message: 'Index name is required' },
-            { type: 'pattern', value: '^[a-z0-9_-]+$', message: 'Must be lowercase letters, numbers, hyphens or underscores' },
+            {
+              type: 'pattern',
+              value: '^[a-z0-9_-]+$',
+              message: 'Must be lowercase letters, numbers, hyphens or underscores',
+            },
           ],
         },
       ],
@@ -120,7 +130,11 @@ export const elasticsearchCreateCollectionSchema: DynamicFormSchema = {
           direction: 'vertical',
           defaultValue: 'single',
           options: [
-            { label: 'Single Vector', value: 'single', description: 'One dense vector per document' },
+            {
+              label: 'Single Vector',
+              value: 'single',
+              description: 'One dense vector per document',
+            },
             { label: 'Named Vectors', value: 'named', description: 'Multiple named vector fields' },
           ],
         },
@@ -154,9 +168,30 @@ export const elasticsearchCreateCollectionSchema: DynamicFormSchema = {
           showWhen: { field: 'vectorType', operator: 'equals', value: 'named' },
           minItems: 1,
           itemFields: [
-            { key: 'name', label: 'Field Name', type: 'text', required: true, placeholder: 'embedding' },
-            { key: 'size', label: 'Dimensions', type: 'number', required: true, defaultValue: ELASTICSEARCH_DEFAULTS.vectorSize, min: 1, max: 4096 },
-            { key: 'similarity', label: 'Similarity', type: 'select', required: true, defaultValue: ELASTICSEARCH_DEFAULTS.similarity, options: [...ELASTICSEARCH_DISTANCE_METRICS] },
+            {
+              key: 'name',
+              label: 'Field Name',
+              type: 'text',
+              required: true,
+              placeholder: 'embedding',
+            },
+            {
+              key: 'size',
+              label: 'Dimensions',
+              type: 'number',
+              required: true,
+              defaultValue: ELASTICSEARCH_DEFAULTS.vectorSize,
+              min: 1,
+              max: 4096,
+            },
+            {
+              key: 'similarity',
+              label: 'Similarity',
+              type: 'select',
+              required: true,
+              defaultValue: ELASTICSEARCH_DEFAULTS.similarity,
+              options: [...ELASTICSEARCH_DISTANCE_METRICS],
+            },
           ],
           addButtonText: 'Add Vector',
         },
@@ -177,7 +212,13 @@ export const elasticsearchCreateCollectionSchema: DynamicFormSchema = {
           itemLabel: 'Sparse field',
           minItems: 0,
           itemFields: [
-            { key: 'name', label: 'Field Name', type: 'text', required: true, placeholder: 'sparse_tokens' },
+            {
+              key: 'name',
+              label: 'Field Name',
+              type: 'text',
+              required: true,
+              placeholder: 'sparse_tokens',
+            },
           ],
           addButtonText: 'Add Sparse Vector',
         },
@@ -290,7 +331,7 @@ export class ElasticsearchClient implements VectorDBClient {
   async getCollections(): Promise<GetCollectionsResult> {
     try {
       const response = await this.client.cat.indices({ format: 'json' });
-      const indices = (response as any) as Array<{ index: string; 'docs.count'?: string }>;
+      const indices = response as any as Array<{ index: string; 'docs.count'?: string }>;
       const collections: Collection[] = [];
 
       for (const idx of indices) {
@@ -302,7 +343,8 @@ export class ElasticsearchClient implements VectorDBClient {
 
       return { success: true, collections };
     } catch (error: any) {
-      const message = error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to list indices';
+      const message =
+        error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to list indices';
       return { success: false, error: message };
     }
   }
@@ -321,7 +363,8 @@ export class ElasticsearchClient implements VectorDBClient {
       if (error?.meta?.statusCode === 404) {
         return { success: false, error: `Index ${index} not found` };
       }
-      const message = error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to get index info';
+      const message =
+        error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to get index info';
       return { success: false, error: message };
     }
   }
@@ -384,7 +427,10 @@ export class ElasticsearchClient implements VectorDBClient {
       const defaultVectorName =
         totalVectors === 1 ? Object.keys(vectors)[0] : COLLECTION_DEFAULT_VECTOR;
       if (totalVectors === 1 && vectors[defaultVectorName]) {
-        vectors[COLLECTION_DEFAULT_VECTOR] = { ...vectors[defaultVectorName], name: COLLECTION_DEFAULT_VECTOR };
+        vectors[COLLECTION_DEFAULT_VECTOR] = {
+          ...vectors[defaultVectorName],
+          name: COLLECTION_DEFAULT_VECTOR,
+        };
       }
 
       return {
@@ -392,7 +438,18 @@ export class ElasticsearchClient implements VectorDBClient {
         schema: {
           primary: { name: 'id', type: 'string', autoID: false },
           fields,
-          vectors: totalVectors > 0 ? vectors : { [COLLECTION_DEFAULT_VECTOR]: { name: COLLECTION_DEFAULT_VECTOR, type: 'vector', vectorType: 'dense', size: 0, distance: 'cosine' } },
+          vectors:
+            totalVectors > 0
+              ? vectors
+              : {
+                  [COLLECTION_DEFAULT_VECTOR]: {
+                    name: COLLECTION_DEFAULT_VECTOR,
+                    type: 'vector',
+                    vectorType: 'dense',
+                    size: 0,
+                    distance: 'cosine',
+                  },
+                },
           multipleVectors: totalVectors > 1,
           hasVectors: totalVectors > 0,
         },
@@ -406,7 +463,10 @@ export class ElasticsearchClient implements VectorDBClient {
     }
   }
 
-  async getSearchCapabilities(_collection: string, schema?: CollectionSchema | null): Promise<SearchCapabilities> {
+  async getSearchCapabilities(
+    _collection: string,
+    schema?: CollectionSchema | null,
+  ): Promise<SearchCapabilities> {
     return mergeWithDefault(
       {
         dense: true,
@@ -417,7 +477,7 @@ export class ElasticsearchClient implements VectorDBClient {
         fusionStrategies: ['rrf', 'weighted', 'server'],
         serverSideHybridNative: true,
       },
-      schema
+      schema,
     );
   }
 
@@ -433,7 +493,11 @@ export class ElasticsearchClient implements VectorDBClient {
     };
 
     if (vectorType === 'named') {
-      const namedVectors = config.namedVectors as Array<{ name: string; size: number; similarity: string }>;
+      const namedVectors = config.namedVectors as Array<{
+        name: string;
+        size: number;
+        similarity: string;
+      }>;
       for (const v of namedVectors || []) {
         const fieldName = (v.name || 'embedding').toLowerCase().replace(/[^a-z0-9_]/g, '_');
         properties[fieldName] = {
@@ -476,7 +540,8 @@ export class ElasticsearchClient implements VectorDBClient {
       log.info('[Elasticsearch] Created index:', name);
       return { success: true };
     } catch (error: any) {
-      const message = error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to create index';
+      const message =
+        error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to create index';
       return { success: false, error: message };
     }
   }
@@ -485,7 +550,10 @@ export class ElasticsearchClient implements VectorDBClient {
     return elasticsearchCreateCollectionSchema;
   }
 
-  async upsertDocument(collection: string, data: UpsertDocumentData): Promise<UpsertDocumentResult> {
+  async upsertDocument(
+    collection: string,
+    data: UpsertDocumentData,
+  ): Promise<UpsertDocumentResult> {
     const index = toIndexName(collection);
     const { document } = data;
     const id = document?.primary?.value != null ? String(document.primary.value) : undefined;
@@ -540,13 +608,24 @@ export class ElasticsearchClient implements VectorDBClient {
           size: raw.length,
           value: { data: raw },
         };
-      } else if (raw && typeof raw === 'object' && Array.isArray((raw as any).indices) && Array.isArray((raw as any).values)) {
+      } else if (
+        raw &&
+        typeof raw === 'object' &&
+        Array.isArray((raw as any).indices) &&
+        Array.isArray((raw as any).values)
+      ) {
         vectors[key] = {
           key,
           vectorType: 'sparse',
           value: { indices: (raw as any).indices, values: (raw as any).values },
         };
-      } else if (raw && typeof raw === 'object' && !Array.isArray(raw) && raw !== null && !('indices' in raw)) {
+      } else if (
+        raw &&
+        typeof raw === 'object' &&
+        !Array.isArray(raw) &&
+        raw !== null &&
+        !('indices' in raw)
+      ) {
         const obj = raw as Record<string, number>;
         const { indices, values } = esSparseToIndicesValues(obj);
         if (indices.length > 0) {
@@ -573,7 +652,10 @@ export class ElasticsearchClient implements VectorDBClient {
     };
   }
 
-  async getDocuments(collection: string, options?: GetDocumentsOptions): Promise<GetDocumentsResult> {
+  async getDocuments(
+    collection: string,
+    options?: GetDocumentsOptions,
+  ): Promise<GetDocumentsResult> {
     const index = toIndexName(collection);
     const limit = options?.limit ?? 50;
     const from = typeof options?.offset === 'number' ? options.offset : 0;
@@ -584,9 +666,7 @@ export class ElasticsearchClient implements VectorDBClient {
       const vectorFieldNames = Object.keys(vectorSchema);
       const esVectorFieldNames = [
         ...new Set(
-          vectorFieldNames.map((k) =>
-            k === COLLECTION_DEFAULT_VECTOR ? 'embedding' : k
-          )
+          vectorFieldNames.map((k) => (k === COLLECTION_DEFAULT_VECTOR ? 'embedding' : k)),
         ),
       ];
 
@@ -629,11 +709,11 @@ export class ElasticsearchClient implements VectorDBClient {
 
       const hits = (response as any).hits?.hits ?? [];
       const documents: Document[] = hits.map((hit: any) =>
-        this.hitToDocument(hit, vectorFieldNames.length > 0 ? vectorFieldNames : ['embedding'])
+        this.hitToDocument(hit, vectorFieldNames.length > 0 ? vectorFieldNames : ['embedding']),
       );
 
       const total = (response as any).hits?.total;
-      const totalValue = typeof total === 'object' ? total?.value ?? total : total;
+      const totalValue = typeof total === 'object' ? (total?.value ?? total) : total;
       const nextFrom = from + hits.length;
       const nextOffset = nextFrom < (totalValue ?? 0) ? nextFrom : null;
 
@@ -647,7 +727,8 @@ export class ElasticsearchClient implements VectorDBClient {
       if (error?.meta?.statusCode === 404) {
         return { success: false, error: `Index ${index} not found` };
       }
-      const message = error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to get documents';
+      const message =
+        error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to get documents';
       return { success: false, error: message };
     }
   }
@@ -655,7 +736,7 @@ export class ElasticsearchClient implements VectorDBClient {
   async search(
     collection: string,
     vectors: Record<string, DocumentVector>,
-    options?: SearchOptions
+    options?: SearchOptions,
   ): Promise<SearchResult> {
     const startTime = performance.now();
     const index = toIndexName(collection);
@@ -666,14 +747,11 @@ export class ElasticsearchClient implements VectorDBClient {
         schemaResult.schema?.vectors != null
           ? Object.keys(schemaResult.schema.vectors).filter((k) => k !== COLLECTION_DEFAULT_VECTOR)
           : [];
-      const defaultVecName =
-        schemaResult.schema?.vectors?.[COLLECTION_DEFAULT_VECTOR]
-          ? COLLECTION_DEFAULT_VECTOR
-          : vectorFields[0] ?? 'embedding';
+      const defaultVecName = schemaResult.schema?.vectors?.[COLLECTION_DEFAULT_VECTOR]
+        ? COLLECTION_DEFAULT_VECTOR
+        : (vectorFields[0] ?? 'embedding');
 
-      const filterClause = options?.filter
-        ? buildElasticsearchFilter(options.filter)
-        : undefined;
+      const filterClause = options?.filter ? buildElasticsearchFilter(options.filter) : undefined;
 
       const limit = options?.limit ?? 10;
       const numCandidates = Math.max(limit * 10, ELASTICSEARCH_DEFAULTS.numCandidates);
@@ -697,7 +775,7 @@ export class ElasticsearchClient implements VectorDBClient {
           : null;
 
       const knnFieldName =
-        denseKey === COLLECTION_DEFAULT_VECTOR ? 'embedding' : denseKey ?? 'embedding';
+        denseKey === COLLECTION_DEFAULT_VECTOR ? 'embedding' : (denseKey ?? 'embedding');
       const sparseFieldName = sparseKey ?? 'sparse_tokens';
 
       const useLexical = Boolean(options?.lexicalQuery?.trim());
@@ -752,7 +830,10 @@ export class ElasticsearchClient implements VectorDBClient {
       }
 
       if (subSearches.length === 0) {
-        return { success: false, error: 'Provide at least one of: dense vector, sparse vector, or lexical query' };
+        return {
+          success: false,
+          error: 'Provide at least one of: dense vector, sparse vector, or lexical query',
+        };
       }
 
       if (subSearches.length === 1) {
@@ -791,7 +872,8 @@ export class ElasticsearchClient implements VectorDBClient {
                 ...(s.knn.min_score != null && { similarity: s.knn.min_score }),
               },
             };
-            if (filterClause && !(filterClause as any).match_all) knnRetriever.knn.filter = filterClause;
+            if (filterClause && !(filterClause as any).match_all)
+              knnRetriever.knn.filter = filterClause;
             retrievers.push(knnRetriever);
           } else if (s.query) {
             const queryClause =
@@ -821,7 +903,9 @@ export class ElasticsearchClient implements VectorDBClient {
         const errMsg = retrieverError?.meta?.body?.error?.reason ?? retrieverError?.message ?? '';
         const isRrfLicenseError =
           subSearches.length > 1 &&
-          (errMsg.includes('RRF') || errMsg.includes('Reciprocal Rank Fusion') || errMsg.includes('non-compliant'));
+          (errMsg.includes('RRF') ||
+            errMsg.includes('Reciprocal Rank Fusion') ||
+            errMsg.includes('non-compliant'));
         if (isRrfLicenseError) {
           // Fallback: run knn and query separately, merge with RRF on the client (free ES has no server-side RRF)
           const k = 60;
@@ -865,7 +949,7 @@ export class ElasticsearchClient implements VectorDBClient {
             .slice(0, limit)
             .map(([, v]) => v.hit);
           const documents: Document[] = merged.map((hit: any) =>
-            this.hitToDocument(hit, allVectorFields)
+            this.hitToDocument(hit, allVectorFields),
           );
           const searchTimeMs = performance.now() - startTime;
           return { success: true, documents, metadata: { searchTimeMs } };
@@ -878,7 +962,7 @@ export class ElasticsearchClient implements VectorDBClient {
         ? Object.keys(schemaResult.schema.vectors)
         : [defaultVecName, 'embedding'];
       const documents: Document[] = hits.map((hit: any) =>
-        this.hitToDocument(hit, allVectorFields)
+        this.hitToDocument(hit, allVectorFields),
       );
 
       const searchTimeMs = performance.now() - startTime;
@@ -896,7 +980,10 @@ export class ElasticsearchClient implements VectorDBClient {
     }
   }
 
-  async deleteDocument(collection: string, primary: Document['primary']): Promise<DeleteDocumentResult> {
+  async deleteDocument(
+    collection: string,
+    primary: Document['primary'],
+  ): Promise<DeleteDocumentResult> {
     const index = toIndexName(collection);
     const id = String(primary.value);
     try {
@@ -923,7 +1010,8 @@ export class ElasticsearchClient implements VectorDBClient {
       const deleted = (response as any).deleted ?? 0;
       return { success: true, deletedCount: deleted };
     } catch (error: any) {
-      const message = error?.meta?.body?.error?.reason ?? error?.message ?? 'Delete by query failed';
+      const message =
+        error?.meta?.body?.error?.reason ?? error?.message ?? 'Delete by query failed';
       return { success: false, error: message };
     }
   }
@@ -937,7 +1025,8 @@ export class ElasticsearchClient implements VectorDBClient {
       if (error?.meta?.statusCode === 404) {
         return { success: true };
       }
-      const message = error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to delete index';
+      const message =
+        error?.meta?.body?.error?.reason ?? error?.message ?? 'Failed to delete index';
       return { success: false, error: message };
     }
   }

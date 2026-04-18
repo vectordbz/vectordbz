@@ -101,7 +101,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ position, items, onClose }) =
         left: adjustedPosition.x,
         top: adjustedPosition.y,
         zIndex: 1050,
-        boxShadow: '0 3px 6px -4px rgba(0,0,0,.12), 0 6px 16px 0 rgba(0,0,0,.08), 0 9px 28px 8px rgba(0,0,0,.05)',
+        boxShadow:
+          '0 3px 6px -4px rgba(0,0,0,.12), 0 6px 16px 0 rgba(0,0,0,.08), 0 9px 28px 8px rgba(0,0,0,.05)',
         borderRadius: 8,
         overflow: 'hidden',
       }}
@@ -118,4 +119,3 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ position, items, onClose }) =
 };
 
 export default ContextMenu;
-

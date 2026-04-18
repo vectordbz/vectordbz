@@ -8,7 +8,7 @@
 
 /* Dark theme (default) */
 :root,
-[data-theme="dark"] {
+[data-theme='dark'] {
   --bg-primary: #0f0f14;
   --bg-secondary: #16161e;
   --bg-elevated: #1e1e2a;
@@ -29,7 +29,7 @@
 }
 
 /* Light theme */
-[data-theme="light"] {
+[data-theme='light'] {
   --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
   --bg-elevated: #ffffff;
@@ -49,7 +49,9 @@
   --code-bg: #f1f5f9;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -82,49 +84,56 @@ html, body, #root {
 }
 
 body {
-  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'Inter',
+    'SF Pro Display',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 /* Custom scrollbar - Dark */
-[data-theme="dark"] ::-webkit-scrollbar {
+[data-theme='dark'] ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-track {
+[data-theme='dark'] ::-webkit-scrollbar-track {
   background: var(--bg-secondary);
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-thumb {
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
   background: var(--border-color);
   border-radius: 4px;
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
   background: var(--border-light);
 }
 
 /* Custom scrollbar - Light */
-[data-theme="light"] ::-webkit-scrollbar {
+[data-theme='light'] ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-[data-theme="light"] ::-webkit-scrollbar-track {
+[data-theme='light'] ::-webkit-scrollbar-track {
   background: var(--bg-hover);
 }
 
-[data-theme="light"] ::-webkit-scrollbar-thumb {
+[data-theme='light'] ::-webkit-scrollbar-thumb {
   background: var(--border-light);
   border-radius: 4px;
 }
 
-[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
 
@@ -143,7 +152,9 @@ body {
 .ant-layout-sider {
   border-right: 1px solid var(--border-color) !important;
   background: var(--bg-secondary) !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ant-layout-sider-trigger {
@@ -154,7 +165,9 @@ body {
 .ant-card {
   background: var(--bg-secondary) !important;
   border-color: var(--border-color) !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ant-input,
@@ -163,13 +176,15 @@ body {
 .ant-input-number {
   background: var(--bg-primary) !important;
   border-color: var(--border-color) !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-[data-theme="light"] .ant-input,
-[data-theme="light"] .ant-input-affix-wrapper,
-[data-theme="light"] .ant-select-selector,
-[data-theme="light"] .ant-input-number {
+[data-theme='light'] .ant-input,
+[data-theme='light'] .ant-input-affix-wrapper,
+[data-theme='light'] .ant-select-selector,
+[data-theme='light'] .ant-input-number {
   background: var(--bg-secondary) !important;
 }
 
@@ -183,10 +198,12 @@ body {
 .ant-table-thead > tr > th {
   background: var(--bg-elevated) !important;
   border-bottom: 1px solid var(--border-color) !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-[data-theme="light"] .ant-table-thead > tr > th {
+[data-theme='light'] .ant-table-thead > tr > th {
   background: var(--bg-hover) !important;
 }
 
@@ -199,7 +216,7 @@ body {
   background: var(--bg-elevated) !important;
 }
 
-[data-theme="light"] .ant-table-tbody > tr:hover > td {
+[data-theme='light'] .ant-table-tbody > tr:hover > td {
   background: var(--bg-hover) !important;
 }
 
@@ -228,7 +245,9 @@ body {
 .ant-modal-header {
   background: var(--bg-secondary) !important;
   border-bottom: 1px solid var(--border-color) !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ant-drawer-content {
@@ -239,7 +258,9 @@ body {
 .ant-drawer-header {
   background: var(--bg-secondary) !important;
   border-bottom: 1px solid var(--border-color) !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ant-popover-inner {
@@ -263,13 +284,24 @@ body {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .fade-in {
@@ -283,7 +315,10 @@ body {
 /* Theme transition */
 .theme-transition,
 .theme-transition * {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease !important;
 }
 
 /* Status indicators */
@@ -310,6 +345,8 @@ body {
 }
 
 /* Code/Monospace */
-code, pre, .mono {
+code,
+pre,
+.mono {
   font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
 }

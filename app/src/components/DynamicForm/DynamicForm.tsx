@@ -47,12 +47,12 @@ const { TextArea, Password } = Input;
 
 const evaluateCondition = (
   condition: ConditionalRule,
-  formValues: Record<string, unknown>
+  formValues: Record<string, unknown>,
 ): boolean => {
   const fieldValue = getNestedValue(formValues, condition.field);
-  
+
   let result = false;
-  
+
   switch (condition.operator) {
     case 'equals':
       result = fieldValue === condition.value;
@@ -61,7 +61,7 @@ const evaluateCondition = (
       result = fieldValue !== condition.value;
       break;
     case 'contains':
-      result = Array.isArray(fieldValue) 
+      result = Array.isArray(fieldValue)
         ? fieldValue.includes(condition.value)
         : String(fieldValue).includes(String(condition.value));
       break;
@@ -77,11 +77,17 @@ const evaluateCondition = (
       result = Number(fieldValue) < Number(condition.value);
       break;
     case 'isEmpty':
-      result = fieldValue === undefined || fieldValue === null || fieldValue === '' || 
+      result =
+        fieldValue === undefined ||
+        fieldValue === null ||
+        fieldValue === '' ||
         (Array.isArray(fieldValue) && fieldValue.length === 0);
       break;
     case 'isNotEmpty':
-      result = fieldValue !== undefined && fieldValue !== null && fieldValue !== '' &&
+      result =
+        fieldValue !== undefined &&
+        fieldValue !== null &&
+        fieldValue !== '' &&
         !(Array.isArray(fieldValue) && fieldValue.length === 0);
       break;
     case 'in':
@@ -93,17 +99,17 @@ const evaluateCondition = (
     default:
       result = true;
   }
-  
+
   // Handle AND conditions
   if (condition.and && condition.and.length > 0) {
-    result = result && condition.and.every(c => evaluateCondition(c, formValues));
+    result = result && condition.and.every((c) => evaluateCondition(c, formValues));
   }
-  
+
   // Handle OR conditions
   if (condition.or && condition.or.length > 0) {
-    result = result || condition.or.some(c => evaluateCondition(c, formValues));
+    result = result || condition.or.some((c) => evaluateCondition(c, formValues));
   }
-  
+
   return result;
 };
 
@@ -116,11 +122,15 @@ const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => 
   }, obj);
 };
 
-const setNestedValue = (obj: Record<string, unknown>, path: string, value: unknown): Record<string, unknown> => {
+const setNestedValue = (
+  obj: Record<string, unknown>,
+  path: string,
+  value: unknown,
+): Record<string, unknown> => {
   const result = { ...obj };
   const parts = path.split('.');
   let current: Record<string, unknown> = result;
-  
+
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];
     if (!(part in current) || typeof current[part] !== 'object') {
@@ -130,7 +140,7 @@ const setNestedValue = (obj: Record<string, unknown>, path: string, value: unkno
     }
     current = current[part] as Record<string, unknown>;
   }
-  
+
   current[parts[parts.length - 1]] = value;
   return result;
 };
@@ -163,7 +173,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({
   const isDisabled = disabled || field.disabled;
   const isReadOnly = readOnly || field.readOnly;
   const fieldPath = parentPath ? `${parentPath}.${field.key}` : field.key;
-  
+
   // Handle custom render
   if (field.type === 'custom' && field.render) {
     return <>{field.render({ value, onChange, field, formValues })}</>;
@@ -307,7 +317,11 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({
             value={value as (string | number | boolean)[]}
             onChange={onChange}
             disabled={isDisabled}
-            style={{ display: 'flex', flexDirection: field.direction === 'horizontal' ? 'row' : 'column', gap: 8 }}
+            style={{
+              display: 'flex',
+              flexDirection: field.direction === 'horizontal' ? 'row' : 'column',
+              gap: 8,
+            }}
           >
             {field.options.map((opt: SelectOption) => (
               <Checkbox key={String(opt.value)} value={opt.value} disabled={opt.disabled}>
@@ -334,9 +348,13 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({
           onChange={(e) => onChange(e.target.value)}
           disabled={isDisabled}
           buttonStyle={field.buttonStyle}
-          style={{ display: 'flex', flexDirection: field.direction === 'horizontal' ? 'row' : 'column', gap: 8 }}
+          style={{
+            display: 'flex',
+            flexDirection: field.direction === 'horizontal' ? 'row' : 'column',
+            gap: 8,
+          }}
         >
-          {field.options?.map((opt: SelectOption) => (
+          {field.options?.map((opt: SelectOption) =>
             field.buttonStyle ? (
               <Radio.Button key={String(opt.value)} value={opt.value} disabled={opt.disabled}>
                 {opt.label}
@@ -350,8 +368,8 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({
                   </Text>
                 )}
               </Radio>
-            )
-          ))}
+            ),
+          )}
         </Radio.Group>
       );
 
@@ -556,7 +574,7 @@ const ObjectField: React.FC<ObjectFieldProps> = ({
   parentPath,
 }) => {
   const [collapsed, setCollapsed] = useState(field.defaultCollapsed ?? false);
-  
+
   const handleFieldChange = (fieldKey: string, fieldValue: unknown) => {
     onChange({ ...value, [fieldKey]: fieldValue });
   };
@@ -576,7 +594,9 @@ const ObjectField: React.FC<ObjectFieldProps> = ({
               <div style={{ marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
                 <Text style={{ fontSize: 13 }}>
                   {subField.label}
-                  {subField.required && <span style={{ color: 'var(--accent-error)', marginLeft: 2 }}>*</span>}
+                  {subField.required && (
+                    <span style={{ color: 'var(--accent-error)', marginLeft: 2 }}>*</span>
+                  )}
                 </Text>
                 {subField.tooltip && (
                   <Tooltip title={subField.tooltip}>
@@ -684,11 +704,12 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
 
   const handleAdd = () => {
     if (field.maxItems && value.length >= field.maxItems) return;
-    
-    const newItem = field.itemType === 'object' && field.itemFields
-      ? field.itemFields.reduce((acc, f) => ({ ...acc, [f.key]: f.defaultValue }), {})
-      : field.itemOptions?.defaultValue ?? '';
-    
+
+    const newItem =
+      field.itemType === 'object' && field.itemFields
+        ? field.itemFields.reduce((acc, f) => ({ ...acc, [f.key]: f.defaultValue }), {})
+        : (field.itemOptions?.defaultValue ?? '');
+
     onChange([...value, newItem]);
   };
 
@@ -754,7 +775,7 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
               />
             </div>
           )}
-          
+
           <div style={{ flex: 1 }}>
             {isObjectArray ? (
               <Card
@@ -790,7 +811,7 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {field.itemFields?.map((subField) => {
                       const itemValue = item as Record<string, unknown>;
-                      
+
                       if (subField.showWhen && !evaluateCondition(subField.showWhen, formValues)) {
                         return null;
                       }
@@ -799,14 +820,27 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
                       return (
                         <div key={subField.key}>
                           {subField.label && subField.type !== 'checkbox' && (
-                            <div style={{ marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <div
+                              style={{
+                                marginBottom: 4,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
+                              }}
+                            >
                               <Text style={{ fontSize: 13 }}>
                                 {subField.label}
-                                {subField.required && <span style={{ color: 'var(--accent-error)', marginLeft: 2 }}>*</span>}
+                                {subField.required && (
+                                  <span style={{ color: 'var(--accent-error)', marginLeft: 2 }}>
+                                    *
+                                  </span>
+                                )}
                               </Text>
                               {subField.tooltip && (
                                 <Tooltip title={subField.tooltip}>
-                                  <QuestionCircleOutlined style={{ fontSize: 12, color: 'var(--text-muted)' }} />
+                                  <QuestionCircleOutlined
+                                    style={{ fontSize: 12, color: 'var(--text-muted)' }}
+                                  />
                                 </Tooltip>
                               )}
                             </div>
@@ -814,7 +848,9 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
                           <FieldRenderer
                             field={subField}
                             value={itemValue[subField.key]}
-                            onChange={(v) => handleItemChange(index, { ...itemValue, [subField.key]: v })}
+                            onChange={(v) =>
+                              handleItemChange(index, { ...itemValue, [subField.key]: v })
+                            }
                             formValues={formValues}
                             disabled={disabled}
                             readOnly={readOnly}
@@ -822,7 +858,10 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
                             parentPath={`${parentPath}[${index}]`}
                           />
                           {subField.description && (
-                            <Text type="secondary" style={{ fontSize: 12, marginTop: 2, display: 'block' }}>
+                            <Text
+                              type="secondary"
+                              style={{ fontSize: 12, marginTop: 2, display: 'block' }}
+                            >
                               {subField.description}
                             </Text>
                           )}
@@ -864,13 +903,7 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
       ))}
 
       {canAdd && !readOnly && (
-        <Button
-          type="dashed"
-          onClick={handleAdd}
-          icon={<PlusOutlined />}
-          disabled={disabled}
-          block
-        >
+        <Button type="dashed" onClick={handleAdd} icon={<PlusOutlined />} disabled={disabled} block>
           {field.addButtonText || `Add ${field.itemLabel || 'Item'}`}
         </Button>
       )}
@@ -929,20 +962,30 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
         return (
           <Col key={field.key} span={fieldSpan}>
             <Form.Item
-              label={field.type !== 'checkbox' || (field.options && field.options.length > 0) ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <span>{field.label}</span>
-                  {field.tooltip && (
-                    <Tooltip title={field.tooltip}>
-                      <QuestionCircleOutlined style={{ fontSize: 12, color: 'var(--text-muted)' }} />
-                    </Tooltip>
-                  )}
-                </div>
-              ) : undefined}
+              label={
+                field.type !== 'checkbox' || (field.options && field.options.length > 0) ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span>{field.label}</span>
+                    {field.tooltip && (
+                      <Tooltip title={field.tooltip}>
+                        <QuestionCircleOutlined
+                          style={{ fontSize: 12, color: 'var(--text-muted)' }}
+                        />
+                      </Tooltip>
+                    )}
+                  </div>
+                ) : undefined
+              }
               required={field.required}
               help={field.description}
-              labelCol={layout === 'horizontal' ? { span: field.labelSpan || labelSpan || 8 } : undefined}
-              wrapperCol={layout === 'horizontal' ? { span: 24 - (field.labelSpan || labelSpan || 8) } : undefined}
+              labelCol={
+                layout === 'horizontal' ? { span: field.labelSpan || labelSpan || 8 } : undefined
+              }
+              wrapperCol={
+                layout === 'horizontal'
+                  ? { span: 24 - (field.labelSpan || labelSpan || 8) }
+                  : undefined
+              }
               style={{ marginBottom: 16 }}
             >
               <FieldRenderer
@@ -971,9 +1014,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
         ghost
         activeKey={collapsed ? [] : ['section']}
         onChange={() => setCollapsed(!collapsed)}
-        expandIcon={({ isActive }) => (
-          <CaretRightOutlined rotate={isActive ? 90 : 0} />
-        )}
+        expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
         items={[
           {
             key: 'section',
@@ -1005,10 +1046,14 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
       <div style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
           {section.icon}
-          <Title level={5} style={{ margin: 0 }}>{section.title}</Title>
+          <Title level={5} style={{ margin: 0 }}>
+            {section.title}
+          </Title>
         </div>
         {section.description && (
-          <Text type="secondary" style={{ fontSize: 13 }}>{section.description}</Text>
+          <Text type="secondary" style={{ fontSize: 13 }}>
+            {section.description}
+          </Text>
         )}
       </div>
       {content}
@@ -1020,255 +1065,280 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
 // Main DynamicForm Component
 // ============================================
 
-const DynamicForm = forwardRef<DynamicFormInstance, DynamicFormProps>(({
-  schema,
-  initialValues = {},
-  onSubmit,
-  onCancel,
-  onValuesChange,
-  loading,
-  disabled,
-  readOnly,
-  footer,
-  className,
-  style,
-}, ref) => {
-  const [values, setValues] = useState<Record<string, unknown>>(() => {
-    // Initialize with default values from schema, then override with initialValues
-    const defaults: Record<string, unknown> = {};
-    schema.sections.forEach(section => {
-      section.items.forEach(field => {
-        if (field.defaultValue !== undefined) {
-          defaults[field.key] = field.defaultValue;
-        }
-        // Initialize array fields with minItems
-        if (field.type === 'array' && field.minItems && field.minItems > 0 && !field.defaultValue) {
-          const createDefaultItem = () => {
-            if (field.itemType === 'object' && field.itemFields) {
-              return field.itemFields.reduce((acc, f) => ({ ...acc, [f.key]: f.defaultValue }), {});
-            }
-            return field.itemOptions?.defaultValue ?? '';
-          };
-          defaults[field.key] = Array(field.minItems).fill(null).map(() => createDefaultItem());
-        }
-      });
-    });
-    return { ...defaults, ...initialValues };
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const handleChange = useCallback((key: string, value: unknown) => {
-    setValues(prev => {
-      const newValues = setNestedValue(prev, key, value);
-      onValuesChange?.({ [key]: value }, newValues);
-      return newValues;
-    });
-    // Clear error when value changes
-    if (errors[key]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[key];
-        return newErrors;
-      });
-    }
-  }, [onValuesChange, errors]);
-
-  const validateFields = useCallback(async (): Promise<Record<string, unknown>> => {
-    const newErrors: Record<string, string> = {};
-    
-    // Validate all fields
-    for (const section of schema.sections) {
-      for (const field of section.items) {
-        // Skip if hidden or conditional not met
-        if (field.hidden) continue;
-        if (field.showWhen && !evaluateCondition(field.showWhen, values)) continue;
-        
-        const value = getNestedValue(values, field.key);
-        
-        // Check required
-        if (field.required) {
-          const isEmpty = value === undefined || value === null || value === '' ||
-            (Array.isArray(value) && value.length === 0);
-          if (isEmpty) {
-            newErrors[field.key] = `${field.label || field.key} is required`;
-            continue;
+const DynamicForm = forwardRef<DynamicFormInstance, DynamicFormProps>(
+  (
+    {
+      schema,
+      initialValues = {},
+      onSubmit,
+      onCancel,
+      onValuesChange,
+      loading,
+      disabled,
+      readOnly,
+      footer,
+      className,
+      style,
+    },
+    ref,
+  ) => {
+    const [values, setValues] = useState<Record<string, unknown>>(() => {
+      // Initialize with default values from schema, then override with initialValues
+      const defaults: Record<string, unknown> = {};
+      schema.sections.forEach((section) => {
+        section.items.forEach((field) => {
+          if (field.defaultValue !== undefined) {
+            defaults[field.key] = field.defaultValue;
           }
-        }
-        
-        // Check custom rules
-        if (field.rules) {
-          for (const rule of field.rules) {
-            let isValid = true;
-            
-            switch (rule.type) {
-              case 'required':
-                isValid = value !== undefined && value !== null && value !== '';
-                break;
-              case 'min':
-                isValid = Number(value) >= (rule.value as number);
-                break;
-              case 'max':
-                isValid = Number(value) <= (rule.value as number);
-                break;
-              case 'minLength':
-                isValid = String(value).length >= (rule.value as number);
-                break;
-              case 'maxLength':
-                isValid = String(value).length <= (rule.value as number);
-                break;
-              case 'pattern':
-                isValid = new RegExp(rule.value as string).test(String(value));
-                break;
-              case 'email':
-                isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value));
-                break;
-              case 'url':
-                isValid = /^https?:\/\/.+/.test(String(value));
-                break;
-              case 'custom':
-                if (rule.validator) {
-                  isValid = await rule.validator(value, values);
-                }
-                break;
-            }
-            
-            if (!isValid) {
-              newErrors[field.key] = rule.message;
-              break;
-            }
+          // Initialize array fields with minItems
+          if (
+            field.type === 'array' &&
+            field.minItems &&
+            field.minItems > 0 &&
+            !field.defaultValue
+          ) {
+            const createDefaultItem = () => {
+              if (field.itemType === 'object' && field.itemFields) {
+                return field.itemFields.reduce(
+                  (acc, f) => ({ ...acc, [f.key]: f.defaultValue }),
+                  {},
+                );
+              }
+              return field.itemOptions?.defaultValue ?? '';
+            };
+            defaults[field.key] = Array(field.minItems)
+              .fill(null)
+              .map(() => createDefaultItem());
           }
-        }
-      }
-    }
-    
-    setErrors(newErrors);
-    
-    if (Object.keys(newErrors).length > 0) {
-      throw new Error('Validation failed');
-    }
-    
-    return values;
-  }, [schema, values]);
+        });
+      });
+      return { ...defaults, ...initialValues };
+    });
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = useCallback(async () => {
-    try {
-      const validatedValues = await validateFields();
-      await onSubmit?.(validatedValues);
-    } catch {
-      // Validation errors are already set
-      if (schema.scrollToFirstError) {
-        const firstErrorKey = Object.keys(errors)[0];
-        if (firstErrorKey) {
-          document.querySelector(`[data-field-key="${firstErrorKey}"]`)?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
+    const handleChange = useCallback(
+      (key: string, value: unknown) => {
+        setValues((prev) => {
+          const newValues = setNestedValue(prev, key, value);
+          onValuesChange?.({ [key]: value }, newValues);
+          return newValues;
+        });
+        // Clear error when value changes
+        if (errors[key]) {
+          setErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors[key];
+            return newErrors;
           });
         }
-      }
-    }
-  }, [validateFields, onSubmit, schema.scrollToFirstError, errors]);
+      },
+      [onValuesChange, errors],
+    );
 
-  const handleReset = useCallback(() => {
-    const defaults: Record<string, unknown> = {};
-    schema.sections.forEach(section => {
-      section.items.forEach(field => {
-        if (field.defaultValue !== undefined) {
-          defaults[field.key] = field.defaultValue;
+    const validateFields = useCallback(async (): Promise<Record<string, unknown>> => {
+      const newErrors: Record<string, string> = {};
+
+      // Validate all fields
+      for (const section of schema.sections) {
+        for (const field of section.items) {
+          // Skip if hidden or conditional not met
+          if (field.hidden) continue;
+          if (field.showWhen && !evaluateCondition(field.showWhen, values)) continue;
+
+          const value = getNestedValue(values, field.key);
+
+          // Check required
+          if (field.required) {
+            const isEmpty =
+              value === undefined ||
+              value === null ||
+              value === '' ||
+              (Array.isArray(value) && value.length === 0);
+            if (isEmpty) {
+              newErrors[field.key] = `${field.label || field.key} is required`;
+              continue;
+            }
+          }
+
+          // Check custom rules
+          if (field.rules) {
+            for (const rule of field.rules) {
+              let isValid = true;
+
+              switch (rule.type) {
+                case 'required':
+                  isValid = value !== undefined && value !== null && value !== '';
+                  break;
+                case 'min':
+                  isValid = Number(value) >= (rule.value as number);
+                  break;
+                case 'max':
+                  isValid = Number(value) <= (rule.value as number);
+                  break;
+                case 'minLength':
+                  isValid = String(value).length >= (rule.value as number);
+                  break;
+                case 'maxLength':
+                  isValid = String(value).length <= (rule.value as number);
+                  break;
+                case 'pattern':
+                  isValid = new RegExp(rule.value as string).test(String(value));
+                  break;
+                case 'email':
+                  isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value));
+                  break;
+                case 'url':
+                  isValid = /^https?:\/\/.+/.test(String(value));
+                  break;
+                case 'custom':
+                  if (rule.validator) {
+                    isValid = await rule.validator(value, values);
+                  }
+                  break;
+              }
+
+              if (!isValid) {
+                newErrors[field.key] = rule.message;
+                break;
+              }
+            }
+          }
         }
+      }
+
+      setErrors(newErrors);
+
+      if (Object.keys(newErrors).length > 0) {
+        throw new Error('Validation failed');
+      }
+
+      return values;
+    }, [schema, values]);
+
+    const handleSubmit = useCallback(async () => {
+      try {
+        const validatedValues = await validateFields();
+        await onSubmit?.(validatedValues);
+      } catch {
+        // Validation errors are already set
+        if (schema.scrollToFirstError) {
+          const firstErrorKey = Object.keys(errors)[0];
+          if (firstErrorKey) {
+            document.querySelector(`[data-field-key="${firstErrorKey}"]`)?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+          }
+        }
+      }
+    }, [validateFields, onSubmit, schema.scrollToFirstError, errors]);
+
+    const handleReset = useCallback(() => {
+      const defaults: Record<string, unknown> = {};
+      schema.sections.forEach((section) => {
+        section.items.forEach((field) => {
+          if (field.defaultValue !== undefined) {
+            defaults[field.key] = field.defaultValue;
+          }
+        });
       });
-    });
-    setValues({ ...defaults, ...initialValues });
-    setErrors({});
-  }, [schema, initialValues]);
+      setValues({ ...defaults, ...initialValues });
+      setErrors({});
+    }, [schema, initialValues]);
 
-  // Expose methods via ref
-  useImperativeHandle(ref, () => ({
-    getValues: () => values,
-    setValues: (newValues) => setValues(prev => ({ ...prev, ...newValues })),
-    resetValues: handleReset,
-    validateFields,
-    setFieldValue: (key, value) => handleChange(key, value),
-    getFieldValue: (key) => getNestedValue(values, key),
-    setFieldError: (key, error) => setErrors(prev => ({ ...prev, [key]: error })),
-    clearFieldError: (key) => setErrors(prev => {
-      const newErrors = { ...prev };
-      delete newErrors[key];
-      return newErrors;
-    }),
-  }), [values, handleChange, handleReset, validateFields]);
+    // Expose methods via ref
+    useImperativeHandle(
+      ref,
+      () => ({
+        getValues: () => values,
+        setValues: (newValues) => setValues((prev) => ({ ...prev, ...newValues })),
+        resetValues: handleReset,
+        validateFields,
+        setFieldValue: (key, value) => handleChange(key, value),
+        getFieldValue: (key) => getNestedValue(values, key),
+        setFieldError: (key, error) => setErrors((prev) => ({ ...prev, [key]: error })),
+        clearFieldError: (key) =>
+          setErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors[key];
+            return newErrors;
+          }),
+      }),
+      [values, handleChange, handleReset, validateFields],
+    );
 
-  const showFooter = footer !== null && (footer || schema.showSubmit !== false || schema.showCancel || schema.showReset);
+    const showFooter =
+      footer !== null &&
+      (footer || schema.showSubmit !== false || schema.showCancel || schema.showReset);
 
-  return (
-    <div className={className} style={style}>
-      {/* Header */}
-      {(schema.title || schema.description) && (
-        <div style={{ marginBottom: 24 }}>
-          {schema.title && (
-            <Title level={4} style={{ margin: 0, marginBottom: schema.description ? 4 : 0 }}>
-              {schema.title}
-            </Title>
-          )}
-          {schema.description && (
-            <Text type="secondary">{schema.description}</Text>
-          )}
-        </div>
-      )}
+    return (
+      <div className={className} style={style}>
+        {/* Header */}
+        {(schema.title || schema.description) && (
+          <div style={{ marginBottom: 24 }}>
+            {schema.title && (
+              <Title level={4} style={{ margin: 0, marginBottom: schema.description ? 4 : 0 }}>
+                {schema.title}
+              </Title>
+            )}
+            {schema.description && <Text type="secondary">{schema.description}</Text>}
+          </div>
+        )}
 
-      {/* Form */}
-      <Form
-        layout={schema.layout || 'vertical'}
-        labelAlign={schema.labelAlign || 'left'}
-        size={schema.size || 'middle'}
-        colon={schema.colon ?? false}
-        requiredMark={schema.requiredMark ?? true}
-        disabled={disabled || loading}
-      >
-        {schema.sections.map((section) => (
-          <SectionRenderer
-            key={section.key}
-            section={section}
-            values={values}
-            onChange={handleChange}
-            formValues={values}
-            disabled={disabled}
-            readOnly={readOnly}
-            size={schema.size}
-            layout={schema.layout}
-            labelSpan={schema.labelSpan}
-          />
-        ))}
-      </Form>
+        {/* Form */}
+        <Form
+          layout={schema.layout || 'vertical'}
+          labelAlign={schema.labelAlign || 'left'}
+          size={schema.size || 'middle'}
+          colon={schema.colon ?? false}
+          requiredMark={schema.requiredMark ?? true}
+          disabled={disabled || loading}
+        >
+          {schema.sections.map((section) => (
+            <SectionRenderer
+              key={section.key}
+              section={section}
+              values={values}
+              onChange={handleChange}
+              formValues={values}
+              disabled={disabled}
+              readOnly={readOnly}
+              size={schema.size}
+              layout={schema.layout}
+              labelSpan={schema.labelSpan}
+            />
+          ))}
+        </Form>
 
-      {/* Footer */}
-      {showFooter && (
-        <div style={{ marginTop: 24, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-          {footer || (
-            <>
-              {schema.showReset && (
-                <Button onClick={handleReset} disabled={loading}>
-                  {schema.resetText || 'Reset'}
-                </Button>
-              )}
-              {schema.showCancel && (
-                <Button onClick={onCancel} disabled={loading}>
-                  {schema.cancelText || 'Cancel'}
-                </Button>
-              )}
-              {schema.showSubmit !== false && (
-                <Button type="primary" onClick={handleSubmit} loading={loading}>
-                  {schema.submitText || 'Submit'}
-                </Button>
-              )}
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
-});
+        {/* Footer */}
+        {showFooter && (
+          <div style={{ marginTop: 24, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            {footer || (
+              <>
+                {schema.showReset && (
+                  <Button onClick={handleReset} disabled={loading}>
+                    {schema.resetText || 'Reset'}
+                  </Button>
+                )}
+                {schema.showCancel && (
+                  <Button onClick={onCancel} disabled={loading}>
+                    {schema.cancelText || 'Cancel'}
+                  </Button>
+                )}
+                {schema.showSubmit !== false && (
+                  <Button type="primary" onClick={handleSubmit} loading={loading}>
+                    {schema.submitText || 'Submit'}
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  },
+);
 
 DynamicForm.displayName = 'DynamicForm';
 
 export default DynamicForm;
-

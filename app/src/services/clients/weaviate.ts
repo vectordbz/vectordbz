@@ -115,10 +115,20 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
           description: 'Must start with an uppercase letter (PascalCase)',
           rules: [
             { type: 'minLength', value: 1, message: 'Class name is required' },
-            { type: 'pattern', value: '^[A-Z][a-zA-Z0-9]*$', message: 'Must start with uppercase letter (PascalCase)' },
+            {
+              type: 'pattern',
+              value: '^[A-Z][a-zA-Z0-9]*$',
+              message: 'Must start with uppercase letter (PascalCase)',
+            },
           ],
         },
-        { key: 'description', label: 'Description', type: 'textarea', rows: 2, placeholder: 'A collection of articles...' },
+        {
+          key: 'description',
+          label: 'Description',
+          type: 'textarea',
+          rows: 2,
+          placeholder: 'A collection of articles...',
+        },
       ],
     },
     {
@@ -133,8 +143,16 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
           direction: 'vertical',
           defaultValue: 'single',
           options: [
-            { label: 'Single Vector', value: 'single', description: 'One vector per object (default)' },
-            { label: 'Named Vectors', value: 'named', description: 'Multiple named vectors per object' },
+            {
+              label: 'Single Vector',
+              value: 'single',
+              description: 'One vector per object (default)',
+            },
+            {
+              label: 'Named Vectors',
+              value: 'named',
+              description: 'Multiple named vectors per object',
+            },
           ],
         },
         {
@@ -146,8 +164,24 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
           showWhen: { field: 'vectorConfigType', operator: 'equals', value: 'named' },
           minItems: 1,
           itemFields: [
-            { key: 'name', label: 'Vector Name', type: 'text', required: true, placeholder: 'title_vector' },
-            { key: 'vectorizer', label: 'Vectorizer', type: 'select', defaultValue: 'none', options: [{ label: 'None', value: 'none' }, { label: 'text2vec-openai', value: 'text2vec-openai' }, { label: 'text2vec-cohere', value: 'text2vec-cohere' }] },
+            {
+              key: 'name',
+              label: 'Vector Name',
+              type: 'text',
+              required: true,
+              placeholder: 'title_vector',
+            },
+            {
+              key: 'vectorizer',
+              label: 'Vectorizer',
+              type: 'select',
+              defaultValue: 'none',
+              options: [
+                { label: 'None', value: 'none' },
+                { label: 'text2vec-openai', value: 'text2vec-openai' },
+                { label: 'text2vec-cohere', value: 'text2vec-cohere' },
+              ],
+            },
           ],
           addButtonText: 'Add Named Vector',
         },
@@ -159,8 +193,22 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
       description: 'Configure how vectors are created',
       showWhen: { field: 'vectorConfigType', operator: 'notEquals', value: 'named' },
       items: [
-        { key: 'vectorizer', label: 'Vectorizer', type: 'select', defaultValue: WEAVIATE_DEFAULTS.vectorizer, options: [...WEAVIATE_VECTORIZERS], description: 'Choose how to generate vectors from your data' },
-        { key: 'vectorizerModel', label: 'Model', type: 'text', placeholder: 'text-embedding-ada-002', showWhen: { field: 'vectorizer', operator: 'notEquals', value: 'none' }, description: 'Model name for the vectorizer' },
+        {
+          key: 'vectorizer',
+          label: 'Vectorizer',
+          type: 'select',
+          defaultValue: WEAVIATE_DEFAULTS.vectorizer,
+          options: [...WEAVIATE_VECTORIZERS],
+          description: 'Choose how to generate vectors from your data',
+        },
+        {
+          key: 'vectorizerModel',
+          label: 'Model',
+          type: 'text',
+          placeholder: 'text-embedding-ada-002',
+          showWhen: { field: 'vectorizer', operator: 'notEquals', value: 'none' },
+          description: 'Model name for the vectorizer',
+        },
       ],
     },
     {
@@ -171,11 +219,48 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
       defaultCollapsed: true,
       showWhen: { field: 'vectorConfigType', operator: 'notEquals', value: 'named' },
       items: [
-        { key: 'vectorIndexType', label: 'Index Type', type: 'select', defaultValue: WEAVIATE_DEFAULTS.vectorIndexType, options: [...WEAVIATE_INDEX_TYPES] },
-        { key: 'distance', label: 'Distance Metric', type: 'select', defaultValue: WEAVIATE_DEFAULTS.distance, options: [...WEAVIATE_DISTANCE_METRICS] },
-        { key: 'ef', label: 'EF (Search)', type: 'number', defaultValue: -1, min: -1, description: 'Size of dynamic candidate list (-1 for auto)', showWhen: { field: 'vectorIndexType', operator: 'equals', value: 'hnsw' } },
-        { key: 'efConstruction', label: 'EF Construction', type: 'number', defaultValue: WEAVIATE_DEFAULTS.efConstruction, min: 4, description: 'Size of dynamic candidate list during build', showWhen: { field: 'vectorIndexType', operator: 'equals', value: 'hnsw' } },
-        { key: 'maxConnections', label: 'Max Connections', type: 'number', defaultValue: WEAVIATE_DEFAULTS.maxConnections, min: 4, max: 128, description: 'Maximum connections per node', showWhen: { field: 'vectorIndexType', operator: 'equals', value: 'hnsw' } },
+        {
+          key: 'vectorIndexType',
+          label: 'Index Type',
+          type: 'select',
+          defaultValue: WEAVIATE_DEFAULTS.vectorIndexType,
+          options: [...WEAVIATE_INDEX_TYPES],
+        },
+        {
+          key: 'distance',
+          label: 'Distance Metric',
+          type: 'select',
+          defaultValue: WEAVIATE_DEFAULTS.distance,
+          options: [...WEAVIATE_DISTANCE_METRICS],
+        },
+        {
+          key: 'ef',
+          label: 'EF (Search)',
+          type: 'number',
+          defaultValue: -1,
+          min: -1,
+          description: 'Size of dynamic candidate list (-1 for auto)',
+          showWhen: { field: 'vectorIndexType', operator: 'equals', value: 'hnsw' },
+        },
+        {
+          key: 'efConstruction',
+          label: 'EF Construction',
+          type: 'number',
+          defaultValue: WEAVIATE_DEFAULTS.efConstruction,
+          min: 4,
+          description: 'Size of dynamic candidate list during build',
+          showWhen: { field: 'vectorIndexType', operator: 'equals', value: 'hnsw' },
+        },
+        {
+          key: 'maxConnections',
+          label: 'Max Connections',
+          type: 'number',
+          defaultValue: WEAVIATE_DEFAULTS.maxConnections,
+          min: 4,
+          max: 128,
+          description: 'Maximum connections per node',
+          showWhen: { field: 'vectorIndexType', operator: 'equals', value: 'hnsw' },
+        },
       ],
     },
     {
@@ -190,11 +275,42 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
           itemLabel: 'Property',
           minItems: 0,
           itemFields: [
-            { key: 'name', label: 'Property Name', type: 'text', required: true, placeholder: 'title', description: 'Must start with lowercase letter' },
-            { key: 'dataType', label: 'Data Type', type: 'select', required: true, defaultValue: 'text', options: [...WEAVIATE_DATA_TYPES] },
-            { key: 'description', label: 'Description', type: 'text', placeholder: 'Optional description' },
-            { key: 'indexSearchable', label: 'Searchable', type: 'switch', defaultValue: true, description: 'Enable full-text search on this property' },
-            { key: 'indexFilterable', label: 'Filterable', type: 'switch', defaultValue: true, description: 'Enable filtering on this property' },
+            {
+              key: 'name',
+              label: 'Property Name',
+              type: 'text',
+              required: true,
+              placeholder: 'title',
+              description: 'Must start with lowercase letter',
+            },
+            {
+              key: 'dataType',
+              label: 'Data Type',
+              type: 'select',
+              required: true,
+              defaultValue: 'text',
+              options: [...WEAVIATE_DATA_TYPES],
+            },
+            {
+              key: 'description',
+              label: 'Description',
+              type: 'text',
+              placeholder: 'Optional description',
+            },
+            {
+              key: 'indexSearchable',
+              label: 'Searchable',
+              type: 'switch',
+              defaultValue: true,
+              description: 'Enable full-text search on this property',
+            },
+            {
+              key: 'indexFilterable',
+              label: 'Filterable',
+              type: 'switch',
+              defaultValue: true,
+              description: 'Enable filtering on this property',
+            },
           ],
           addButtonText: 'Add Property',
         },
@@ -207,12 +323,54 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'bm25_b', label: 'BM25 b', type: 'number', defaultValue: WEAVIATE_DEFAULTS.bm25B, min: 0, max: 1, step: 0.05, description: 'Length normalization parameter' },
-        { key: 'bm25_k1', label: 'BM25 k1', type: 'number', defaultValue: WEAVIATE_DEFAULTS.bm25K1, min: 0, max: 3, step: 0.1, description: 'Term frequency saturation parameter' },
-        { key: 'stopwords_preset', label: 'Stopwords Preset', type: 'select', defaultValue: 'en', options: [...WEAVIATE_STOPWORDS_PRESETS] },
-        { key: 'indexTimestamps', label: 'Index Timestamps', type: 'switch', defaultValue: false, description: 'Enable filtering by creation/update timestamps' },
-        { key: 'indexNullState', label: 'Index Null State', type: 'switch', defaultValue: false, description: 'Enable filtering for null values' },
-        { key: 'indexPropertyLength', label: 'Index Property Length', type: 'switch', defaultValue: false, description: 'Enable filtering by property length' },
+        {
+          key: 'bm25_b',
+          label: 'BM25 b',
+          type: 'number',
+          defaultValue: WEAVIATE_DEFAULTS.bm25B,
+          min: 0,
+          max: 1,
+          step: 0.05,
+          description: 'Length normalization parameter',
+        },
+        {
+          key: 'bm25_k1',
+          label: 'BM25 k1',
+          type: 'number',
+          defaultValue: WEAVIATE_DEFAULTS.bm25K1,
+          min: 0,
+          max: 3,
+          step: 0.1,
+          description: 'Term frequency saturation parameter',
+        },
+        {
+          key: 'stopwords_preset',
+          label: 'Stopwords Preset',
+          type: 'select',
+          defaultValue: 'en',
+          options: [...WEAVIATE_STOPWORDS_PRESETS],
+        },
+        {
+          key: 'indexTimestamps',
+          label: 'Index Timestamps',
+          type: 'switch',
+          defaultValue: false,
+          description: 'Enable filtering by creation/update timestamps',
+        },
+        {
+          key: 'indexNullState',
+          label: 'Index Null State',
+          type: 'switch',
+          defaultValue: false,
+          description: 'Enable filtering for null values',
+        },
+        {
+          key: 'indexPropertyLength',
+          label: 'Index Property Length',
+          type: 'switch',
+          defaultValue: false,
+          description: 'Enable filtering by property length',
+        },
       ],
     },
     {
@@ -222,7 +380,14 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'replicationFactor', label: 'Replication Factor', type: 'number', defaultValue: WEAVIATE_DEFAULTS.replicationFactor, min: 1, description: 'Number of replicas for fault tolerance' },
+        {
+          key: 'replicationFactor',
+          label: 'Replication Factor',
+          type: 'number',
+          defaultValue: WEAVIATE_DEFAULTS.replicationFactor,
+          min: 1,
+          description: 'Number of replicas for fault tolerance',
+        },
       ],
     },
     {
@@ -232,14 +397,20 @@ export const weaviateCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'multiTenancyEnabled', label: 'Enable Multi-Tenancy', type: 'switch', defaultValue: false, description: 'Isolate data by tenant' },
+        {
+          key: 'multiTenancyEnabled',
+          label: 'Enable Multi-Tenancy',
+          type: 'switch',
+          defaultValue: false,
+          description: 'Isolate data by tenant',
+        },
       ],
     },
   ],
   showSubmit: true,
   showCancel: true,
   submitText: 'Create Class',
-}
+};
 
 export class WeaviateClient implements VectorDBClient {
   private client: AxiosInstance;
@@ -252,7 +423,7 @@ export class WeaviateClient implements VectorDBClient {
       baseURL,
       headers: {
         'Content-Type': 'application/json',
-        ...(config.apiKey && { 'Authorization': `Bearer ${config.apiKey}` }),
+        ...(config.apiKey && { Authorization: `Bearer ${config.apiKey}` }),
       },
       timeout: 30000,
     });
@@ -263,7 +434,7 @@ export class WeaviateClient implements VectorDBClient {
       const response = await this.client.get('/v1/meta');
       return {
         success: true,
-        version: response.data?.version || 'unknown'
+        version: response.data?.version || 'unknown',
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -278,26 +449,33 @@ export class WeaviateClient implements VectorDBClient {
 
       // Get object counts for each class
       const collections = await Promise.all(
-        classes.map(async (cls: { class: string; vectorIndexType?: string; vectorizer?: string; properties?: Array<{ name: string; dataType: string[] }> }) => {
-          const className = cls.class;
-          let count = 0;
-          try {
-            const col = await this.getCollectionInfo(className);
-            if (col.success) {
-              count = col.data?.count as number || 0;
+        classes.map(
+          async (cls: {
+            class: string;
+            vectorIndexType?: string;
+            vectorizer?: string;
+            properties?: Array<{ name: string; dataType: string[] }>;
+          }) => {
+            const className = cls.class;
+            let count = 0;
+            try {
+              const col = await this.getCollectionInfo(className);
+              if (col.success) {
+                count = (col.data?.count as number) || 0;
+              }
+            } catch {
+              // Ignore count errors
             }
-          } catch {
-            // Ignore count errors
-          }
 
-          // Return Weaviate native collection format
-          const collection: Collection = {
-            name: className,
-            count,
-            ...cls, // Preserve all other class schema fields
-          };
-          return collection;
-        })
+            // Return Weaviate native collection format
+            const collection: Collection = {
+              name: className,
+              count,
+              ...cls, // Preserve all other class schema fields
+            };
+            return collection;
+          },
+        ),
       );
 
       return { success: true, collections };
@@ -317,7 +495,7 @@ export class WeaviateClient implements VectorDBClient {
       if (!classInfo) {
         return {
           success: true,
-          data: { class: null, count: 0 }
+          data: { class: null, count: 0 },
         };
       }
 
@@ -332,7 +510,7 @@ export class WeaviateClient implements VectorDBClient {
                 meta { count }
               }
             }
-          }`
+          }`,
         });
 
         count = graphqlResponse.data?.data?.Aggregate?.[collection]?.[0]?.meta?.count || 0;
@@ -350,10 +528,11 @@ export class WeaviateClient implements VectorDBClient {
                   meta { count }
                 }
               }
-            }`
+            }`,
           });
 
-          const tenantCount = graphqlResponse.data?.data?.Aggregate?.[collection]?.[0]?.meta?.count || 0;
+          const tenantCount =
+            graphqlResponse.data?.data?.Aggregate?.[collection]?.[0]?.meta?.count || 0;
 
           count += tenantCount;
         }
@@ -363,12 +542,11 @@ export class WeaviateClient implements VectorDBClient {
         success: true,
         data: {
           class: classInfo,
-          count
-        }
+          count,
+        },
       };
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : 'Failed to fetch collection info';
+      const message = error instanceof Error ? error.message : 'Failed to fetch collection info';
       return { success: false, error: message };
     }
   }
@@ -376,7 +554,9 @@ export class WeaviateClient implements VectorDBClient {
   async getCollectionSchema(collection: string): Promise<GetCollectionSchemaResult> {
     try {
       const response = await this.client.get('/v1/schema');
-      const classSchema = response.data.classes?.find((c: { class: string }) => c.class === collection);
+      const classSchema = response.data.classes?.find(
+        (c: { class: string }) => c.class === collection,
+      );
 
       if (!classSchema) {
         return { success: false, error: `Class "${collection}" not found` };
@@ -388,57 +568,60 @@ export class WeaviateClient implements VectorDBClient {
       // Check if class has inverted index configured (required for BM25 search)
       const hasInvertedIndex = !!classSchema.invertedIndexConfig;
 
-      (classSchema.properties || []).forEach((prop: {
-        name: string;
-        dataType: string[];
-        description?: string;
-        indexSearchable?: boolean;
-        indexInverted?: boolean;
-      }) => {
-        const dataType = prop.dataType[0]?.toLowerCase() || '';
-        let type: SchemaField['type'] = 'unknown';
+      (classSchema.properties || []).forEach(
+        (prop: {
+          name: string;
+          dataType: string[];
+          description?: string;
+          indexSearchable?: boolean;
+          indexInverted?: boolean;
+        }) => {
+          const dataType = prop.dataType[0]?.toLowerCase() || '';
+          let type: SchemaField['type'] = 'unknown';
 
-        switch (dataType) {
-          case 'int':
-          case 'number':
-          case 'float':
-            type = 'number';
-            break;
-          case 'bool':
-            type = 'boolean';
-            break;
-          case 'date':
-            type = 'date';
-            break;
-          case 'text':
-            type = 'string';
-            break;
-          case 'array':
-            type = 'array';
-            break;
-          case 'object':
-            type = 'object';
-        }
+          switch (dataType) {
+            case 'int':
+            case 'number':
+            case 'float':
+              type = 'number';
+              break;
+            case 'bool':
+              type = 'boolean';
+              break;
+            case 'date':
+              type = 'date';
+              break;
+            case 'text':
+              type = 'string';
+              break;
+            case 'array':
+              type = 'array';
+              break;
+            case 'object':
+              type = 'object';
+          }
 
-        // Check if field is searchable (for BM25/text search)
-        // Weaviate uses indexSearchable to enable/disable full-text search on a property
-        // By default, text properties are searchable unless explicitly disabled
-        // Also requires the class to have an inverted index configured
-        const isSearchable = hasInvertedIndex &&
-          type === 'string' &&
-          prop.indexSearchable !== false &&
-          prop.indexInverted !== false;
-        if (isSearchable) {
-          hasSearchableTextFields = true;
-        }
+          // Check if field is searchable (for BM25/text search)
+          // Weaviate uses indexSearchable to enable/disable full-text search on a property
+          // By default, text properties are searchable unless explicitly disabled
+          // Also requires the class to have an inverted index configured
+          const isSearchable =
+            hasInvertedIndex &&
+            type === 'string' &&
+            prop.indexSearchable !== false &&
+            prop.indexInverted !== false;
+          if (isSearchable) {
+            hasSearchableTextFields = true;
+          }
 
-        fields[prop.name] = {
-          name: prop.name,
-          type,
-          description: prop.description,
-          searchable: isSearchable,
-        };
-      });
+          fields[prop.name] = {
+            name: prop.name,
+            type,
+            description: prop.description,
+            searchable: isSearchable,
+          };
+        },
+      );
 
       let dataRequirements = undefined;
       if (classSchema.multiTenancyConfig?.enabled) {
@@ -446,7 +629,7 @@ export class WeaviateClient implements VectorDBClient {
         dataRequirements = {
           tenant: {
             key: 'tenant',
-            value: tenants.map(tenant => tenant.name),
+            value: tenants.map((tenant) => tenant.name),
           },
         };
       }
@@ -457,10 +640,15 @@ export class WeaviateClient implements VectorDBClient {
       const vectors: Record<string, VectorSchemaField> = {};
 
       // Try to get a sample document to determine vector sizes, but don't fail if empty
-      const dataRequirementsToUse = dataRequirements ? { tenant: dataRequirements.tenant.value[0] } : undefined;
+      const dataRequirementsToUse = dataRequirements
+        ? { tenant: dataRequirements.tenant.value[0] }
+        : undefined;
       let document: Document | undefined;
       try {
-        const result = await this.getDocuments(collection, { limit: 1, dataRequirements: dataRequirementsToUse });
+        const result = await this.getDocuments(collection, {
+          limit: 1,
+          dataRequirements: dataRequirementsToUse,
+        });
         const documents = result?.documents || [];
         document = documents[0];
       } catch (e) {
@@ -470,27 +658,29 @@ export class WeaviateClient implements VectorDBClient {
       if (vectorIndexConfig) {
         // Single vector configuration
         const vectorData = document?.vectors?.[COLLECTION_DEFAULT_VECTOR];
-        const vectorSize = vectorData?.vectorType === 'dense' && 'data' in vectorData.value
-          ? vectorData.value.data.length
-          : 0;
+        const vectorSize =
+          vectorData?.vectorType === 'dense' && 'data' in vectorData.value
+            ? vectorData.value.data.length
+            : 0;
         vectors[COLLECTION_DEFAULT_VECTOR] = {
           name: COLLECTION_DEFAULT_VECTOR,
           type: 'vector',
           vectorType: 'dense',
-          size: vectorSize
+          size: vectorSize,
         };
       } else if (vectorConfig) {
         // Multiple named vectors configuration
         Object.entries(vectorConfig).forEach(([key, value]: any) => {
           const vectorData = document?.vectors?.[key];
-          const vectorSize = vectorData?.vectorType === 'dense' && 'data' in vectorData.value
-            ? vectorData.value.data.length
-            : 0;
+          const vectorSize =
+            vectorData?.vectorType === 'dense' && 'data' in vectorData.value
+              ? vectorData.value.data.length
+              : 0;
           vectors[key] = {
             name: key,
             type: 'vector',
             vectorType: 'dense',
-            size: vectorSize
+            size: vectorSize,
           };
         });
       }
@@ -506,7 +696,7 @@ export class WeaviateClient implements VectorDBClient {
           multipleVectors: totalVectors > 1,
           hasVectors: totalVectors > 0,
           dataRequirements,
-        }
+        },
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to get schema';
@@ -514,7 +704,10 @@ export class WeaviateClient implements VectorDBClient {
     }
   }
 
-  async getSearchCapabilities(_collection: string, schema?: CollectionSchema | null): Promise<SearchCapabilities> {
+  async getSearchCapabilities(
+    _collection: string,
+    schema?: CollectionSchema | null,
+  ): Promise<SearchCapabilities> {
     return mergeWithDefault(
       {
         lexical: true,
@@ -522,13 +715,17 @@ export class WeaviateClient implements VectorDBClient {
         supportsHybridAlpha: true,
         hybridAlphaDefault: 0.75,
       },
-      schema
+      schema,
     );
   }
 
-  private async getCollectionTenants(collection: string): Promise<{ name: string, activityStatus: string }[]> {
+  private async getCollectionTenants(
+    collection: string,
+  ): Promise<{ name: string; activityStatus: string }[]> {
     try {
-      const response = await this.client.get<{ name: string, activityStatus: string }[]>(`/v1/schema/${collection}/tenants`);
+      const response = await this.client.get<{ name: string; activityStatus: string }[]>(
+        `/v1/schema/${collection}/tenants`,
+      );
       return response.data || [];
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to get collection tenants';
@@ -537,7 +734,11 @@ export class WeaviateClient implements VectorDBClient {
     }
   }
 
-  async upsertDocument(collection: string, data: UpsertDocumentData, dataRequirements?: Record<string, string>): Promise<UpsertDocumentResult> {
+  async upsertDocument(
+    collection: string,
+    data: UpsertDocumentData,
+    dataRequirements?: Record<string, string>,
+  ): Promise<UpsertDocumentResult> {
     try {
       const { document } = data;
       const { primary, vectors, payload } = document;
@@ -595,17 +796,21 @@ export class WeaviateClient implements VectorDBClient {
 
       return {
         success: true,
-        document: { primary: { name: 'id', value: resultId }, ...payload }
+        document: { primary: { name: 'id', value: resultId }, ...payload },
       };
     } catch (error: any) {
       console.error('[Weaviate] Upsert error:', error);
-      const message = error?.response?.data?.error?.[0]?.message ||
+      const message =
+        error?.response?.data?.error?.[0]?.message ||
         (error instanceof Error ? error.message : 'Failed to upsert document');
       return { success: false, error: message };
     }
   }
 
-  async getDocuments(collection: string, options?: GetDocumentsOptions): Promise<GetDocumentsResult> {
+  async getDocuments(
+    collection: string,
+    options?: GetDocumentsOptions,
+  ): Promise<GetDocumentsResult> {
     try {
       const limit = options?.limit || 50;
       const offset = typeof options?.offset === 'number' ? options.offset : 0;
@@ -617,7 +822,7 @@ export class WeaviateClient implements VectorDBClient {
       );
       const schemaProps: Array<{ name: string; dataType: string[]; nestedProperties?: any[] }> =
         classSchema?.properties || [];
-      const propertyNames: string[] = schemaProps.map(p => p.name);
+      const propertyNames: string[] = schemaProps.map((p) => p.name);
       let vectorKeys = ['vector'];
       if (classSchema?.vectorConfig) {
         vectorKeys = Object.keys(classSchema.vectorConfig);
@@ -639,7 +844,7 @@ export class WeaviateClient implements VectorDBClient {
 
       // Build sort clause for Weaviate (supports sorting by primitive properties)
       if (options?.sort && options.sort.length > 0) {
-        const sortFields = options.sort.map(sort => {
+        const sortFields = options.sort.map((sort) => {
           if (sort.field === 'id' || propertyNames.includes(sort.field)) {
             return `{path: ["${sort.field}"], order: ${sort.order === 'asc' ? 'asc' : 'desc'}}`;
           }
@@ -687,7 +892,11 @@ export class WeaviateClient implements VectorDBClient {
     }
   }
 
-  async search(collection: string, vectors: Record<string, DenseDocumentVector>, options?: SearchOptions): Promise<SearchResult> {
+  async search(
+    collection: string,
+    vectors: Record<string, DenseDocumentVector>,
+    options?: SearchOptions,
+  ): Promise<SearchResult> {
     const startTime = performance.now();
     try {
       let denseVector: number[] | undefined;
@@ -705,22 +914,30 @@ export class WeaviateClient implements VectorDBClient {
       }
 
       const schema = await this.client.get('/v1/schema');
-      const classSchema = schema.data.classes?.find((c: { class: string }) => c.class === collection);
+      const classSchema = schema.data.classes?.find(
+        (c: { class: string }) => c.class === collection,
+      );
       let vectorKeys = ['vector'];
       if (classSchema?.vectorConfig) {
         vectorKeys = Object.keys(classSchema.vectorConfig);
       }
-      const searchSchemaProps: Array<{ name: string; dataType: string[]; nestedProperties?: any[] }> =
-        classSchema?.properties || [];
+      const searchSchemaProps: Array<{
+        name: string;
+        dataType: string[];
+        nestedProperties?: any[];
+      }> = classSchema?.properties || [];
       const propertiesQuery = this.buildPropertiesQuery(searchSchemaProps, '              ');
 
       const whereClause = options?.filter ? this.buildWeaviateWhere(options.filter) : '';
-      const dataRequirementsClause = options?.dataRequirements ? `tenant: "${options.dataRequirements.tenant}"` : '';
+      const dataRequirementsClause = options?.dataRequirements
+        ? `tenant: "${options.dataRequirements.tenant}"`
+        : '';
 
       // Weaviate uses certainty (0-1) for similarity threshold
-      const certaintyClause = options?.scoreThreshold !== undefined
-        ? `\n                certainty: ${options.scoreThreshold}`
-        : '';
+      const certaintyClause =
+        options?.scoreThreshold !== undefined
+          ? `\n                certainty: ${options.scoreThreshold}`
+          : '';
 
       const limit = options?.limit || 10;
 
@@ -733,7 +950,10 @@ export class WeaviateClient implements VectorDBClient {
         // Hybrid: query = BM25 text, alpha = balance (0 = keyword, 1 = vector, 0.5 = equal)
         // When user provides both keywords and a vector, pass the vector so Weaviate uses it for the vector
         // component (required when vectorizer is "none"; otherwise Weaviate vectorizes the query).
-        const escapedQuery = options!.lexicalQuery!.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, ' ');
+        const escapedQuery = options!
+          .lexicalQuery!.replace(/\\/g, '\\\\')
+          .replace(/"/g, '\\"')
+          .replace(/\n/g, ' ');
         const hybridVector =
           denseVector && denseVector.length > 0
             ? `\n                vector: [${denseVector.join(',')}]${vectorKey ? `\n                targetVectors: ["${vectorKey}"]` : ''}`
@@ -745,7 +965,11 @@ export class WeaviateClient implements VectorDBClient {
       } else {
         // Pure vector search — require a vector
         if (!denseVector || denseVector.length === 0) {
-          return { success: false, error: 'A query vector is required for vector search. Paste a vector or use Generate embedding.' };
+          return {
+            success: false,
+            error:
+              'A query vector is required for vector search. Paste a vector or use Generate embedding.',
+          };
         }
         const nearVectorClause = `nearVector: {
                 vector: [${denseVector.join(',')}]${vectorKey ? `\n                targetVectors: ["${vectorKey}"]` : ''}${certaintyClause}
@@ -794,7 +1018,11 @@ export class WeaviateClient implements VectorDBClient {
     }
   }
 
-  async deleteDocument(collection: string, primary: Document['primary'], dataRequirements?: Record<string, string>): Promise<DeleteDocumentResult> {
+  async deleteDocument(
+    collection: string,
+    primary: Document['primary'],
+    dataRequirements?: Record<string, string>,
+  ): Promise<DeleteDocumentResult> {
     try {
       let url = `/v1/objects/${collection}/${primary.value}`;
       if (dataRequirements) {
@@ -808,7 +1036,11 @@ export class WeaviateClient implements VectorDBClient {
     }
   }
 
-  async deleteDocuments(collection: string, filter: FilterQuery, dataRequirements?: Record<string, string>): Promise<DeleteDocumentsResult> {
+  async deleteDocuments(
+    collection: string,
+    filter: FilterQuery,
+    dataRequirements?: Record<string, string>,
+  ): Promise<DeleteDocumentsResult> {
     try {
       const queryContext = this.buildQueryContext(filter, dataRequirements);
 
@@ -819,7 +1051,12 @@ export class WeaviateClient implements VectorDBClient {
       }
 
       // Delete documents in batches
-      const deletedCount = await this.deleteDocumentsInBatches(collection, queryContext, dataRequirements, count);
+      const deletedCount = await this.deleteDocumentsInBatches(
+        collection,
+        queryContext,
+        dataRequirements,
+        count,
+      );
 
       return { success: true, deletedCount };
     } catch (error) {
@@ -843,7 +1080,10 @@ export class WeaviateClient implements VectorDBClient {
   /**
    * Get document count using Aggregate query
    */
-  private async getDocumentCount(collection: string, context: { hasFilter: boolean; whereClause: string; dataRequirementsClause: string }): Promise<number> {
+  private async getDocumentCount(
+    collection: string,
+    context: { hasFilter: boolean; whereClause: string; dataRequirementsClause: string },
+  ): Promise<number> {
     const queryParts: string[] = [];
     if (context.dataRequirementsClause) {
       queryParts.push(context.dataRequirementsClause);
@@ -852,11 +1092,12 @@ export class WeaviateClient implements VectorDBClient {
       queryParts.push(`where: ${context.whereClause}`);
     }
 
-    const countQuery = queryParts.length > 0
-      ? `{ Aggregate { ${collection}(
+    const countQuery =
+      queryParts.length > 0
+        ? `{ Aggregate { ${collection}(
         ${queryParts.join('\n        ')}
       ) { meta { count } } } }`
-      : `{ Aggregate { ${collection} {
+        : `{ Aggregate { ${collection} {
         meta { count }
       } } }`;
 
@@ -867,7 +1108,11 @@ export class WeaviateClient implements VectorDBClient {
   /**
    * Build Get query to fetch object IDs
    */
-  private buildGetIdsQuery(collection: string, context: { hasFilter: boolean; whereClause: string; dataRequirementsClause: string }, limit: number): string {
+  private buildGetIdsQuery(
+    collection: string,
+    context: { hasFilter: boolean; whereClause: string; dataRequirementsClause: string },
+    limit: number,
+  ): string {
     const queryParts: string[] = [];
     if (context.dataRequirementsClause) {
       queryParts.push(context.dataRequirementsClause);
@@ -889,7 +1134,7 @@ export class WeaviateClient implements VectorDBClient {
     collection: string,
     context: { hasFilter: boolean; whereClause: string; dataRequirementsClause: string },
     dataRequirements: Record<string, string> | undefined,
-    expectedCount: number
+    expectedCount: number,
   ): Promise<number> {
     const BATCH_SIZE = 1000;
     const deletedIds = new Set<string>();
@@ -923,7 +1168,12 @@ export class WeaviateClient implements VectorDBClient {
 
       // Reset counter and delete the new IDs
       consecutiveEmptyBatches = 0;
-      deletedCount += await this.deleteObjectIds(collection, idsToDelete, deletedIds, dataRequirements);
+      deletedCount += await this.deleteObjectIds(
+        collection,
+        idsToDelete,
+        deletedIds,
+        dataRequirements,
+      );
 
       // Stop if we got fewer than batch size and deleted everything
       if (objects.length < BATCH_SIZE && idsToDelete.length === objects.length) {
@@ -941,7 +1191,7 @@ export class WeaviateClient implements VectorDBClient {
     collection: string,
     ids: string[],
     deletedIds: Set<string>,
-    dataRequirements?: Record<string, string>
+    dataRequirements?: Record<string, string>,
   ): Promise<number> {
     let deleted = 0;
 
@@ -988,8 +1238,8 @@ export class WeaviateClient implements VectorDBClient {
   async createCollection(config: Record<string, unknown>): Promise<CreateCollectionResult> {
     try {
       const className = config.class as string;
-      const vectorizer = config.vectorizer as string || 'none';
-      const vectorConfigType = config.vectorConfigType as string || 'single';
+      const vectorizer = (config.vectorizer as string) || 'none';
+      const vectorConfigType = (config.vectorConfigType as string) || 'single';
 
       // Build class schema
       const classSchema: any = {
@@ -1009,7 +1259,7 @@ export class WeaviateClient implements VectorDBClient {
       }>;
 
       if (properties && properties.length > 0) {
-        classSchema.properties = properties.map(prop => {
+        classSchema.properties = properties.map((prop) => {
           const propSchema: any = {
             name: prop.name,
             dataType: [prop.dataType],
@@ -1042,8 +1292,8 @@ export class WeaviateClient implements VectorDBClient {
         // Single vector configuration - set class-level vectorizer and index
         classSchema.vectorizer = vectorizer === 'none' ? 'none' : vectorizer;
 
-        const vectorIndexType = config.vectorIndexType as string || 'hnsw';
-        const distance = config.distance as string || 'cosine';
+        const vectorIndexType = (config.vectorIndexType as string) || 'hnsw';
+        const distance = (config.distance as string) || 'cosine';
 
         classSchema.vectorIndexType = vectorIndexType;
 
@@ -1063,8 +1313,13 @@ export class WeaviateClient implements VectorDBClient {
       }
 
       // Inverted index configuration
-      if (config.bm25_b !== undefined || config.bm25_k1 !== undefined ||
-        config.indexTimestamps || config.indexNullState || config.indexPropertyLength) {
+      if (
+        config.bm25_b !== undefined ||
+        config.bm25_k1 !== undefined ||
+        config.indexTimestamps ||
+        config.indexNullState ||
+        config.indexPropertyLength
+      ) {
         const invertedIndexConfig: any = {
           bm25: {
             b: config.bm25_b ?? 0.75,
@@ -1109,7 +1364,8 @@ export class WeaviateClient implements VectorDBClient {
       return { success: true };
     } catch (error: any) {
       console.error('[Weaviate] Create collection error:', error);
-      const message = error?.response?.data?.error?.[0]?.message ||
+      const message =
+        error?.response?.data?.error?.[0]?.message ||
         (error instanceof Error ? error.message : 'Failed to create class');
       return { success: false, error: message };
     }
@@ -1129,8 +1385,8 @@ export class WeaviateClient implements VectorDBClient {
     indent = '            ',
   ): string {
     return properties
-      .filter(p => p?.name)
-      .map(prop => {
+      .filter((p) => p?.name)
+      .map((prop) => {
         const dataType = prop.dataType?.[0]?.toLowerCase() || '';
         if ((dataType === 'object' || dataType === 'object[]') && prop.nestedProperties?.length) {
           const nested = this.buildPropertiesQuery(prop.nestedProperties, indent + '  ');
@@ -1167,7 +1423,10 @@ export class WeaviateClient implements VectorDBClient {
     }
 
     // Hybrid returns score; nearVector returns certainty/distance
-    const score = result._additional?.score ?? result._additional?.certainty ?? (result._additional?.distance != null ? (1 - result._additional.distance) : undefined);
+    const score =
+      result._additional?.score ??
+      result._additional?.certainty ??
+      (result._additional?.distance != null ? 1 - result._additional.distance : undefined);
     if (score != null) {
       document.score = Number(score);
     }
@@ -1182,10 +1441,18 @@ export class WeaviateClient implements VectorDBClient {
     return document;
   }
 
-  private buildWeaviateWhere(filter: { conditions: Array<{ field: string; operator: string; value: string | number | boolean; valueType: string }>; logic: string }): string {
+  private buildWeaviateWhere(filter: {
+    conditions: Array<{
+      field: string;
+      operator: string;
+      value: string | number | boolean;
+      valueType: string;
+    }>;
+    logic: string;
+  }): string {
     if (!filter.conditions || filter.conditions.length === 0) return '';
 
-    const conditions = filter.conditions.map(cond => {
+    const conditions = filter.conditions.map((cond) => {
       const path = `["${cond.field}"]`;
       let operator = '';
       let valueStr = '';
@@ -1231,8 +1498,12 @@ export class WeaviateClient implements VectorDBClient {
         }
       }
 
-      const valueKey = cond.valueType === 'number' ? 'valueNumber' :
-        cond.valueType === 'boolean' ? 'valueBoolean' : 'valueText';
+      const valueKey =
+        cond.valueType === 'number'
+          ? 'valueNumber'
+          : cond.valueType === 'boolean'
+            ? 'valueBoolean'
+            : 'valueText';
 
       return `{ path: ${path}, operator: ${operator}, ${valueKey}: ${valueStr} }`;
     });

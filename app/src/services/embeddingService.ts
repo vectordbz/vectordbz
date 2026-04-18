@@ -31,7 +31,7 @@ export interface EmbeddingResult {
  */
 export async function executeEmbedding(
   functionCode: string,
-  context: EmbeddingExecutionContext
+  context: EmbeddingExecutionContext,
 ): Promise<EmbeddingResult> {
   // Try to use main process (Electron) to avoid CORS issues
   if (typeof window !== 'undefined' && (window as any).electronAPI?.embedding?.execute) {
@@ -74,15 +74,10 @@ export async function executeEmbedding(
         return embed(text, file, fetch, FormData);
       }
       throw new Error('Function must define an async function named "embed"');
-    `
+    `,
     );
 
-    const result = await func(
-      context.text,
-      context.file,
-      context.fetch,
-      context.FormData
-    );
+    const result = await func(context.text, context.file, context.fetch, context.FormData);
 
     // Validate result is a vector
     if (!Array.isArray(result)) {
@@ -92,7 +87,7 @@ export async function executeEmbedding(
       };
     }
 
-    if (!result.every(n => typeof n === 'number' && Number.isFinite(n))) {
+    if (!result.every((n) => typeof n === 'number' && Number.isFinite(n))) {
       return {
         success: false,
         error: 'Embedding function must return an array of numbers',
@@ -128,13 +123,13 @@ export const embeddingStore = {
   },
 
   getById(id: string): EmbeddingFunction | undefined {
-    return this.getAll().find(f => f.id === id);
+    return this.getAll().find((f) => f.id === id);
   },
 
   save(function_: EmbeddingFunction): void {
     try {
       const functions = this.getAll();
-      const existingIndex = functions.findIndex(f => f.id === function_.id);
+      const existingIndex = functions.findIndex((f) => f.id === function_.id);
 
       if (existingIndex >= 0) {
         functions[existingIndex] = { ...function_, updatedAt: Date.now() };
@@ -155,7 +150,7 @@ export const embeddingStore = {
 
   delete(id: string): boolean {
     try {
-      const functions = this.getAll().filter(f => f.id !== id);
+      const functions = this.getAll().filter((f) => f.id !== id);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(functions));
       return true;
     } catch (e) {
@@ -168,7 +163,10 @@ export const embeddingStore = {
 /**
  * Example embedding functions
  */
-export const EMBEDDING_EXAMPLES: Record<string, { name: string; description: string; code: string }> = {
+export const EMBEDDING_EXAMPLES: Record<
+  string,
+  { name: string; description: string; code: string }
+> = {
   text: {
     name: 'Text',
     description: 'Simple text embedding template',
@@ -357,4 +355,3 @@ export const EMBEDDING_EXAMPLES: Record<string, { name: string; description: str
 }`,
   },
 };
-

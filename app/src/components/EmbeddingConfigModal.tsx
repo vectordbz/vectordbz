@@ -21,7 +21,11 @@ import {
   BulbOutlined,
 } from '@ant-design/icons';
 import Editor from '@monaco-editor/react';
-import { EmbeddingFunction, embeddingStore, EMBEDDING_EXAMPLES } from '../services/embeddingService';
+import {
+  EmbeddingFunction,
+  embeddingStore,
+  EMBEDDING_EXAMPLES,
+} from '../services/embeddingService';
 import { useTheme } from '../contexts/ThemeContext';
 
 const { Text, Paragraph } = Typography;
@@ -121,7 +125,9 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
       title={
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <CodeOutlined style={{ fontSize: 18 }} />
-          <Text strong style={{ fontSize: 16 }}>{isEditing ? 'Edit' : 'Create'} Embedding Function</Text>
+          <Text strong style={{ fontSize: 16 }}>
+            {isEditing ? 'Edit' : 'Create'} Embedding Function
+          </Text>
         </div>
       }
       open={open}
@@ -134,11 +140,7 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             {isEditing && (
-              <Button
-                danger
-                icon={<DeleteOutlined />}
-                onClick={handleDelete}
-              >
+              <Button danger icon={<DeleteOutlined />} onClick={handleDelete}>
                 Delete
               </Button>
             )}
@@ -179,8 +181,9 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
                 description={
                   <div style={{ marginTop: 8 }}>
                     <Paragraph style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}>
-                      Embedding functions allow you to generate vector embeddings from text or files using any API or service.
-                      They run in a secure sandbox and can integrate with OpenAI, Hugging Face, local models, or any custom endpoint.
+                      Embedding functions allow you to generate vector embeddings from text or files
+                      using any API or service. They run in a secure sandbox and can integrate with
+                      OpenAI, Hugging Face, local models, or any custom endpoint.
                     </Paragraph>
                   </div>
                 }
@@ -194,7 +197,17 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
             {/* Basic Info Section */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
-                <Text type="secondary" style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                <Text
+                  type="secondary"
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    display: 'block',
+                    marginBottom: 8,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
                   Name
                 </Text>
                 <Input
@@ -207,8 +220,21 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
               </div>
 
               <div>
-                <Text type="secondary" style={{ fontSize: 11, fontWeight: 600, display: 'block', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                  Description <Text type="secondary" style={{ fontWeight: 400 }}>(optional)</Text>
+                <Text
+                  type="secondary"
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    display: 'block',
+                    marginBottom: 8,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  Description{' '}
+                  <Text type="secondary" style={{ fontWeight: 400 }}>
+                    (optional)
+                  </Text>
                 </Text>
                 <Input
                   placeholder="Brief description of what this function does"
@@ -226,12 +252,20 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                 <BulbOutlined style={{ color: 'var(--text-muted)', fontSize: 14 }} />
-                <Text type="secondary" style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                <Text
+                  type="secondary"
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
                   Quick Start Examples
                 </Text>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {exampleKeys.map(key => {
+                {exampleKeys.map((key) => {
                   const example = EMBEDDING_EXAMPLES[key];
                   return (
                     <Button
@@ -252,39 +286,131 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
 
             {/* Code Editor Section */}
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 8,
+                }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <CodeOutlined style={{ color: 'var(--text-muted)', fontSize: 14 }} />
-                  <Text type="secondary" style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                  <Text
+                    type="secondary"
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: 0.5,
+                    }}
+                  >
                     Function Code
                   </Text>
                   <Popover
                     content={
-                      <div style={{ maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      <div
+                        style={{ maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 12 }}
+                      >
                         <div>
-                          <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>Function Signature</Text>
+                          <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>
+                            Function Signature
+                          </Text>
                           <Paragraph style={{ fontSize: 12, margin: 0, lineHeight: 1.6 }}>
-                            Your function must be named <code style={{ background: 'var(--bg-elevated)', padding: '2px 6px', borderRadius: 3, fontSize: 11 }}>embed</code> and accept four parameters:
+                            Your function must be named{' '}
+                            <code
+                              style={{
+                                background: 'var(--bg-elevated)',
+                                padding: '2px 6px',
+                                borderRadius: 3,
+                                fontSize: 11,
+                              }}
+                            >
+                              embed
+                            </code>{' '}
+                            and accept four parameters:
                           </Paragraph>
-                          <ul style={{ margin: '6px 0 0 18px', padding: 0, fontSize: 12, lineHeight: 1.7 }}>
-                            <li><code style={{ background: 'var(--bg-elevated)', padding: '2px 6px', borderRadius: 3, fontSize: 11 }}>text</code> - String input (undefined if using file)</li>
-                            <li><code style={{ background: 'var(--bg-elevated)', padding: '2px 6px', borderRadius: 3, fontSize: 11 }}>file</code> - File object (undefined if using text)</li>
-                            <li><code style={{ background: 'var(--bg-elevated)', padding: '2px 6px', borderRadius: 3, fontSize: 11 }}>fetch</code> - Fetch API for HTTP requests</li>
-                            <li><code style={{ background: 'var(--bg-elevated)', padding: '2px 6px', borderRadius: 3, fontSize: 11 }}>FormData</code> - For file uploads</li>
+                          <ul
+                            style={{
+                              margin: '6px 0 0 18px',
+                              padding: 0,
+                              fontSize: 12,
+                              lineHeight: 1.7,
+                            }}
+                          >
+                            <li>
+                              <code
+                                style={{
+                                  background: 'var(--bg-elevated)',
+                                  padding: '2px 6px',
+                                  borderRadius: 3,
+                                  fontSize: 11,
+                                }}
+                              >
+                                text
+                              </code>{' '}
+                              - String input (undefined if using file)
+                            </li>
+                            <li>
+                              <code
+                                style={{
+                                  background: 'var(--bg-elevated)',
+                                  padding: '2px 6px',
+                                  borderRadius: 3,
+                                  fontSize: 11,
+                                }}
+                              >
+                                file
+                              </code>{' '}
+                              - File object (undefined if using text)
+                            </li>
+                            <li>
+                              <code
+                                style={{
+                                  background: 'var(--bg-elevated)',
+                                  padding: '2px 6px',
+                                  borderRadius: 3,
+                                  fontSize: 11,
+                                }}
+                              >
+                                fetch
+                              </code>{' '}
+                              - Fetch API for HTTP requests
+                            </li>
+                            <li>
+                              <code
+                                style={{
+                                  background: 'var(--bg-elevated)',
+                                  padding: '2px 6px',
+                                  borderRadius: 3,
+                                  fontSize: 11,
+                                }}
+                              >
+                                FormData
+                              </code>{' '}
+                              - For file uploads
+                            </li>
                           </ul>
                         </div>
-                        
+
                         <div>
-                          <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>Return Value</Text>
+                          <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>
+                            Return Value
+                          </Text>
                           <Paragraph style={{ fontSize: 12, margin: 0, lineHeight: 1.6 }}>
-                            Return an array of numbers representing the embedding vector. The array length should match your collection's vector dimension.
+                            Return an array of numbers representing the embedding vector. The array
+                            length should match your collection's vector dimension.
                           </Paragraph>
                         </div>
 
                         <div>
-                          <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>Security & Privacy</Text>
+                          <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>
+                            Security & Privacy
+                          </Text>
                           <Paragraph style={{ fontSize: 12, margin: 0, lineHeight: 1.6 }}>
-                            Functions run in a secure sandbox. They can make HTTP requests but cannot access the filesystem or Node.js APIs. All functions and API keys are saved locally on your computer only and never leave your device.
+                            Functions run in a secure sandbox. They can make HTTP requests but
+                            cannot access the filesystem or Node.js APIs. All functions and API keys
+                            are saved locally on your computer only and never leave your device.
                           </Paragraph>
                         </div>
                       </div>
@@ -293,24 +419,34 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
                     trigger="click"
                     placement="rightTop"
                   >
-                    <QuestionCircleOutlined 
-                      style={{ 
-                        fontSize: 14, 
-                        color: 'var(--text-muted)', 
+                    <QuestionCircleOutlined
+                      style={{
+                        fontSize: 14,
+                        color: 'var(--text-muted)',
                         cursor: 'pointer',
-                        transition: 'color 0.2s'
+                        transition: 'color 0.2s',
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-color)'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--primary-color)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
                     />
                   </Popover>
                 </div>
-                <Tag color="blue" style={{ fontSize: 10, margin: 0, borderRadius: 4, padding: '2px 8px' }}>
+                <Tag
+                  color="blue"
+                  style={{ fontSize: 10, margin: 0, borderRadius: 4, padding: '2px 8px' }}
+                >
                   async function embed(text, file, fetch, FormData)
                 </Tag>
               </div>
 
-              <div style={{ border: '1px solid var(--border-color)', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+              <div
+                style={{
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                }}
+              >
                 <Editor
                   height="380px"
                   language="javascript"
@@ -341,4 +477,3 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
 };
 
 export default EmbeddingConfigModal;
-

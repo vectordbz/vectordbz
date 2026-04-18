@@ -9,7 +9,7 @@ import {
  * Derives capability flags from collection schema (e.g. multiple vectors, sparse field, searchable text).
  */
 export function getSchemaDerivedCapabilities(
-  schema: CollectionSchema | null | undefined
+  schema: CollectionSchema | null | undefined,
 ): Partial<SearchCapabilities> {
   if (!schema) {
     return {};
@@ -30,7 +30,7 @@ export function getSchemaDerivedCapabilities(
 
 function mergeFusionStrategies(
   defaultStrategies: FusionStrategy[],
-  dbStrategies?: FusionStrategy[]
+  dbStrategies?: FusionStrategy[],
 ): FusionStrategy[] {
   if (dbStrategies && dbStrategies.length > 0) {
     return [...new Set([...defaultStrategies, ...dbStrategies])];
@@ -44,7 +44,7 @@ function mergeFusionStrategies(
  */
 export function mergeWithDefault(
   dbPartial: Partial<SearchCapabilities>,
-  schema?: CollectionSchema | null
+  schema?: CollectionSchema | null,
 ): SearchCapabilities {
   const schemaDerived = getSchemaDerivedCapabilities(schema ?? null);
   const merged: SearchCapabilities = {
@@ -53,7 +53,7 @@ export function mergeWithDefault(
     ...dbPartial,
     fusionStrategies: mergeFusionStrategies(
       DEFAULT_SEARCH_CAPABILITIES.fusionStrategies,
-      dbPartial.fusionStrategies
+      dbPartial.fusionStrategies,
     ),
   };
   return merged;

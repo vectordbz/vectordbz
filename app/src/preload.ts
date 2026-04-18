@@ -1,5 +1,28 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { ConnectionConfig, DatabaseType, GetDocumentsOptions, GetCollectionInfoResult, FilterQuery, ConnectionResult, GetCollectionsResult, GetDocumentsResult, SearchOptions, SearchResult, DeleteDocumentResult, DeleteDocumentsResult, DropCollectionResult, TruncateCollectionResult, CreateCollectionResult, SavedConnection, GetCollectionSchemaResult, GetSearchCapabilitiesResult, Document, DocumentVector, UpsertDocumentResult, CollectionSchema } from './types';
+import {
+  ConnectionConfig,
+  DatabaseType,
+  GetDocumentsOptions,
+  GetCollectionInfoResult,
+  FilterQuery,
+  ConnectionResult,
+  GetCollectionsResult,
+  GetDocumentsResult,
+  SearchOptions,
+  SearchResult,
+  DeleteDocumentResult,
+  DeleteDocumentsResult,
+  DropCollectionResult,
+  TruncateCollectionResult,
+  CreateCollectionResult,
+  SavedConnection,
+  GetCollectionSchemaResult,
+  GetSearchCapabilitiesResult,
+  Document,
+  DocumentVector,
+  UpsertDocumentResult,
+  CollectionSchema,
+} from './types';
 import { DynamicFormSchema } from './components/DynamicForm/types';
 
 // Expose protected methods that allow the renderer process to use
@@ -7,60 +30,91 @@ import { DynamicFormSchema } from './components/DynamicForm/types';
 contextBridge.exposeInMainWorld('electronAPI', {
   // Database operations
   db: {
-    connect: (connectionId: string, config: ConnectionConfig) => ipcRenderer.invoke('db:connect', connectionId, config),
+    connect: (connectionId: string, config: ConnectionConfig) =>
+      ipcRenderer.invoke('db:connect', connectionId, config),
 
     testConnection: (config: ConnectionConfig) => ipcRenderer.invoke('db:testConnection', config),
 
     disconnect: (connectionId: string) => ipcRenderer.invoke('db:disconnect', connectionId),
 
-    getConnectionStatus: (connectionId: string) => ipcRenderer.invoke('db:getConnectionStatus', connectionId),
+    getConnectionStatus: (connectionId: string) =>
+      ipcRenderer.invoke('db:getConnectionStatus', connectionId),
 
     getCollections: (connectionId: string) => ipcRenderer.invoke('db:getCollections', connectionId),
 
-    getCollectionInfo: (connectionId: string, collection: string) => ipcRenderer.invoke('db:getCollectionInfo', connectionId, collection),
+    getCollectionInfo: (connectionId: string, collection: string) =>
+      ipcRenderer.invoke('db:getCollectionInfo', connectionId, collection),
 
-    getCollectionSchema: (connectionId: string, collection: string) => ipcRenderer.invoke('db:getCollectionSchema', connectionId, collection),
+    getCollectionSchema: (connectionId: string, collection: string) =>
+      ipcRenderer.invoke('db:getCollectionSchema', connectionId, collection),
 
-    getSearchCapabilities: (connectionId: string, collection: string, schema?: CollectionSchema | null) =>
-      ipcRenderer.invoke('db:getSearchCapabilities', connectionId, collection, schema ?? null) as Promise<GetSearchCapabilitiesResult>,
+    getSearchCapabilities: (
+      connectionId: string,
+      collection: string,
+      schema?: CollectionSchema | null,
+    ) =>
+      ipcRenderer.invoke(
+        'db:getSearchCapabilities',
+        connectionId,
+        collection,
+        schema ?? null,
+      ) as Promise<GetSearchCapabilitiesResult>,
 
-    getDocuments: (connectionId: string, params: {
-      collection: string;
-      options: GetDocumentsOptions;
-    }) => ipcRenderer.invoke('db:getDocuments', connectionId, params),
+    getDocuments: (
+      connectionId: string,
+      params: {
+        collection: string;
+        options: GetDocumentsOptions;
+      },
+    ) => ipcRenderer.invoke('db:getDocuments', connectionId, params),
 
-    search: (connectionId: string, params: {
-      collection: string;
-      vectors: Record<string, DocumentVector>;
-      options: SearchOptions;
-    }) => ipcRenderer.invoke('db:search', connectionId, params),
+    search: (
+      connectionId: string,
+      params: {
+        collection: string;
+        vectors: Record<string, DocumentVector>;
+        options: SearchOptions;
+      },
+    ) => ipcRenderer.invoke('db:search', connectionId, params),
 
-    deleteDocument: (connectionId: string, params: {
-      collection: string;
-      primary: Document['primary'];
-      dataRequirements?: Record<string, string>;
-    }) => ipcRenderer.invoke('db:deleteDocument', connectionId, params),
+    deleteDocument: (
+      connectionId: string,
+      params: {
+        collection: string;
+        primary: Document['primary'];
+        dataRequirements?: Record<string, string>;
+      },
+    ) => ipcRenderer.invoke('db:deleteDocument', connectionId, params),
 
-    deleteDocuments: (connectionId: string, params: {
-      collection: string;
-      filter: FilterQuery;
-      dataRequirements?: Record<string, string>;
-    }) => ipcRenderer.invoke('db:deleteDocuments', connectionId, params),
+    deleteDocuments: (
+      connectionId: string,
+      params: {
+        collection: string;
+        filter: FilterQuery;
+        dataRequirements?: Record<string, string>;
+      },
+    ) => ipcRenderer.invoke('db:deleteDocuments', connectionId, params),
 
-    dropCollection: (connectionId: string, collection: string) => ipcRenderer.invoke('db:dropCollection', connectionId, collection),
+    dropCollection: (connectionId: string, collection: string) =>
+      ipcRenderer.invoke('db:dropCollection', connectionId, collection),
 
-    truncateCollection: (connectionId: string, collection: string) => ipcRenderer.invoke('db:truncateCollection', connectionId, collection),
+    truncateCollection: (connectionId: string, collection: string) =>
+      ipcRenderer.invoke('db:truncateCollection', connectionId, collection),
 
-    createCollection: (connectionId: string, config: Record<string, unknown>) => ipcRenderer.invoke('db:createCollection', connectionId, config),
+    createCollection: (connectionId: string, config: Record<string, unknown>) =>
+      ipcRenderer.invoke('db:createCollection', connectionId, config),
 
-    getCreateCollectionSchema: (connectionId: string) => ipcRenderer.invoke('db:getCreateCollectionSchema', connectionId),
+    getCreateCollectionSchema: (connectionId: string) =>
+      ipcRenderer.invoke('db:getCreateCollectionSchema', connectionId),
 
-    upsertDocument: (connectionId: string, params: {
-      collection: string;
-      document: Partial<Document>;
-      dataRequirements?: Record<string, string>;
-    }) => ipcRenderer.invoke('db:upsertDocument', connectionId, params),
-
+    upsertDocument: (
+      connectionId: string,
+      params: {
+        collection: string;
+        document: Partial<Document>;
+        dataRequirements?: Record<string, string>;
+      },
+    ) => ipcRenderer.invoke('db:upsertDocument', connectionId, params),
   },
 
   // Local storage operations
@@ -131,47 +185,82 @@ export interface ElectronAPI {
     connect: (connectionId: string, config: ConnectionConfig) => Promise<ConnectionResult>;
     testConnection: (config: ConnectionConfig) => Promise<ConnectionResult>;
     disconnect: (connectionId: string) => Promise<{ success: boolean }>;
-    getConnectionStatus: (connectionId: string) => Promise<{ connected: boolean; type: string | null }>;
+    getConnectionStatus: (
+      connectionId: string,
+    ) => Promise<{ connected: boolean; type: string | null }>;
     getCollections: (connectionId: string) => Promise<GetCollectionsResult>;
-    getCollectionInfo: (connectionId: string, collection: string) => Promise<{
+    getCollectionInfo: (
+      connectionId: string,
+      collection: string,
+    ) => Promise<{
       success: boolean;
       data?: Record<string, unknown>;
       error?: string;
     }>;
-    getCollectionSchema: (connectionId: string, collection: string) => Promise<GetCollectionSchemaResult>;
-    getSearchCapabilities: (connectionId: string, collection: string, schema?: CollectionSchema | null) => Promise<GetSearchCapabilitiesResult>;
-    getDocuments: (connectionId: string, params: {
-      collection: string;
-      options: GetDocumentsOptions;
-    }) => Promise<GetDocumentsResult>;
-    search: (connectionId: string, params: {
-      collection: string;
-      vectors: Record<string, DocumentVector>;
-      options: SearchOptions;
-    }) => Promise<SearchResult>;
-    deleteDocument: (connectionId: string, params: {
-      collection: string;
-      primary: Document['primary'];
-      dataRequirements?: Record<string, string>;
-    }) => Promise<DeleteDocumentResult>;
-    deleteDocuments: (connectionId: string, params: {
-      collection: string;
-      filter: FilterQuery;
-      dataRequirements?: Record<string, string>;
-    }) => Promise<DeleteDocumentsResult>;
+    getCollectionSchema: (
+      connectionId: string,
+      collection: string,
+    ) => Promise<GetCollectionSchemaResult>;
+    getSearchCapabilities: (
+      connectionId: string,
+      collection: string,
+      schema?: CollectionSchema | null,
+    ) => Promise<GetSearchCapabilitiesResult>;
+    getDocuments: (
+      connectionId: string,
+      params: {
+        collection: string;
+        options: GetDocumentsOptions;
+      },
+    ) => Promise<GetDocumentsResult>;
+    search: (
+      connectionId: string,
+      params: {
+        collection: string;
+        vectors: Record<string, DocumentVector>;
+        options: SearchOptions;
+      },
+    ) => Promise<SearchResult>;
+    deleteDocument: (
+      connectionId: string,
+      params: {
+        collection: string;
+        primary: Document['primary'];
+        dataRequirements?: Record<string, string>;
+      },
+    ) => Promise<DeleteDocumentResult>;
+    deleteDocuments: (
+      connectionId: string,
+      params: {
+        collection: string;
+        filter: FilterQuery;
+        dataRequirements?: Record<string, string>;
+      },
+    ) => Promise<DeleteDocumentsResult>;
     dropCollection: (connectionId: string, collection: string) => Promise<DropCollectionResult>;
-    truncateCollection: (connectionId: string, collection: string) => Promise<TruncateCollectionResult>;
-    createCollection: (connectionId: string, config: Record<string, unknown>) => Promise<CreateCollectionResult>;
+    truncateCollection: (
+      connectionId: string,
+      collection: string,
+    ) => Promise<TruncateCollectionResult>;
+    createCollection: (
+      connectionId: string,
+      config: Record<string, unknown>,
+    ) => Promise<CreateCollectionResult>;
     getCreateCollectionSchema: (connectionId: string) => Promise<DynamicFormSchema>;
-    upsertDocument: (connectionId: string, params: {
-      collection: string;
-      document: Partial<Document>;
-      dataRequirements?: Record<string, string>;
-    }) => Promise<UpsertDocumentResult>;
+    upsertDocument: (
+      connectionId: string,
+      params: {
+        collection: string;
+        document: Partial<Document>;
+        dataRequirements?: Record<string, string>;
+      },
+    ) => Promise<UpsertDocumentResult>;
   };
   store: {
     getConnections: () => Promise<SavedConnection[]>;
-    saveConnection: (connection: Omit<SavedConnection, 'id' | 'createdAt'>) => Promise<SavedConnection>;
+    saveConnection: (
+      connection: Omit<SavedConnection, 'id' | 'createdAt'>,
+    ) => Promise<SavedConnection>;
     deleteConnection: (id: string) => Promise<boolean>;
   };
   window: {

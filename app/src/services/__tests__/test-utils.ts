@@ -1,12 +1,20 @@
 /**
  * Common Test Utilities for Vector Database Integration Tests
- * 
+ *
  * This module provides only shared, database-agnostic utilities.
  * Client-specific test logic should be in each client's test file.
  */
 
 import { expect } from 'vitest';
-import { VectorDBClient, ConnectionConfig, Document, DocumentVector, COLLECTION_DEFAULT_VECTOR, SearchCapabilities, CollectionSchema } from '../../types';
+import {
+  VectorDBClient,
+  ConnectionConfig,
+  Document,
+  DocumentVector,
+  COLLECTION_DEFAULT_VECTOR,
+  SearchCapabilities,
+  CollectionSchema,
+} from '../../types';
 import { DynamicFormSchema } from '../../components/DynamicForm/types';
 import crypto from 'crypto';
 
@@ -39,30 +47,33 @@ export function generateTestCollectionName(prefix = 'test'): string {
  * Matches the UI's generateRandomVector implementation
  */
 export function generateTestVector(dimension = 1536): number[] {
-  return Array.from({ length: dimension }, () =>
-    parseFloat((Math.random() * 2 - 1).toFixed(6))
-  );
+  return Array.from({ length: dimension }, () => parseFloat((Math.random() * 2 - 1).toFixed(6)));
 }
 
 /**
  * Generate a sparse test vector
  */
-export function generateTestSparseVector(maxDimension = 30000, nonZeroCount = 50): { indices: number[], values: number[] } {
+export function generateTestSparseVector(
+  maxDimension = 30000,
+  nonZeroCount = 50,
+): { indices: number[]; values: number[] } {
   const indices: number[] = [];
   const values: number[] = [];
-  
+
   // Generate unique random indices
   const usedIndices = new Set<number>();
   while (usedIndices.size < nonZeroCount) {
     usedIndices.add(Math.floor(Math.random() * maxDimension));
   }
-  
+
   // Sort indices and generate values
-  Array.from(usedIndices).sort((a, b) => a - b).forEach(idx => {
-    indices.push(idx);
-    values.push(Math.random() * 5); // Positive values for BM25-style
-  });
-  
+  Array.from(usedIndices)
+    .sort((a, b) => a - b)
+    .forEach((idx) => {
+      indices.push(idx);
+      values.push(Math.random() * 5); // Positive values for BM25-style
+    });
+
   return { indices, values };
 }
 
@@ -80,7 +91,7 @@ export function generateTestBinaryVector(dimensionBits = 256): number[] {
 export function generateTestDocument(
   id: string | number,
   vectorDimension = 1536,
-  metadata: Record<string, unknown> = {}
+  metadata: Record<string, unknown> = {},
 ): Document {
   return {
     primary: {
@@ -110,7 +121,7 @@ export function generateTestDocument(
  */
 export function generateTestSparseDocument(
   id: string | number,
-  metadata: Record<string, unknown> = {}
+  metadata: Record<string, unknown> = {},
 ): Document {
   return {
     primary: {
@@ -118,7 +129,7 @@ export function generateTestSparseDocument(
       value: id,
     },
     vectors: {
-      'sparse': {
+      sparse: {
         key: 'sparse',
         vectorType: 'sparse',
         value: generateTestSparseVector(),
@@ -138,7 +149,7 @@ export function generateTestSparseDocument(
 export function generateTestBinaryDocument(
   id: string | number,
   dimensionBits = 256,
-  metadata: Record<string, unknown> = {}
+  metadata: Record<string, unknown> = {},
 ): Document {
   return {
     primary: {
@@ -146,7 +157,7 @@ export function generateTestBinaryDocument(
       value: id,
     },
     vectors: {
-      'binary_vector': {
+      binary_vector: {
         key: 'binary_vector',
         vectorType: 'binary',
         size: dimensionBits,
@@ -169,7 +180,7 @@ export function generateTestBinaryDocument(
 export function generateTestHybridDocument(
   id: string | number,
   denseDimension = 384,
-  metadata: Record<string, unknown> = {}
+  metadata: Record<string, unknown> = {},
 ): Document {
   return {
     primary: {
@@ -177,7 +188,7 @@ export function generateTestHybridDocument(
       value: id,
     },
     vectors: {
-      'dense': {
+      dense: {
         key: 'dense',
         vectorType: 'dense',
         size: denseDimension,
@@ -185,7 +196,7 @@ export function generateTestHybridDocument(
           data: generateTestVector(denseDimension),
         },
       },
-      'sparse': {
+      sparse: {
         key: 'sparse',
         vectorType: 'sparse',
         value: generateTestSparseVector(),
@@ -209,14 +220,14 @@ export function generateTestHybridDocument(
 export async function waitFor(
   condition: () => boolean | Promise<boolean>,
   timeout = 5000,
-  interval = 100
+  interval = 100,
 ): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < timeout) {
     if (await condition()) {
       return;
     }
-    await new Promise(resolve => setTimeout(resolve, interval));
+    await new Promise((resolve) => setTimeout(resolve, interval));
   }
   throw new Error(`Condition not met within ${timeout}ms`);
 }
@@ -291,7 +302,7 @@ export const TEST_CONFIGS: Record<string, ConnectionConfig> = {
 export function toPascalCase(str: string): string {
   return str
     .split(/[_\s-]/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join('');
 }
 
@@ -304,7 +315,7 @@ export function buildSimpleCollectionConfig(
   schema: DynamicFormSchema,
   collectionName: string,
   vectorDimension: number,
-  clientSpecificOverrides?: (config: Record<string, unknown>) => void
+  clientSpecificOverrides?: (config: Record<string, unknown>) => void,
 ): Record<string, unknown> {
   const config: Record<string, unknown> = {};
 
@@ -313,7 +324,7 @@ export function buildSimpleCollectionConfig(
     if (!item.showWhen) return true;
     const { field, operator, value } = item.showWhen;
     const fieldValue = config[field];
-    
+
     switch (operator) {
       case 'equals':
         return fieldValue === value;
@@ -393,7 +404,9 @@ export function buildSimpleCollectionConfig(
 /**
  * Test collection creation and setup
  */
-export async function testCollectionCreation(options: TestFlowOptions): Promise<{ workingCollectionName: string; schema: any }> {
+export async function testCollectionCreation(
+  options: TestFlowOptions,
+): Promise<{ workingCollectionName: string; schema: any }> {
   const { client, collectionName, vectorDimension = 1536 } = options;
 
   console.log('Step 1: Testing connection...');
@@ -413,82 +426,106 @@ export async function testCollectionCreation(options: TestFlowOptions): Promise<
 
   console.log('Step 3: Creating collection...');
   const createSchema = client.getCreateCollectionSchema();
-  const createConfig = buildSimpleCollectionConfig(createSchema, collectionName, vectorDimension, (config) => {
-    // Milvus-specific override
-    if (config.primaryKeyType !== undefined || config.autoId !== undefined || config.autoID !== undefined || config.schemaType !== undefined) {
-      config.schemaType = 'custom';
-      config.primaryKeyType = 'VarChar';
-      config.primaryKeyName = 'id';
-      config.maxLength = 255;
-      config.autoId = false;
-      config.autoID = false;
-      if (!config.vectorFields || !Array.isArray(config.vectorFields) || config.vectorFields.length === 0) {
-        config.vectorFields = [{
-          name: 'vector',
-          dataType: 'FloatVector',
-          dimension: vectorDimension,
-          metric_type: 'COSINE',
-        }];
+  const createConfig = buildSimpleCollectionConfig(
+    createSchema,
+    collectionName,
+    vectorDimension,
+    (config) => {
+      // Milvus-specific override
+      if (
+        config.primaryKeyType !== undefined ||
+        config.autoId !== undefined ||
+        config.autoID !== undefined ||
+        config.schemaType !== undefined
+      ) {
+        config.schemaType = 'custom';
+        config.primaryKeyType = 'VarChar';
+        config.primaryKeyName = 'id';
+        config.maxLength = 255;
+        config.autoId = false;
+        config.autoID = false;
+        if (
+          !config.vectorFields ||
+          !Array.isArray(config.vectorFields) ||
+          config.vectorFields.length === 0
+        ) {
+          config.vectorFields = [
+            {
+              name: 'vector',
+              dataType: 'FloatVector',
+              dimension: vectorDimension,
+              metric_type: 'COSINE',
+            },
+          ];
+        }
       }
-    }
-  });
-  
+    },
+  );
+
   // Determine the expected collection name (for Weaviate, it's PascalCase)
-  const expectedCollectionName = createConfig.class ? createConfig.class as string : collectionName;
-  
+  const expectedCollectionName = createConfig.class
+    ? (createConfig.class as string)
+    : collectionName;
+
   const createResult = await client.createCollection(createConfig);
   if (!createResult.success) {
     throw new Error(`Failed to create collection: ${createResult.error}`);
   }
   console.log('✓ Collection created');
 
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   console.log('Step 4: Verifying collection exists...');
   // For Weaviate and other databases, check both count increase and name existence
-  await waitFor(async () => {
-    try {
-      const collectionsAfter = await client.getCollections();
-      if (!collectionsAfter.success) return false;
-      
-      // Check if count increased
-      const newCount = collectionsAfter.collections?.length || 0;
-      if (newCount > initialCount) return true;
-      
-      // Also check if the expected collection name exists (for Weaviate PascalCase)
-      if (expectedCollectionName && collectionsAfter.collections) {
-        const found = collectionsAfter.collections.some(c => c.name === expectedCollectionName);
-        if (found) return true;
+  await waitFor(
+    async () => {
+      try {
+        const collectionsAfter = await client.getCollections();
+        if (!collectionsAfter.success) return false;
+
+        // Check if count increased
+        const newCount = collectionsAfter.collections?.length || 0;
+        if (newCount > initialCount) return true;
+
+        // Also check if the expected collection name exists (for Weaviate PascalCase)
+        if (expectedCollectionName && collectionsAfter.collections) {
+          const found = collectionsAfter.collections.some((c) => c.name === expectedCollectionName);
+          if (found) return true;
+        }
+
+        return false;
+      } catch {
+        return false;
       }
-      
-      return false;
-    } catch {
-      return false;
-    }
-  }, 20000, 500); // Increased timeout to 20s for slower databases like Weaviate
+    },
+    20000,
+    500,
+  ); // Increased timeout to 20s for slower databases like Weaviate
 
   const collectionsAfter = await client.getCollections();
   if (!collectionsAfter.success) {
     throw new Error(`Failed to get collections after creation: ${collectionsAfter.error}`);
   }
-  
+
   // Try to find the collection by expected name first (for Weaviate PascalCase)
-  let createdCollection = expectedCollectionName 
-    ? collectionsAfter.collections?.find(c => c.name === expectedCollectionName)
+  let createdCollection = expectedCollectionName
+    ? collectionsAfter.collections?.find((c) => c.name === expectedCollectionName)
     : null;
-  
+
   // If not found by name, find by comparing with before list
   if (!createdCollection) {
-    const collectionsBeforeNames = new Set(collectionsBefore.collections?.map(c => c.name) || []);
-    createdCollection = collectionsAfter.collections?.find(c => !collectionsBeforeNames.has(c.name));
+    const collectionsBeforeNames = new Set(collectionsBefore.collections?.map((c) => c.name) || []);
+    createdCollection = collectionsAfter.collections?.find(
+      (c) => !collectionsBeforeNames.has(c.name),
+    );
   }
-  
+
   if (!createdCollection) {
     const newCount = collectionsAfter.collections?.length || 0;
     throw new Error(
       `Newly created collection not found in collections list. ` +
-      `Expected name: ${expectedCollectionName}, ` +
-      `Count before: ${initialCount}, Count after: ${newCount}`
+        `Expected name: ${expectedCollectionName}, ` +
+        `Count before: ${initialCount}, Count after: ${newCount}`,
     );
   }
 
@@ -523,12 +560,15 @@ export async function testDocumentInsertion(
   workingCollectionName: string,
   schema: any,
   vectorDimension: number,
-  dataRequirements?: Record<string, string>
+  dataRequirements?: Record<string, string>,
 ): Promise<Document[]> {
   console.log('Step 7: Inserting test documents...');
   const primaryKeyName = schema?.primary.name || 'id';
   const schemaVectors = schema?.vectors || {};
-  const vectorFieldNames = Object.keys(schemaVectors).length > 0 ? Object.keys(schemaVectors) : [COLLECTION_DEFAULT_VECTOR];
+  const vectorFieldNames =
+    Object.keys(schemaVectors).length > 0
+      ? Object.keys(schemaVectors)
+      : [COLLECTION_DEFAULT_VECTOR];
   const actualVectorFieldName = schemaVectors[COLLECTION_DEFAULT_VECTOR]
     ? COLLECTION_DEFAULT_VECTOR
     : vectorFieldNames[0];
@@ -543,7 +583,7 @@ export async function testDocumentInsertion(
     });
   });
 
-  const adjustedDocs = testDocs.map(doc => {
+  const adjustedDocs = testDocs.map((doc) => {
     if (!doc.vectors || Object.keys(doc.vectors).length === 0) {
       throw new Error(`Document ${doc.primary.value} is missing vectors`);
     }
@@ -553,18 +593,25 @@ export async function testDocumentInsertion(
       if (!vector) {
         throw new Error(`Document ${doc.primary.value} has missing vector for key ${key}`);
       }
-      
+
       // Validate based on vector type
       if (vector.vectorType === 'dense') {
-        if (!vector.value || !vector.value.data || !Array.isArray(vector.value.data) || vector.value.data.length === 0) {
+        if (
+          !vector.value ||
+          !vector.value.data ||
+          !Array.isArray(vector.value.data) ||
+          vector.value.data.length === 0
+        ) {
           throw new Error(`Document ${doc.primary.value} has invalid dense vector for key ${key}`);
         }
         if (vector.value.data.length !== vectorDimension) {
-          throw new Error(`Document ${doc.primary.value} vector dimension mismatch: expected ${vectorDimension}, got ${vector.value.data.length}`);
+          throw new Error(
+            `Document ${doc.primary.value} vector dimension mismatch: expected ${vectorDimension}, got ${vector.value.data.length}`,
+          );
         }
       }
 
-      const vectorKey = (key === COLLECTION_DEFAULT_VECTOR) ? actualVectorFieldName : key;
+      const vectorKey = key === COLLECTION_DEFAULT_VECTOR ? actualVectorFieldName : key;
       // Ensure the key property matches the field name
       adjustedVectors[vectorKey] = {
         ...vector,
@@ -584,7 +631,7 @@ export async function testDocumentInsertion(
 
   const isAutoID = schema?.primary?.autoID === true;
   const documentsToInsert = isAutoID
-    ? adjustedDocs.map(doc => {
+    ? adjustedDocs.map((doc) => {
         const { primary, ...docWithoutPrimary } = doc;
         return docWithoutPrimary;
       })
@@ -598,7 +645,11 @@ export async function testDocumentInsertion(
     const docId = isAutoID ? '(auto-generated)' : originalDoc.primary.value;
 
     console.log(`  Inserting document: ${docId} (primary key: ${primaryKeyName})...`);
-    const upsertResult = await client.upsertDocument(workingCollectionName, { document: doc }, dataRequirements);
+    const upsertResult = await client.upsertDocument(
+      workingCollectionName,
+      { document: doc },
+      dataRequirements,
+    );
     if (!upsertResult.success) {
       throw new Error(`Failed to upsert document ${docId}: ${upsertResult.error}`);
     }
@@ -630,7 +681,7 @@ export async function testDocumentInsertion(
   }
   console.log(`✓ Inserted ${insertedDocs.length} documents`);
 
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   return insertedDocs;
 }
 
@@ -641,10 +692,10 @@ export async function testDocumentRetrieval(
   client: VectorDBClient,
   workingCollectionName: string,
   expectedCount: number,
-  dataRequirements?: Record<string, string>
+  dataRequirements?: Record<string, string>,
 ): Promise<void> {
   console.log('Step 9: Getting documents...');
-  const getDocsResult = await client.getDocuments(workingCollectionName, { 
+  const getDocsResult = await client.getDocuments(workingCollectionName, {
     limit: Math.max(expectedCount, 20),
     dataRequirements,
   });
@@ -653,14 +704,14 @@ export async function testDocumentRetrieval(
   }
   if (!getDocsResult.documents || getDocsResult.documents.length < expectedCount) {
     throw new Error(
-      `Expected at least ${expectedCount} documents, got ${getDocsResult.documents?.length || 0}`
+      `Expected at least ${expectedCount} documents, got ${getDocsResult.documents?.length || 0}`,
     );
   }
   console.log(`✓ Retrieved ${getDocsResult.documents.length} documents`);
 
   console.log('Step 9b: Testing pagination...');
   const pageSize = 5;
-  const firstPageResult = await client.getDocuments(workingCollectionName, { 
+  const firstPageResult = await client.getDocuments(workingCollectionName, {
     limit: pageSize,
     dataRequirements,
   });
@@ -669,7 +720,7 @@ export async function testDocumentRetrieval(
   }
   if (!firstPageResult.documents || firstPageResult.documents.length !== pageSize) {
     throw new Error(
-      `Expected ${pageSize} documents on first page, got ${firstPageResult.documents?.length || 0}`
+      `Expected ${pageSize} documents on first page, got ${firstPageResult.documents?.length || 0}`,
     );
   }
   console.log(`✓ First page: ${firstPageResult.documents.length} documents`);
@@ -688,15 +739,17 @@ export async function testDocumentRetrieval(
   }
   if (!secondPageResult.documents || secondPageResult.documents.length !== pageSize) {
     throw new Error(
-      `Expected ${pageSize} documents on second page, got ${secondPageResult.documents?.length || 0}`
+      `Expected ${pageSize} documents on second page, got ${secondPageResult.documents?.length || 0}`,
     );
   }
 
-  const firstPageIds = new Set(firstPageResult.documents.map(d => d.primary.value));
-  const secondPageIds = new Set(secondPageResult.documents.map(d => d.primary.value));
-  const overlap = [...firstPageIds].filter(id => secondPageIds.has(id));
+  const firstPageIds = new Set(firstPageResult.documents.map((d) => d.primary.value));
+  const secondPageIds = new Set(secondPageResult.documents.map((d) => d.primary.value));
+  const overlap = [...firstPageIds].filter((id) => secondPageIds.has(id));
   if (overlap.length > 0) {
-    throw new Error(`Pagination overlap detected: ${overlap.length} documents appear on both pages`);
+    throw new Error(
+      `Pagination overlap detected: ${overlap.length} documents appear on both pages`,
+    );
   }
 
   console.log(`✓ Second page: ${secondPageResult.documents.length} documents (no overlap)`);
@@ -709,22 +762,24 @@ export async function testDocumentSorting(
   client: VectorDBClient,
   workingCollectionName: string,
   schema: any,
-  dataRequirements?: Record<string, string>
+  dataRequirements?: Record<string, string>,
 ): Promise<void> {
   console.log('Step 9c: Testing document sorting...');
-  
+
   // Get all documents first to verify sorting
-  const allDocsResult = await client.getDocuments(workingCollectionName, { 
+  const allDocsResult = await client.getDocuments(workingCollectionName, {
     limit: 100,
     dataRequirements,
   });
   if (!allDocsResult.success || !allDocsResult.documents || allDocsResult.documents.length < 3) {
-    throw new Error(`Need at least 3 documents for sorting test, got ${allDocsResult.documents?.length || 0}`);
+    throw new Error(
+      `Need at least 3 documents for sorting test, got ${allDocsResult.documents?.length || 0}`,
+    );
   }
-  
+
   const primaryKeyName = schema?.primary.name || 'id';
   const testDocs = allDocsResult.documents;
-  
+
   // Test sorting by primary key (ascending)
   console.log(`  Testing sort by ${primaryKeyName} (ascending)...`);
   const sortAscResult = await client.getDocuments(workingCollectionName, {
@@ -735,9 +790,9 @@ export async function testDocumentSorting(
   if (!sortAscResult.success || !sortAscResult.documents) {
     throw new Error(`Failed to sort by ${primaryKeyName} ascending: ${sortAscResult.error}`);
   }
-  
+
   // Verify ascending order
-  const ascValues = sortAscResult.documents.map(doc => {
+  const ascValues = sortAscResult.documents.map((doc) => {
     const val = doc.primary.value;
     return typeof val === 'number' ? val : String(val);
   });
@@ -749,7 +804,7 @@ export async function testDocumentSorting(
     throw new Error(`Documents not sorted ascending by ${primaryKeyName}`);
   }
   console.log(`  ✓ Ascending sort verified`);
-  
+
   // Test sorting by primary key (descending)
   console.log(`  Testing sort by ${primaryKeyName} (descending)...`);
   const sortDescResult = await client.getDocuments(workingCollectionName, {
@@ -760,9 +815,9 @@ export async function testDocumentSorting(
   if (!sortDescResult.success || !sortDescResult.documents) {
     throw new Error(`Failed to sort by ${primaryKeyName} descending: ${sortDescResult.error}`);
   }
-  
+
   // Verify descending order
-  const descValues = sortDescResult.documents.map(doc => {
+  const descValues = sortDescResult.documents.map((doc) => {
     const val = doc.primary.value;
     return typeof val === 'number' ? val : String(val);
   });
@@ -774,45 +829,53 @@ export async function testDocumentSorting(
     throw new Error(`Documents not sorted descending by ${primaryKeyName}`);
   }
   console.log(`  ✓ Descending sort verified`);
-  
+
   // Test sorting by a payload field if available
   const firstDoc = testDocs[0];
   if (firstDoc.payload && Object.keys(firstDoc.payload).length > 0) {
     const payloadField = Object.keys(firstDoc.payload)[0];
     const payloadValue = firstDoc.payload[payloadField];
-    
+
     // Only test if it's a sortable type
-    if (typeof payloadValue === 'string' || typeof payloadValue === 'number' || typeof payloadValue === 'boolean') {
+    if (
+      typeof payloadValue === 'string' ||
+      typeof payloadValue === 'number' ||
+      typeof payloadValue === 'boolean'
+    ) {
       console.log(`  Testing sort by payload field "${payloadField}" (ascending)...`);
       const payloadSortResult = await client.getDocuments(workingCollectionName, {
         limit: testDocs.length,
         sort: [{ field: payloadField, order: 'asc' }],
       });
-      
+
       if (payloadSortResult.success && payloadSortResult.documents) {
         // Verify sorting
         const payloadValues = payloadSortResult.documents
-          .map(doc => doc.payload?.[payloadField])
-          .filter(v => v !== undefined && v !== null);
-        
+          .map((doc) => doc.payload?.[payloadField])
+          .filter((v) => v !== undefined && v !== null);
+
         if (payloadValues.length > 1) {
           const sortedPayloadValues = [...payloadValues].sort((a, b) => {
             if (typeof a === 'number' && typeof b === 'number') return a - b;
             return String(a).localeCompare(String(b));
           });
-          
+
           if (JSON.stringify(payloadValues) === JSON.stringify(sortedPayloadValues)) {
             console.log(`  ✓ Payload field "${payloadField}" sort verified`);
           } else {
-            console.log(`  ⚠ Payload field "${payloadField}" sort may not be fully supported (native vs client-side)`);
+            console.log(
+              `  ⚠ Payload field "${payloadField}" sort may not be fully supported (native vs client-side)`,
+            );
           }
         }
       } else {
-        console.log(`  ⚠ Sorting by payload field "${payloadField}" not supported or failed: ${payloadSortResult.error}`);
+        console.log(
+          `  ⚠ Sorting by payload field "${payloadField}" not supported or failed: ${payloadSortResult.error}`,
+        );
       }
     }
   }
-  
+
   console.log('✓ Document sorting tests completed');
 }
 
@@ -822,7 +885,7 @@ export async function testDocumentSorting(
 export async function testGetSearchCapabilities(
   client: VectorDBClient,
   collectionName: string,
-  schema?: CollectionSchema | null
+  schema?: CollectionSchema | null,
 ): Promise<SearchCapabilities> {
   const capabilities = await client.getSearchCapabilities(collectionName, schema ?? undefined);
   expect(capabilities).toBeDefined();
@@ -853,7 +916,7 @@ export async function testSearchWithLexicalAndHybridAlpha(
   workingCollectionName: string,
   schema: any,
   vectorDimension: number,
-  dataRequirements?: Record<string, string>
+  dataRequirements?: Record<string, string>,
 ): Promise<void> {
   const capabilities = await client.getSearchCapabilities(workingCollectionName, schema);
   if (!capabilities.lexical) {
@@ -872,8 +935,13 @@ export async function testSearchWithLexicalAndHybridAlpha(
 
   const sampleDoc = getDocsResult.documents[0];
   const schemaVectors = schema?.vectors || {};
-  const vectorFieldNames = Object.keys(schemaVectors).length > 0 ? Object.keys(schemaVectors) : [COLLECTION_DEFAULT_VECTOR];
-  const searchVectorKey = schemaVectors[COLLECTION_DEFAULT_VECTOR] ? COLLECTION_DEFAULT_VECTOR : vectorFieldNames[0];
+  const vectorFieldNames =
+    Object.keys(schemaVectors).length > 0
+      ? Object.keys(schemaVectors)
+      : [COLLECTION_DEFAULT_VECTOR];
+  const searchVectorKey = schemaVectors[COLLECTION_DEFAULT_VECTOR]
+    ? COLLECTION_DEFAULT_VECTOR
+    : vectorFieldNames[0];
   const docVector = sampleDoc.vectors?.[searchVectorKey];
   if (!docVector || docVector.vectorType !== 'dense' || !('data' in docVector.value)) {
     throw new Error('Sample document has no dense vector for hybrid search test');
@@ -901,7 +969,9 @@ export async function testSearchWithLexicalAndHybridAlpha(
   expect(searchResult.success).toBe(true);
   expect(searchResult.documents).toBeDefined();
   // May return 0 results if no text matches; success is enough to verify the API accepts options
-  console.log(`✓ Search with lexical/hybrid options returned ${searchResult.documents?.length ?? 0} results`);
+  console.log(
+    `✓ Search with lexical/hybrid options returned ${searchResult.documents?.length ?? 0} results`,
+  );
 }
 
 /**
@@ -912,7 +982,7 @@ export async function testSearchKeywordOnly(
   client: VectorDBClient,
   workingCollectionName: string,
   schema: any,
-  dataRequirements?: Record<string, string>
+  dataRequirements?: Record<string, string>,
 ): Promise<void> {
   const capabilities = await client.getSearchCapabilities(workingCollectionName, schema);
   if (!capabilities.lexical) {
@@ -944,32 +1014,35 @@ export async function testSearch(
   workingCollectionName: string,
   schema: any,
   vectorDimension: number,
-  dataRequirements?: Record<string, string>
+  dataRequirements?: Record<string, string>,
 ): Promise<void> {
   console.log('Step 10: Testing search...');
-  
+
   // Get a document from the collection to use its vector for search
   const getDocsResult = await client.getDocuments(workingCollectionName, {
     limit: 1,
     dataRequirements,
   });
-  
+
   if (!getDocsResult.success || !getDocsResult.documents || getDocsResult.documents.length === 0) {
     throw new Error('No documents found in collection to use for search test');
   }
-  
+
   const sampleDoc = getDocsResult.documents[0];
   if (!sampleDoc.vectors || Object.keys(sampleDoc.vectors).length === 0) {
     throw new Error('Sample document has no vectors to use for search');
   }
-  
+
   // Find the appropriate vector to use for search
   const schemaVectors = schema?.vectors || {};
-  const vectorFieldNames = Object.keys(schemaVectors).length > 0 ? Object.keys(schemaVectors) : [COLLECTION_DEFAULT_VECTOR];
+  const vectorFieldNames =
+    Object.keys(schemaVectors).length > 0
+      ? Object.keys(schemaVectors)
+      : [COLLECTION_DEFAULT_VECTOR];
   const searchVectorKey = schemaVectors[COLLECTION_DEFAULT_VECTOR]
     ? COLLECTION_DEFAULT_VECTOR
     : vectorFieldNames[0];
-  
+
   // Get the vector from the document
   const docVector = sampleDoc.vectors[searchVectorKey];
   if (!docVector) {
@@ -979,7 +1052,7 @@ export async function testSearch(
     if (!firstVector || firstVector.vectorType !== 'dense') {
       throw new Error('No dense vector found in sample document');
     }
-    
+
     // Extract vector data
     let searchVectorData: number[];
     if ('data' in firstVector.value && Array.isArray(firstVector.value.data)) {
@@ -987,7 +1060,7 @@ export async function testSearch(
     } else {
       throw new Error('Invalid vector format in sample document');
     }
-    
+
     // Create DocumentVector format using the document's vector
     const searchVectors: Record<string, DocumentVector> = {
       [firstVectorKey]: {
@@ -997,7 +1070,7 @@ export async function testSearch(
         value: { data: searchVectorData },
       },
     };
-    
+
     const searchResult = await client.search(workingCollectionName, searchVectors, {
       limit: 5,
       dataRequirements,
@@ -1008,14 +1081,16 @@ export async function testSearch(
     if (!searchResult.documents || searchResult.documents.length === 0) {
       throw new Error('Search returned no results');
     }
-    console.log(`✓ Search returned ${searchResult.documents.length} results (using vector from document: ${sampleDoc.primary.value})`);
+    console.log(
+      `✓ Search returned ${searchResult.documents.length} results (using vector from document: ${sampleDoc.primary.value})`,
+    );
     return;
   }
-  
+
   if (docVector.vectorType !== 'dense') {
     throw new Error('Search vector must be dense type');
   }
-  
+
   // Extract vector data
   let searchVectorData: number[];
   if ('data' in docVector.value && Array.isArray(docVector.value.data)) {
@@ -1023,7 +1098,7 @@ export async function testSearch(
   } else {
     throw new Error('Invalid vector format in sample document');
   }
-  
+
   // Create DocumentVector format using the document's vector
   const searchVectors: Record<string, DocumentVector> = {
     [searchVectorKey]: {
@@ -1033,7 +1108,7 @@ export async function testSearch(
       value: { data: searchVectorData },
     },
   };
-  
+
   const searchResult = await client.search(workingCollectionName, searchVectors, {
     limit: 5,
     dataRequirements,
@@ -1044,7 +1119,9 @@ export async function testSearch(
   if (!searchResult.documents || searchResult.documents.length === 0) {
     throw new Error('Search returned no results');
   }
-  console.log(`✓ Search returned ${searchResult.documents.length} results (using vector from document: ${sampleDoc.primary.value})`);
+  console.log(
+    `✓ Search returned ${searchResult.documents.length} results (using vector from document: ${sampleDoc.primary.value})`,
+  );
 }
 
 /**
@@ -1054,7 +1131,7 @@ export async function testDocumentUpdate(
   client: VectorDBClient,
   workingCollectionName: string,
   testDoc: Document,
-  dataRequirements?: Record<string, string>
+  dataRequirements?: Record<string, string>,
 ): Promise<void> {
   console.log('Step 11: Updating document...');
   const updatedPayload = {
@@ -1062,21 +1139,25 @@ export async function testDocumentUpdate(
     updated: true,
     newField: 'updated_value',
   };
-  const updateResult = await client.upsertDocument(workingCollectionName, {
-    document: {
-      ...testDoc,
-      payload: updatedPayload,
+  const updateResult = await client.upsertDocument(
+    workingCollectionName,
+    {
+      document: {
+        ...testDoc,
+        payload: updatedPayload,
+      },
     },
-  }, dataRequirements);
+    dataRequirements,
+  );
   if (!updateResult.success) {
     throw new Error(`Failed to update document: ${updateResult.error}`);
   }
   console.log('✓ Document updated');
 
   // Wait longer for indexing, especially for pgvector
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   let foundDoc: Document | undefined;
-  
+
   // Try filter first
   const updatedDocs = await client.getDocuments(workingCollectionName, {
     filter: {
@@ -1095,23 +1176,23 @@ export async function testDocumentUpdate(
   });
 
   if (updatedDocs.success && updatedDocs.documents && updatedDocs.documents.length > 0) {
-    foundDoc = updatedDocs.documents.find(doc => doc.primary.value === testDoc.primary.value);
+    foundDoc = updatedDocs.documents.find((doc) => doc.primary.value === testDoc.primary.value);
   }
 
   // Fallback: get all documents and find the one we updated
   if (!foundDoc) {
     const allDocs = await client.getDocuments(workingCollectionName, { limit: 1000 });
     if (allDocs.success && allDocs.documents) {
-      foundDoc = allDocs.documents.find(doc => doc.primary.value === testDoc.primary.value);
+      foundDoc = allDocs.documents.find((doc) => doc.primary.value === testDoc.primary.value);
     }
   }
-  
+
   // If still not found, wait a bit more and try again (for slow databases like pgvector)
   if (!foundDoc) {
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     const retryDocs = await client.getDocuments(workingCollectionName, { limit: 1000 });
     if (retryDocs.success && retryDocs.documents) {
-      foundDoc = retryDocs.documents.find(doc => doc.primary.value === testDoc.primary.value);
+      foundDoc = retryDocs.documents.find((doc) => doc.primary.value === testDoc.primary.value);
     }
   }
 
@@ -1123,7 +1204,7 @@ export async function testDocumentUpdate(
   const payload = foundDoc.payload || {};
   let updated = payload.updated;
   let newField = payload.newField;
-  
+
   // Check if fields are nested in metadata (pgvector stores non-schema fields in metadata JSONB)
   if (payload.metadata && typeof payload.metadata === 'object') {
     const metadata = payload.metadata as Record<string, unknown>;
@@ -1134,12 +1215,14 @@ export async function testDocumentUpdate(
       newField = metadata.newField;
     }
   }
-  
+
   if (updated !== true || newField !== 'updated_value') {
     // Debug: log what we actually got
     console.error('Document payload:', JSON.stringify(payload, null, 2));
     console.error('Expected: updated=true, newField=updated_value');
-    throw new Error(`Document was not updated correctly. Got updated=${updated}, newField=${newField}`);
+    throw new Error(
+      `Document was not updated correctly. Got updated=${updated}, newField=${newField}`,
+    );
   }
   console.log('✓ Update verified');
 }
@@ -1151,18 +1234,22 @@ export async function testDocumentDeletion(
   client: VectorDBClient,
   workingCollectionName: string,
   testDocs: Document[],
-  dataRequirements?: Record<string, string>
+  dataRequirements?: Record<string, string>,
 ): Promise<void> {
   console.log('Step 12: Deleting single document...');
   const docToDelete = testDocs[0];
-  const deleteResult = await client.deleteDocument(workingCollectionName, docToDelete.primary, dataRequirements);
+  const deleteResult = await client.deleteDocument(
+    workingCollectionName,
+    docToDelete.primary,
+    dataRequirements,
+  );
   if (!deleteResult.success) {
     throw new Error(`Failed to delete document: ${deleteResult.error}`);
   }
   console.log('✓ Document deleted');
 
-  await new Promise(resolve => setTimeout(resolve, 500));
-  const docsAfterDelete = await client.getDocuments(workingCollectionName, { 
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  const docsAfterDelete = await client.getDocuments(workingCollectionName, {
     limit: 10,
     dataRequirements,
   });
@@ -1171,22 +1258,28 @@ export async function testDocumentDeletion(
   }
   const remainingCount = docsAfterDelete.documents?.length || 0;
   if (remainingCount >= testDocs.length) {
-    throw new Error(`Document was not deleted. Expected < ${testDocs.length}, got ${remainingCount}`);
+    throw new Error(
+      `Document was not deleted. Expected < ${testDocs.length}, got ${remainingCount}`,
+    );
   }
   console.log('✓ Deletion verified');
 
   console.log('Step 13: Deleting multiple documents with filter...');
-  const deleteManyResult = await client.deleteDocuments(workingCollectionName, {
-    conditions: [
-      {
-        field: 'category',
-        operator: 'eq',
-        value: 'B',
-        valueType: 'string',
-      },
-    ],
-    logic: 'and',
-  }, dataRequirements);
+  const deleteManyResult = await client.deleteDocuments(
+    workingCollectionName,
+    {
+      conditions: [
+        {
+          field: 'category',
+          operator: 'eq',
+          value: 'B',
+          valueType: 'string',
+        },
+      ],
+      logic: 'and',
+    },
+    dataRequirements,
+  );
   if (!deleteManyResult.success) {
     throw new Error(`Failed to delete documents: ${deleteManyResult.error}`);
   }
@@ -1198,7 +1291,7 @@ export async function testDocumentDeletion(
  */
 export async function testCollectionManagement(
   client: VectorDBClient,
-  workingCollectionName: string
+  workingCollectionName: string,
 ): Promise<void> {
   console.log('Step 14: Truncating collection...');
   const truncateResult = await client.truncateCollection(workingCollectionName);
@@ -1211,15 +1304,15 @@ export async function testCollectionManagement(
   // Retry checking multiple times before failing
   let verified = false;
   for (let attempt = 0; attempt < 10 && !verified; attempt++) {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     const collectionInfo = await client.getCollectionInfo(workingCollectionName);
     if (!collectionInfo.success) {
       // Some databases (like Qdrant) may return "Not Found" for empty collections after truncate
       // Check if collection still exists in collections list
       const collections = await client.getCollections();
       if (collections.success && collections.collections) {
-        const found = collections.collections.find(c => c.name === workingCollectionName);
+        const found = collections.collections.find((c) => c.name === workingCollectionName);
         if (found) {
           console.log('✓ Truncation verified (collection exists but info unavailable)');
           verified = true;
@@ -1228,12 +1321,18 @@ export async function testCollectionManagement(
           throw new Error(`Collection ${workingCollectionName} not found after truncate`);
         }
       } else {
-        throw new Error(`Collection ${workingCollectionName} not found after truncate: ${collectionInfo.error}`);
+        throw new Error(
+          `Collection ${workingCollectionName} not found after truncate: ${collectionInfo.error}`,
+        );
       }
     } else {
       const docsAfterTruncate = await client.getDocuments(workingCollectionName, { limit: 100 });
       if (!docsAfterTruncate.success) {
-        if (collectionInfo.data && typeof collectionInfo.data.count === 'number' && collectionInfo.data.count === 0) {
+        if (
+          collectionInfo.data &&
+          typeof collectionInfo.data.count === 'number' &&
+          collectionInfo.data.count === 0
+        ) {
           console.log('✓ Truncation verified (collection is empty)');
           verified = true;
           break;
@@ -1247,7 +1346,9 @@ export async function testCollectionManagement(
         }
         // Still has documents, continue waiting
         if (attempt === 9) {
-          throw new Error(`Collection was not truncated after 10 attempts. Found ${docsAfterTruncate.documents.length} documents`);
+          throw new Error(
+            `Collection was not truncated after 10 attempts. Found ${docsAfterTruncate.documents.length} documents`,
+          );
         }
       }
     }
@@ -1260,12 +1361,14 @@ export async function testCollectionManagement(
   }
   console.log('✓ Collection dropped');
 
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   const collectionsAfterDrop = await client.getCollections();
   if (!collectionsAfterDrop.success) {
     throw new Error(`Failed to get collections after drop: ${collectionsAfterDrop.error}`);
   }
-  const foundAfterDrop = collectionsAfterDrop.collections?.find(c => c.name === workingCollectionName);
+  const foundAfterDrop = collectionsAfterDrop.collections?.find(
+    (c) => c.name === workingCollectionName,
+  );
   if (foundAfterDrop) {
     throw new Error(`Collection ${workingCollectionName} still exists after drop`);
   }
@@ -1279,7 +1382,12 @@ export async function runFullTestFlow(options: TestFlowOptions): Promise<void> {
   const { client, vectorDimension = 1536 } = options;
 
   const { workingCollectionName, schema } = await testCollectionCreation(options);
-  const testDocs = await testDocumentInsertion(client, workingCollectionName, schema, vectorDimension);
+  const testDocs = await testDocumentInsertion(
+    client,
+    workingCollectionName,
+    schema,
+    vectorDimension,
+  );
   await testDocumentRetrieval(client, workingCollectionName, testDocs.length);
   await testSearch(client, workingCollectionName, schema, vectorDimension);
   await testDocumentUpdate(client, workingCollectionName, testDocs[2]);

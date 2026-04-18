@@ -47,63 +47,75 @@ describe('Qdrant Client Integration Tests', () => {
     console.log('Step 3: Creating collection...');
     const createSchema = client.getCreateCollectionSchema();
     const createConfig = buildSimpleCollectionConfig(createSchema, collectionName, vectorDimension);
-    
+
     // Determine the expected collection name
-    const expectedCollectionName = createConfig.name ? createConfig.name as string : collectionName;
-    
+    const expectedCollectionName = createConfig.name
+      ? (createConfig.name as string)
+      : collectionName;
+
     const createResult = await client.createCollection(createConfig);
     if (!createResult.success) {
       throw new Error(`Failed to create collection: ${createResult.error}`);
     }
     console.log('✓ Collection created');
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     console.log('Step 4: Verifying collection exists...');
     // Check both count increase and name existence for more robust verification
-    await waitFor(async () => {
-      try {
-        const collectionsAfter = await client.getCollections();
-        if (!collectionsAfter.success) return false;
-        
-        // Check if count increased
-        const newCount = collectionsAfter.collections?.length || 0;
-        if (newCount > initialCount) return true;
-        
-        // Also check if the expected collection name exists
-        if (expectedCollectionName && collectionsAfter.collections) {
-          const found = collectionsAfter.collections.some(c => c.name === expectedCollectionName);
-          if (found) return true;
+    await waitFor(
+      async () => {
+        try {
+          const collectionsAfter = await client.getCollections();
+          if (!collectionsAfter.success) return false;
+
+          // Check if count increased
+          const newCount = collectionsAfter.collections?.length || 0;
+          if (newCount > initialCount) return true;
+
+          // Also check if the expected collection name exists
+          if (expectedCollectionName && collectionsAfter.collections) {
+            const found = collectionsAfter.collections.some(
+              (c) => c.name === expectedCollectionName,
+            );
+            if (found) return true;
+          }
+
+          return false;
+        } catch {
+          return false;
         }
-        
-        return false;
-      } catch {
-        return false;
-      }
-    }, 20000, 500); // Increased timeout to 20s for slower databases
+      },
+      20000,
+      500,
+    ); // Increased timeout to 20s for slower databases
 
     const collectionsAfter = await client.getCollections();
     if (!collectionsAfter.success) {
       throw new Error(`Failed to get collections after creation: ${collectionsAfter.error}`);
     }
-    
+
     // Try to find the collection by expected name first
-    let createdCollection = expectedCollectionName 
-      ? collectionsAfter.collections?.find(c => c.name === expectedCollectionName)
+    let createdCollection = expectedCollectionName
+      ? collectionsAfter.collections?.find((c) => c.name === expectedCollectionName)
       : null;
-    
+
     // If not found by name, find by comparing with before list
     if (!createdCollection) {
-      const collectionsBeforeNames = new Set(collectionsBefore.collections?.map(c => c.name) || []);
-      createdCollection = collectionsAfter.collections?.find(c => !collectionsBeforeNames.has(c.name));
+      const collectionsBeforeNames = new Set(
+        collectionsBefore.collections?.map((c) => c.name) || [],
+      );
+      createdCollection = collectionsAfter.collections?.find(
+        (c) => !collectionsBeforeNames.has(c.name),
+      );
     }
-    
+
     if (!createdCollection) {
       const newCount = collectionsAfter.collections?.length || 0;
       throw new Error(
         `Newly created collection not found in collections list. ` +
-        `Expected name: ${expectedCollectionName}, ` +
-        `Count before: ${initialCount}, Count after: ${newCount}`
+          `Expected name: ${expectedCollectionName}, ` +
+          `Count before: ${initialCount}, Count after: ${newCount}`,
       );
     }
 
@@ -133,12 +145,15 @@ describe('Qdrant Client Integration Tests', () => {
   async function testDocumentInsertion(
     workingCollectionName: string,
     schema: any,
-    vectorDimension: number
+    vectorDimension: number,
   ): Promise<Document[]> {
     console.log('Step 7: Inserting test documents...');
     const primaryKeyName = schema?.primary.name || 'id';
     const schemaVectors = schema?.vectors || {};
-    const vectorFieldNames = Object.keys(schemaVectors).length > 0 ? Object.keys(schemaVectors) : [COLLECTION_DEFAULT_VECTOR];
+    const vectorFieldNames =
+      Object.keys(schemaVectors).length > 0
+        ? Object.keys(schemaVectors)
+        : [COLLECTION_DEFAULT_VECTOR];
     const actualVectorFieldName = schemaVectors[COLLECTION_DEFAULT_VECTOR]
       ? COLLECTION_DEFAULT_VECTOR
       : vectorFieldNames[0];
@@ -153,7 +168,7 @@ describe('Qdrant Client Integration Tests', () => {
       });
     });
 
-    const adjustedDocs = testDocs.map(doc => {
+    const adjustedDocs = testDocs.map((doc) => {
       if (!doc.vectors || Object.keys(doc.vectors).length === 0) {
         throw new Error(`Document ${doc.primary.value} is missing vectors`);
       }
@@ -163,18 +178,27 @@ describe('Qdrant Client Integration Tests', () => {
         if (!vector) {
           throw new Error(`Document ${doc.primary.value} has missing vector for key ${key}`);
         }
-        
+
         // Validate based on vector type
         if (vector.vectorType === 'dense') {
-          if (!vector.value || !vector.value.data || !Array.isArray(vector.value.data) || vector.value.data.length === 0) {
-            throw new Error(`Document ${doc.primary.value} has invalid dense vector for key ${key}`);
+          if (
+            !vector.value ||
+            !vector.value.data ||
+            !Array.isArray(vector.value.data) ||
+            vector.value.data.length === 0
+          ) {
+            throw new Error(
+              `Document ${doc.primary.value} has invalid dense vector for key ${key}`,
+            );
           }
           if (vector.value.data.length !== vectorDimension) {
-            throw new Error(`Document ${doc.primary.value} vector dimension mismatch: expected ${vectorDimension}, got ${vector.value.data.length}`);
+            throw new Error(
+              `Document ${doc.primary.value} vector dimension mismatch: expected ${vectorDimension}, got ${vector.value.data.length}`,
+            );
           }
         }
 
-        const vectorKey = (key === COLLECTION_DEFAULT_VECTOR) ? actualVectorFieldName : key;
+        const vectorKey = key === COLLECTION_DEFAULT_VECTOR ? actualVectorFieldName : key;
         adjustedVectors[vectorKey] = vector;
       });
 
@@ -201,19 +225,21 @@ describe('Qdrant Client Integration Tests', () => {
     }
     console.log(`✓ Inserted ${insertedDocs.length} documents`);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return insertedDocs;
   }
 
   async function testDocumentRetrieval(workingCollectionName: string, expectedCount: number) {
     console.log('Step 9: Getting documents...');
-    const getDocsResult = await client.getDocuments(workingCollectionName, { limit: Math.max(expectedCount, 20) });
+    const getDocsResult = await client.getDocuments(workingCollectionName, {
+      limit: Math.max(expectedCount, 20),
+    });
     if (!getDocsResult.success) {
       throw new Error(`Failed to get documents: ${getDocsResult.error}`);
     }
     if (!getDocsResult.documents || getDocsResult.documents.length < expectedCount) {
       throw new Error(
-        `Expected at least ${expectedCount} documents, got ${getDocsResult.documents?.length || 0}`
+        `Expected at least ${expectedCount} documents, got ${getDocsResult.documents?.length || 0}`,
       );
     }
     console.log(`✓ Retrieved ${getDocsResult.documents.length} documents`);
@@ -226,7 +252,7 @@ describe('Qdrant Client Integration Tests', () => {
     }
     if (!firstPageResult.documents || firstPageResult.documents.length !== pageSize) {
       throw new Error(
-        `Expected ${pageSize} documents on first page, got ${firstPageResult.documents?.length || 0}`
+        `Expected ${pageSize} documents on first page, got ${firstPageResult.documents?.length || 0}`,
       );
     }
     console.log(`✓ First page: ${firstPageResult.documents.length} documents`);
@@ -244,15 +270,17 @@ describe('Qdrant Client Integration Tests', () => {
     }
     if (!secondPageResult.documents || secondPageResult.documents.length !== pageSize) {
       throw new Error(
-        `Expected ${pageSize} documents on second page, got ${secondPageResult.documents?.length || 0}`
+        `Expected ${pageSize} documents on second page, got ${secondPageResult.documents?.length || 0}`,
       );
     }
 
-    const firstPageIds = new Set(firstPageResult.documents.map(d => d.primary.value));
-    const secondPageIds = new Set(secondPageResult.documents.map(d => d.primary.value));
-    const overlap = [...firstPageIds].filter(id => secondPageIds.has(id));
+    const firstPageIds = new Set(firstPageResult.documents.map((d) => d.primary.value));
+    const secondPageIds = new Set(secondPageResult.documents.map((d) => d.primary.value));
+    const overlap = [...firstPageIds].filter((id) => secondPageIds.has(id));
     if (overlap.length > 0) {
-      throw new Error(`Pagination overlap detected: ${overlap.length} documents appear on both pages`);
+      throw new Error(
+        `Pagination overlap detected: ${overlap.length} documents appear on both pages`,
+      );
     }
 
     console.log(`✓ Second page: ${secondPageResult.documents.length} documents (no overlap)`);
@@ -260,24 +288,31 @@ describe('Qdrant Client Integration Tests', () => {
 
   async function testSearch(workingCollectionName: string, schema: any, vectorDimension: number) {
     console.log('Step 10: Testing search...');
-    
+
     // Get a document from the collection to use its vector for search
     const getDocsResult = await client.getDocuments(workingCollectionName, { limit: 1 });
-    if (!getDocsResult.success || !getDocsResult.documents || getDocsResult.documents.length === 0) {
+    if (
+      !getDocsResult.success ||
+      !getDocsResult.documents ||
+      getDocsResult.documents.length === 0
+    ) {
       throw new Error('No documents found in collection to use for search test');
     }
-    
+
     const sampleDoc = getDocsResult.documents[0];
     if (!sampleDoc.vectors || Object.keys(sampleDoc.vectors).length === 0) {
       throw new Error('Sample document has no vectors to use for search');
     }
-    
+
     const schemaVectors = schema?.vectors || {};
-    const vectorFieldNames = Object.keys(schemaVectors).length > 0 ? Object.keys(schemaVectors) : [COLLECTION_DEFAULT_VECTOR];
+    const vectorFieldNames =
+      Object.keys(schemaVectors).length > 0
+        ? Object.keys(schemaVectors)
+        : [COLLECTION_DEFAULT_VECTOR];
     const searchVectorKey = schemaVectors[COLLECTION_DEFAULT_VECTOR]
       ? COLLECTION_DEFAULT_VECTOR
       : vectorFieldNames[0];
-    
+
     // Get the vector from the document
     const docVector = sampleDoc.vectors[searchVectorKey];
     if (!docVector) {
@@ -287,7 +322,7 @@ describe('Qdrant Client Integration Tests', () => {
       if (!firstVector || firstVector.vectorType !== 'dense') {
         throw new Error('No dense vector found in sample document');
       }
-      
+
       // Extract vector data
       let searchVectorData: number[];
       if ('data' in firstVector.value && Array.isArray(firstVector.value.data)) {
@@ -295,7 +330,7 @@ describe('Qdrant Client Integration Tests', () => {
       } else {
         throw new Error('Invalid vector format in sample document');
       }
-      
+
       // Create DocumentVector format using the document's vector
       const searchVectors: Record<string, DocumentVector> = {
         [firstVectorKey]: {
@@ -305,7 +340,7 @@ describe('Qdrant Client Integration Tests', () => {
           value: { data: searchVectorData },
         },
       };
-      
+
       const searchResult = await client.search(workingCollectionName, searchVectors, {
         limit: 5,
       });
@@ -315,14 +350,16 @@ describe('Qdrant Client Integration Tests', () => {
       if (!searchResult.documents || searchResult.documents.length === 0) {
         throw new Error('Search returned no results');
       }
-      console.log(`✓ Search returned ${searchResult.documents.length} results (using vector from document: ${sampleDoc.primary.value})`);
+      console.log(
+        `✓ Search returned ${searchResult.documents.length} results (using vector from document: ${sampleDoc.primary.value})`,
+      );
       return;
     }
-    
+
     if (docVector.vectorType !== 'dense') {
       throw new Error('Search vector must be dense type');
     }
-    
+
     // Extract vector data
     let searchVectorData: number[];
     if ('data' in docVector.value && Array.isArray(docVector.value.data)) {
@@ -330,7 +367,7 @@ describe('Qdrant Client Integration Tests', () => {
     } else {
       throw new Error('Invalid vector format in sample document');
     }
-    
+
     // Create DocumentVector format using the document's vector
     const searchVectors: Record<string, DocumentVector> = {
       [searchVectorKey]: {
@@ -340,7 +377,7 @@ describe('Qdrant Client Integration Tests', () => {
         value: { data: searchVectorData },
       },
     };
-    
+
     const searchResult = await client.search(workingCollectionName, searchVectors, {
       limit: 5,
     });
@@ -350,7 +387,9 @@ describe('Qdrant Client Integration Tests', () => {
     if (!searchResult.documents || searchResult.documents.length === 0) {
       throw new Error('Search returned no results');
     }
-    console.log(`✓ Search returned ${searchResult.documents.length} results (using vector from document: ${sampleDoc.primary.value})`);
+    console.log(
+      `✓ Search returned ${searchResult.documents.length} results (using vector from document: ${sampleDoc.primary.value})`,
+    );
   }
 
   async function testDocumentUpdate(workingCollectionName: string, testDoc: Document) {
@@ -372,7 +411,7 @@ describe('Qdrant Client Integration Tests', () => {
     console.log('✓ Document updated');
 
     // Qdrant-specific: Use filter to find updated document
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     const updatedDocs = await client.getDocuments(workingCollectionName, {
       filter: {
         conditions: [
@@ -392,7 +431,9 @@ describe('Qdrant Client Integration Tests', () => {
       // Fallback: get all and find
       const allDocs = await client.getDocuments(workingCollectionName, { limit: 1000 });
       if (allDocs.success && allDocs.documents) {
-        const foundDoc = allDocs.documents.find(doc => doc.primary.value === testDoc.primary.value);
+        const foundDoc = allDocs.documents.find(
+          (doc) => doc.primary.value === testDoc.primary.value,
+        );
         if (!foundDoc) {
           throw new Error(`Updated document not found (ID: ${testDoc.primary.value})`);
         }
@@ -420,14 +461,16 @@ describe('Qdrant Client Integration Tests', () => {
     }
     console.log('✓ Document deleted');
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const docsAfterDelete = await client.getDocuments(workingCollectionName, { limit: 10 });
     if (!docsAfterDelete.success) {
       throw new Error(`Failed to get documents after delete: ${docsAfterDelete.error}`);
     }
     const remainingCount = docsAfterDelete.documents?.length || 0;
     if (remainingCount >= testDocs.length) {
-      throw new Error(`Document was not deleted. Expected < ${testDocs.length}, got ${remainingCount}`);
+      throw new Error(
+        `Document was not deleted. Expected < ${testDocs.length}, got ${remainingCount}`,
+      );
     }
     console.log('✓ Deletion verified');
 
@@ -458,34 +501,42 @@ describe('Qdrant Client Integration Tests', () => {
     console.log(`✓ Collection truncated (deleted ${truncateResult.deletedCount || 0} documents)`);
 
     // Qdrant-specific: May return "Not Found" for empty collections
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // Try to verify truncation - Qdrant can be tricky with empty collections
     const docsAfterTruncate = await client.getDocuments(workingCollectionName, { limit: 100 });
     if (docsAfterTruncate.success) {
       if (docsAfterTruncate.documents && docsAfterTruncate.documents.length > 0) {
-        throw new Error(`Collection was not truncated. Found ${docsAfterTruncate.documents.length} documents`);
+        throw new Error(
+          `Collection was not truncated. Found ${docsAfterTruncate.documents.length} documents`,
+        );
       }
       console.log('✓ Truncation verified');
     } else {
       // Qdrant returns "Not Found" for empty collections - verify collection still exists
       const collections = await client.getCollections();
       if (collections.success && collections.collections) {
-        const found = collections.collections.find(c => c.name === workingCollectionName);
+        const found = collections.collections.find((c) => c.name === workingCollectionName);
         if (found) {
-          console.log('✓ Truncation verified (collection is empty, getDocuments returned Not Found)');
+          console.log(
+            '✓ Truncation verified (collection is empty, getDocuments returned Not Found)',
+          );
         } else {
           // Collection doesn't exist - this might be acceptable if truncate deleted it
           // But let's check collection info one more time
           const collectionInfo = await client.getCollectionInfo(workingCollectionName);
           if (!collectionInfo.success) {
-            console.log(`⚠ Collection ${workingCollectionName} not found after truncate - assuming truncation succeeded (Qdrant may delete empty collections)`);
+            console.log(
+              `⚠ Collection ${workingCollectionName} not found after truncate - assuming truncation succeeded (Qdrant may delete empty collections)`,
+            );
           } else {
             console.log('✓ Truncation verified');
           }
         }
       } else {
-        console.log(`⚠ Could not verify truncation (${docsAfterTruncate.error}), but truncate succeeded - assuming success`);
+        console.log(
+          `⚠ Could not verify truncation (${docsAfterTruncate.error}), but truncate succeeded - assuming success`,
+        );
       }
     }
 
@@ -496,12 +547,14 @@ describe('Qdrant Client Integration Tests', () => {
     }
     console.log('✓ Collection dropped');
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const collectionsAfterDrop = await client.getCollections();
     if (!collectionsAfterDrop.success) {
       throw new Error(`Failed to get collections after drop: ${collectionsAfterDrop.error}`);
     }
-    const foundAfterDrop = collectionsAfterDrop.collections?.find(c => c.name === workingCollectionName);
+    const foundAfterDrop = collectionsAfterDrop.collections?.find(
+      (c) => c.name === workingCollectionName,
+    );
     if (foundAfterDrop) {
       throw new Error(`Collection ${workingCollectionName} still exists after drop`);
     }
@@ -624,7 +677,10 @@ describe('Qdrant Client Integration Tests', () => {
 
   it('should complete full integration test flow', async () => {
     const fullTestCollectionName = generateTestCollectionName('qdrant_test_full');
-    const { workingCollectionName, schema } = await testCollectionCreation(fullTestCollectionName, 1536);
+    const { workingCollectionName, schema } = await testCollectionCreation(
+      fullTestCollectionName,
+      1536,
+    );
     const testDocs = await testDocumentInsertion(workingCollectionName, schema, 1536);
     await testDocumentRetrieval(workingCollectionName, testDocs.length);
     await testSearch(workingCollectionName, schema, 1536);
@@ -641,7 +697,7 @@ describe('Qdrant Client Integration Tests', () => {
   describe('Sparse Vector Search', () => {
     it('should perform sparse-only search', async () => {
       const sparseCollectionName = generateTestCollectionName('qdrant_sparse_only');
-      
+
       // Create collection with tiny dense vector + sparse (Qdrant requires at least one dense vector)
       await client.createCollection({
         name: sparseCollectionName,
@@ -649,24 +705,27 @@ describe('Qdrant Client Integration Tests', () => {
         namedVectors: [{ name: 'dummy', size: 4, distance: 'Cosine' }], // Minimal dense vector
         sparseVectors: [{ name: 'sparse' }],
       });
-      
+
       await waitFor(async () => {
         const schema = await client.getCollectionSchema(sparseCollectionName);
         return schema.success;
       });
-      
+
       // Create a base sparse vector that will have some overlap with search
       const baseSparseVector = generateTestSparseVector();
-      
+
       // Insert documents with both vectors
       console.log('Inserting sparse documents...');
       for (let i = 1; i <= 5; i++) {
         // Create variants of the base sparse vector with some overlap
         const sparseVector = {
-          indices: [...baseSparseVector.indices, ...(i > 2 ? [baseSparseVector.indices[0] + i * 10] : [])],
+          indices: [
+            ...baseSparseVector.indices,
+            ...(i > 2 ? [baseSparseVector.indices[0] + i * 10] : []),
+          ],
           values: [...baseSparseVector.values, ...(i > 2 ? [Math.random() * 5] : [])],
         };
-        
+
         const doc: Document = {
           primary: { name: 'id', value: i },
           vectors: {
@@ -687,9 +746,9 @@ describe('Qdrant Client Integration Tests', () => {
         await client.upsertDocument(sparseCollectionName, { document: doc });
       }
       console.log('✓ Sparse documents inserted');
-      
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Perform sparse-only search (only query sparse vector) using the base vector
       console.log('Performing sparse-only search...');
       const searchVectors = {
@@ -699,14 +758,14 @@ describe('Qdrant Client Integration Tests', () => {
           value: baseSparseVector, // Use the same base vector for overlap
         },
       };
-      
+
       const searchResult = await client.search(sparseCollectionName, searchVectors, { limit: 3 });
-      
+
       expect(searchResult.success).toBe(true);
       expect(searchResult.documents).toBeDefined();
       expect(searchResult.documents!.length).toBeGreaterThan(0);
       console.log(`✓ Sparse search returned ${searchResult.documents!.length} results`);
-      
+
       // Cleanup
       await client.dropCollection(sparseCollectionName);
     }, 30000);

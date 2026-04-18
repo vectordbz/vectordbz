@@ -21,7 +21,7 @@ function getPointSize(
   baseSize: number,
   selectedPoint: ProjectedPoint | null,
   nearestNeighbors: Array<{ point: ProjectedPoint }>,
-  hoveredId: string | null
+  hoveredId: string | null,
 ): number {
   if (selectedPoint?.id === point.id) return baseSize + 4;
   if (hoveredId === point.id) return baseSize + 2;
@@ -52,7 +52,7 @@ export const PlotlyScatterView: React.FC<PlotlyScatterViewProps> = ({
     const z = dimension === 3 ? projectedPoints.map((p) => p.z ?? 0) : undefined;
     const colors = projectedPoints.map((p, i) => getPointColor(p, i));
     const sizes = projectedPoints.map((p, i) =>
-      getPointSize(p, i, pointSize, selectedPoint, nearestNeighbors, null)
+      getPointSize(p, i, pointSize, selectedPoint, nearestNeighbors, null),
     );
     const text = projectedPoints.map((p) => String(p.id));
     const customdata = projectedPoints.map((_, i) => i);
@@ -100,11 +100,7 @@ export const PlotlyScatterView: React.FC<PlotlyScatterViewProps> = ({
         lineX.push(selectedPoint.x, neighbor.x, null as unknown as number);
         lineY.push(selectedPoint.y, neighbor.y, null as unknown as number);
         if (dimension === 3) {
-          lineZ.push(
-            selectedPoint.z ?? 0,
-            neighbor.z ?? 0,
-            null as unknown as number
-          );
+          lineZ.push(selectedPoint.z ?? 0, neighbor.z ?? 0, null as unknown as number);
         }
       });
       if (dimension === 3) {
@@ -141,9 +137,27 @@ export const PlotlyScatterView: React.FC<PlotlyScatterViewProps> = ({
             font: { color: fontColor, size: 12 },
             margin: { t: 8, r: 8, b: 8, l: 8 },
             scene: {
-              xaxis: { showgrid: true, gridcolor: gridColor, zeroline: false, title: '', showticklabels: false },
-              yaxis: { showgrid: true, gridcolor: gridColor, zeroline: false, title: '', showticklabels: false },
-              zaxis: { showgrid: true, gridcolor: gridColor, zeroline: false, title: '', showticklabels: false },
+              xaxis: {
+                showgrid: true,
+                gridcolor: gridColor,
+                zeroline: false,
+                title: '',
+                showticklabels: false,
+              },
+              yaxis: {
+                showgrid: true,
+                gridcolor: gridColor,
+                zeroline: false,
+                title: '',
+                showticklabels: false,
+              },
+              zaxis: {
+                showgrid: true,
+                gridcolor: gridColor,
+                zeroline: false,
+                title: '',
+                showticklabels: false,
+              },
               bgcolor: paperBg,
             },
             showlegend: false,
@@ -153,8 +167,21 @@ export const PlotlyScatterView: React.FC<PlotlyScatterViewProps> = ({
             plot_bgcolor: paperBg,
             font: { color: fontColor, size: 12 },
             margin: { t: 8, r: 8, b: 8, l: 8 },
-            xaxis: { showgrid: true, gridcolor: gridColor, zeroline: false, title: '', showticklabels: false },
-            yaxis: { showgrid: true, gridcolor: gridColor, zeroline: false, scaleanchor: 'x', title: '', showticklabels: false },
+            xaxis: {
+              showgrid: true,
+              gridcolor: gridColor,
+              zeroline: false,
+              title: '',
+              showticklabels: false,
+            },
+            yaxis: {
+              showgrid: true,
+              gridcolor: gridColor,
+              zeroline: false,
+              scaleanchor: 'x',
+              title: '',
+              showticklabels: false,
+            },
             showlegend: false,
           };
 
@@ -180,7 +207,9 @@ export const PlotlyScatterView: React.FC<PlotlyScatterViewProps> = ({
     isDark,
   ]);
 
-  const handleClick = (event: { points?: Array<{ pointIndex?: number; customdata?: unknown }> }) => {
+  const handleClick = (event: {
+    points?: Array<{ pointIndex?: number; customdata?: unknown }>;
+  }) => {
     const points = event?.points;
     if (!points?.length) return;
     const first = points[0];

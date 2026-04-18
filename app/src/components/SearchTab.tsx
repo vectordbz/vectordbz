@@ -35,7 +35,16 @@ import {
   DiffOutlined,
   SwapOutlined,
 } from '@ant-design/icons';
-import { TabInfo, Document, CollectionSchema, FilterQuery, SearchMetadata, COLLECTION_DEFAULT_VECTOR, DocumentVector, SearchCapabilities } from '../types';
+import {
+  TabInfo,
+  Document,
+  CollectionSchema,
+  FilterQuery,
+  SearchMetadata,
+  COLLECTION_DEFAULT_VECTOR,
+  DocumentVector,
+  SearchCapabilities,
+} from '../types';
 import DocumentDetailDrawer from './DocumentDetailDrawer';
 import { generateDocumentDynamicTableColumns } from '../services/uiUtils';
 import { generateRandomVector as generateRandomVectorUtil } from '../services/vectorUtils';
@@ -78,7 +87,13 @@ interface SearchHistoryItem {
   hybridAlpha?: number;
 }
 
-const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequirements, navigationState, onNavigateToVisualize }) => {
+const SearchTab: React.FC<SearchTabProps> = ({
+  tab,
+  collectionSchema,
+  dataRequirements,
+  navigationState,
+  onNavigateToVisualize,
+}) => {
   // Search state
   const [searchInput, setSearchInput] = useState<string>('');
   const [topK, setTopK] = useState<number>(10);
@@ -90,7 +105,11 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
   const [activeFilter, setActiveFilter] = useState<FilterQuery | undefined>(undefined);
   const [searchMetadata, setSearchMetadata] = useState<SearchMetadata | null>(null);
   // Context menu state
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; document: Document } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    document: Document;
+  } | null>(null);
   // Search history state
   const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
   const [comparisonModalOpen, setComparisonModalOpen] = useState<boolean>(false);
@@ -104,7 +123,8 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
   const [embeddingFunctions, setEmbeddingFunctions] = useState<EmbeddingFunction[]>([]);
   const [embeddingLoading, setEmbeddingLoading] = useState<boolean>(false);
   const [embeddingModalOpen, setEmbeddingModalOpen] = useState<boolean>(false);
-  const [editingEmbeddingFunction, setEditingEmbeddingFunction] = useState<EmbeddingFunction | null>(null);
+  const [editingEmbeddingFunction, setEditingEmbeddingFunction] =
+    useState<EmbeddingFunction | null>(null);
 
   // Search capabilities (lexical/BM25, hybrid alpha) – from backend
   const [searchCapabilities, setSearchCapabilities] = useState<SearchCapabilities | null>(null);
@@ -136,7 +156,9 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
       .catch(() => {
         if (!cancelled) setSearchCapabilities(null);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [tab.connectionId, tab.collection.name, collectionSchema]);
 
   // Load embedding functions
@@ -168,7 +190,7 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
   const saveSearchHistory = (item: SearchHistoryItem) => {
     const storageKey = `search_history_${tab.connectionId}_${tab.collection.name}`;
     try {
-      const newHistory = [item, ...searchHistory.filter(h => h.id !== item.id)].slice(0, 10);
+      const newHistory = [item, ...searchHistory.filter((h) => h.id !== item.id)].slice(0, 10);
       setSearchHistory(newHistory);
       localStorage.setItem(storageKey, JSON.stringify(newHistory));
     } catch (error) {
@@ -243,7 +265,7 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
     try {
       const result = await executeEmbedding(embeddingFunc.code, {
         text: inputMode === 'text' ? embeddingText : undefined,
-        file: inputMode === 'file' ? (embeddingFile || undefined) : undefined,
+        file: inputMode === 'file' ? embeddingFile || undefined : undefined,
         fetch: fetch,
         FormData: FormData,
       });
@@ -256,7 +278,9 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
 
       // Copy result to vector field
       setSearchInput(JSON.stringify(result.vector));
-      message.success(`Embedding generated! Vector copied to search field (${result.vector.length}D)`);
+      message.success(
+        `Embedding generated! Vector copied to search field (${result.vector.length}D)`,
+      );
       setEmbeddingLoading(false);
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Failed to generate embedding');
@@ -295,9 +319,14 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
         targetField = undefined;
         console.log('[SearchTab] Lexical-only search, vectors: {}');
       } else {
-        targetField = vectorField ?? (vectorData!.key && availableVectorFields.includes(vectorData!.key) ? vectorData!.key : undefined);
+        targetField =
+          vectorField ??
+          (vectorData!.key && availableVectorFields.includes(vectorData!.key)
+            ? vectorData!.key
+            : undefined);
         if (!targetField) {
-          targetField = selectedVectorField || availableVectorFields[0] || COLLECTION_DEFAULT_VECTOR;
+          targetField =
+            selectedVectorField || availableVectorFields[0] || COLLECTION_DEFAULT_VECTOR;
         }
         const finalVectorData: DocumentVector = { ...vectorData!, key: targetField };
         vectors = { [targetField]: finalVectorData };
@@ -309,7 +338,10 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
         console.log('[SearchTab] Final vectors object:', {
           vectorKey: targetField,
           vectorType: finalVectorData.vectorType,
-          vectorSize: finalVectorData.vectorType === 'dense' && 'data' in finalVectorData.value ? finalVectorData.value.data.length : 'N/A',
+          vectorSize:
+            finalVectorData.vectorType === 'dense' && 'data' in finalVectorData.value
+              ? finalVectorData.value.data.length
+              : 'N/A',
         });
       }
 
@@ -317,7 +349,10 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
       const searchOptions: any = {
         limit: topK,
         scoreThreshold: scoreThreshold,
-        vectorKey: targetField !== undefined && targetField !== COLLECTION_DEFAULT_VECTOR ? targetField : undefined,
+        vectorKey:
+          targetField !== undefined && targetField !== COLLECTION_DEFAULT_VECTOR
+            ? targetField
+            : undefined,
         dataRequirements,
         filter: activeFilter,
       };
@@ -340,7 +375,11 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
         options: searchOptions,
       });
 
-      console.log('[SearchTab] Search result:', { success: result.success, error: result.error, documentCount: result.documents?.length });
+      console.log('[SearchTab] Search result:', {
+        success: result.success,
+        error: result.error,
+        documentCount: result.documents?.length,
+      });
 
       if (result.success && result.documents !== undefined) {
         console.log('[SearchTab] Search successful, got', result.documents.length, 'documents');
@@ -348,14 +387,20 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
 
         // Show info message if no results found
         if (result.documents.length === 0) {
-          message.info('No results found. The search vector may not match any documents in the collection.');
+          message.info(
+            'No results found. The search vector may not match any documents in the collection.',
+          );
         }
 
         // Extract vector for statistics (dense vector only for now)
         let vectorForStats: number[] = [];
         if (vectorData?.vectorType === 'dense' && vectorData?.value && 'data' in vectorData.value) {
           vectorForStats = vectorData.value.data;
-        } else if (vectorData?.vectorType === 'binary' && vectorData?.value && 'data' in vectorData.value) {
+        } else if (
+          vectorData?.vectorType === 'binary' &&
+          vectorData?.value &&
+          'data' in vectorData.value
+        ) {
           vectorForStats = vectorData.value.data;
         }
 
@@ -365,7 +410,7 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
           vectorForStats,
           topK,
           activeFilter,
-          result.metadata?.searchTimeMs
+          result.metadata?.searchTimeMs,
         );
 
         // Merge with any backend-specific metadata from result
@@ -379,11 +424,16 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
         const historyItem: SearchHistoryItem = {
           id: Date.now().toString(),
           timestamp: Date.now(),
-          vector: vectorData == null
-            ? []
-            : vectorData.vectorType === 'sparse' && 'indices' in vectorData.value && 'values' in vectorData.value
-              ? { indices: vectorData.value.indices, values: vectorData.value.values }
-              : ('data' in vectorData.value ? vectorData.value.data : []),
+          vector:
+            vectorData == null
+              ? []
+              : vectorData.vectorType === 'sparse' &&
+                  'indices' in vectorData.value &&
+                  'values' in vectorData.value
+                ? { indices: vectorData.value.indices, values: vectorData.value.values }
+                : 'data' in vectorData.value
+                  ? vectorData.value.data
+                  : [],
           vectorType: vectorData?.vectorType ?? 'dense',
           vectorField: targetField ?? null,
           topK,
@@ -408,7 +458,10 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
   };
 
   const handleSearch = async () => {
-    console.log('[SearchTab] handleSearch called', { searchInput: searchInput.substring(0, 50), selectedVectorField });
+    console.log('[SearchTab] handleSearch called', {
+      searchInput: searchInput.substring(0, 50),
+      selectedVectorField,
+    });
 
     const vectorField = selectedVectorField || Object.keys(collectionSchema.vectors)[0];
     if (!vectorField) {
@@ -430,7 +483,9 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
     }
 
     if (!searchInput.trim()) {
-      message.warning('Enter a vector to search, or use keywords when the server supports hybrid search.');
+      message.warning(
+        'Enter a vector to search, or use keywords when the server supports hybrid search.',
+      );
       return;
     }
 
@@ -441,7 +496,12 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
       // Check if it's a sparse vector (JSON object with indices and values)
       if (cleanedText.startsWith('{') && cleanedText.endsWith('}')) {
         const parsed = JSON.parse(cleanedText);
-        if (parsed.indices && parsed.values && Array.isArray(parsed.indices) && Array.isArray(parsed.values)) {
+        if (
+          parsed.indices &&
+          parsed.values &&
+          Array.isArray(parsed.indices) &&
+          Array.isArray(parsed.values)
+        ) {
           if (fieldSchema.vectorType !== 'sparse') {
             message.error('Sparse vector format detected but selected field is not sparse');
             return;
@@ -468,7 +528,10 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
         if (cleanedText.startsWith('[') && cleanedText.endsWith(']')) {
           vector = JSON.parse(cleanedText);
         } else {
-          vector = cleanedText.split(/[,\s]+/).filter(Boolean).map(Number);
+          vector = cleanedText
+            .split(/[,\s]+/)
+            .filter(Boolean)
+            .map(Number);
         }
 
         if (vector.some(isNaN)) {
@@ -502,7 +565,7 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
         vectorType: vectorData.vectorType,
         vectorField,
         vectorSize: vectorData.vectorType === 'dense' ? vectorData.value.data.length : 'N/A',
-        key: vectorData.key
+        key: vectorData.key,
       });
 
       await performSearch(vectorData, vectorField);
@@ -516,7 +579,11 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
     }
   };
 
-  const handleSearchWithVector = async (vector: number[] | { indices: number[]; values: number[] }, vectorField?: string | null, vectorType: 'dense' | 'sparse' | 'binary' = 'dense') => {
+  const handleSearchWithVector = async (
+    vector: number[] | { indices: number[]; values: number[] },
+    vectorField?: string | null,
+    vectorType: 'dense' | 'sparse' | 'binary' = 'dense',
+  ) => {
     const targetField = vectorField || selectedVectorField || COLLECTION_DEFAULT_VECTOR;
     const fieldSchema = collectionSchema.vectors[targetField];
 
@@ -589,7 +656,12 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
           setLexicalQuery('');
           // Pre-populate search input based on vector type
           if (targetVector.vectorType === 'sparse' && 'indices' in targetVector.value) {
-            setSearchInput(JSON.stringify({ indices: targetVector.value.indices, values: targetVector.value.values }));
+            setSearchInput(
+              JSON.stringify({
+                indices: targetVector.value.indices,
+                values: targetVector.value.values,
+              }),
+            );
           } else if ('data' in targetVector.value) {
             setSearchInput(JSON.stringify(targetVector.value.data));
           }
@@ -615,7 +687,8 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
 
     try {
       // For dense and binary vectors, size is required
-      const size = vectorField.vectorType !== 'sparse' && 'size' in vectorField ? vectorField.size : undefined;
+      const size =
+        vectorField.vectorType !== 'sparse' && 'size' in vectorField ? vectorField.size : undefined;
       const vectorJson = generateRandomVectorUtil(vectorField.vectorType, size);
       setSearchInput(vectorJson);
     } catch (error) {
@@ -659,9 +732,15 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
             const vector = record.vectors[vectorKey];
             if (vector && vector.value) {
               if (vector.vectorType === 'sparse' && 'indices' in vector.value) {
-                setSearchInput(JSON.stringify({ indices: vector.value.indices, values: vector.value.values }));
+                setSearchInput(
+                  JSON.stringify({ indices: vector.value.indices, values: vector.value.values }),
+                );
                 setSelectedVectorField(vectorKey);
-                handleSearchWithVector({ indices: vector.value.indices, values: vector.value.values }, vectorKey, 'sparse');
+                handleSearchWithVector(
+                  { indices: vector.value.indices, values: vector.value.values },
+                  vectorKey,
+                  'sparse',
+                );
               } else if ('data' in vector.value) {
                 setSearchInput(JSON.stringify(vector.value.data));
                 setSelectedVectorField(vectorKey);
@@ -684,9 +763,15 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
             label: vectorKey === COLLECTION_DEFAULT_VECTOR ? 'vector' : vectorKey,
             onClick: () => {
               if (vector.vectorType === 'sparse' && 'indices' in vector.value) {
-                setSearchInput(JSON.stringify({ indices: vector.value.indices, values: vector.value.values }));
+                setSearchInput(
+                  JSON.stringify({ indices: vector.value.indices, values: vector.value.values }),
+                );
                 setSelectedVectorField(vectorKey);
-                handleSearchWithVector({ indices: vector.value.indices, values: vector.value.values }, vectorKey, 'sparse');
+                handleSearchWithVector(
+                  { indices: vector.value.indices, values: vector.value.values },
+                  vectorKey,
+                  'sparse',
+                );
                 closeContextMenu();
               } else if ('data' in vector.value) {
                 setSearchInput(JSON.stringify(vector.value.data));
@@ -754,7 +839,6 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: 16 }}>
-
       {/* Item Detail Drawer */}
       <DocumentDetailDrawer
         open={Boolean(selectedDocument)}
@@ -782,7 +866,9 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
       />
 
       {/* Search Controls Row */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexShrink: 0, alignItems: 'stretch' }}>
+      <div
+        style={{ display: 'flex', gap: 12, marginBottom: 16, flexShrink: 0, alignItems: 'stretch' }}
+      >
         {/* Main Search Controls Card */}
         <Card
           size="small"
@@ -823,37 +909,73 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                 key="embedding"
                 header={
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Text style={{ fontSize: 13 }}>
-                      Generate Embedding
-                    </Text>
+                    <Text style={{ fontSize: 13 }}>Generate Embedding</Text>
                     <span onClick={(e) => e.stopPropagation()}>
                       <Popover
                         content={
-                          <div style={{ maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                          <div
+                            style={{
+                              maxWidth: 400,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 12,
+                            }}
+                          >
                             <div>
-                              <Text strong style={{ fontSize: 13, display: 'block', marginBottom: 6 }}>How Embedding Functions Work</Text>
+                              <Text
+                                strong
+                                style={{ fontSize: 13, display: 'block', marginBottom: 6 }}
+                              >
+                                How Embedding Functions Work
+                              </Text>
                               <Text style={{ fontSize: 12, lineHeight: 1.6, display: 'block' }}>
-                                Embedding functions convert your text or files into vector embeddings that can be used for semantic search.
-                                You can create custom functions that connect to any embedding API or service.
+                                Embedding functions convert your text or files into vector
+                                embeddings that can be used for semantic search. You can create
+                                custom functions that connect to any embedding API or service.
                               </Text>
                             </div>
 
                             <div>
-                              <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>Workflow</Text>
-                              <ol style={{ margin: '4px 0 0 18px', padding: 0, fontSize: 12, lineHeight: 1.7 }}>
-                                <li>Select or create an embedding function (defines how to call your API)</li>
+                              <Text
+                                strong
+                                style={{ fontSize: 12, display: 'block', marginBottom: 4 }}
+                              >
+                                Workflow
+                              </Text>
+                              <ol
+                                style={{
+                                  margin: '4px 0 0 18px',
+                                  padding: 0,
+                                  fontSize: 12,
+                                  lineHeight: 1.7,
+                                }}
+                              >
+                                <li>
+                                  Select or create an embedding function (defines how to call your
+                                  API)
+                                </li>
                                 <li>Choose input type: Text or File</li>
                                 <li>Enter your text or upload a file</li>
                                 <li>Click "Generate Embedding" to create the vector</li>
-                                <li>The generated vector is automatically copied to the search field below</li>
+                                <li>
+                                  The generated vector is automatically copied to the search field
+                                  below
+                                </li>
                                 <li>Click "Search" to find similar documents</li>
                               </ol>
                             </div>
 
                             <div>
-                              <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>Privacy & Security</Text>
+                              <Text
+                                strong
+                                style={{ fontSize: 12, display: 'block', marginBottom: 4 }}
+                              >
+                                Privacy & Security
+                              </Text>
                               <Text style={{ fontSize: 12, lineHeight: 1.6, display: 'block' }}>
-                                All embedding functions and API keys are stored locally on your computer. Your data never leaves your device when generating embeddings.
+                                All embedding functions and API keys are stored locally on your
+                                computer. Your data never leaves your device when generating
+                                embeddings.
                               </Text>
                             </div>
                           </div>
@@ -867,10 +989,12 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                             fontSize: 14,
                             color: 'var(--text-muted)',
                             cursor: 'pointer',
-                            transition: 'color 0.2s'
+                            transition: 'color 0.2s',
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-color)'}
-                          onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.color = 'var(--primary-color)')
+                          }
+                          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
                         />
                       </Popover>
                     </span>
@@ -881,7 +1005,9 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                   {/* Input Type Selection */}
                   <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                      <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>INPUT TYPE</Text>
+                      <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                        INPUT TYPE
+                      </Text>
                       <Radio.Group
                         value={inputMode}
                         onChange={(e) => {
@@ -901,7 +1027,9 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                     </div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                        <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>FUNCTION</Text>
+                        <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                          FUNCTION
+                        </Text>
                         <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                           <Select
                             value={selectedEmbeddingFunction}
@@ -911,11 +1039,13 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                             size="small"
                             notFoundContent={
                               <div style={{ padding: 8, textAlign: 'center' }}>
-                                <Text type="secondary" style={{ fontSize: 11 }}>No functions</Text>
+                                <Text type="secondary" style={{ fontSize: 11 }}>
+                                  No functions
+                                </Text>
                               </div>
                             }
                           >
-                            {embeddingFunctions.map(func => (
+                            {embeddingFunctions.map((func) => (
                               <Option key={func.id} value={func.id}>
                                 {func.name}
                               </Option>
@@ -958,10 +1088,7 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                   {inputMode === 'file' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <Upload
-                          beforeUpload={handleFileUpload}
-                          showUploadList={false}
-                        >
+                        <Upload beforeUpload={handleFileUpload} showUploadList={false}>
                           <Button size="small">
                             {embeddingFile ? embeddingFile.name : 'Upload File'}
                           </Button>
@@ -986,7 +1113,12 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                     <Button
                       type="primary"
                       onClick={handleEmbed}
-                      disabled={embeddingLoading || !selectedEmbeddingFunction || (inputMode === 'text' && !embeddingText.trim()) || (inputMode === 'file' && !embeddingFile)}
+                      disabled={
+                        embeddingLoading ||
+                        !selectedEmbeddingFunction ||
+                        (inputMode === 'text' && !embeddingText.trim()) ||
+                        (inputMode === 'file' && !embeddingFile)
+                      }
                       loading={embeddingLoading}
                       size="small"
                       icon={<ApiOutlined />}
@@ -999,11 +1131,13 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
             </Collapse>
 
             {/* Divider */}
-            <div style={{
-              height: 1,
-              background: 'var(--border-color)',
-              margin: '4px 0',
-            }} />
+            <div
+              style={{
+                height: 1,
+                background: 'var(--border-color)',
+                margin: '4px 0',
+              }}
+            />
 
             {/* Search support (what this collection supports) */}
             {/* {searchCapabilities && (
@@ -1032,13 +1166,22 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                     <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
                       KEYWORDS
                       <Tooltip title="Keyword / full-text search (BM25 or FTS). Enter text to combine with vector search for hybrid results.">
-                        <InfoCircleOutlined style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)', cursor: 'help' }} />
+                        <InfoCircleOutlined
+                          style={{
+                            marginLeft: 6,
+                            fontSize: 12,
+                            color: 'var(--text-muted)',
+                            cursor: 'help',
+                          }}
+                        />
                       </Tooltip>
                     </Text>
                   </div>
                   {searchCapabilities?.supportsHybridAlpha && (
                     <div style={{ width: 80 }}>
-                      <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>Alpha</Text>
+                      <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                        Alpha
+                      </Text>
                     </div>
                   )}
                 </div>
@@ -1075,15 +1218,23 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                     SEARCH VECTOR
                     <Tooltip title="Generate random vector">
                       <ThunderboltOutlined
-                        style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)', cursor: 'pointer' }}
+                        style={{
+                          marginLeft: 6,
+                          fontSize: 12,
+                          color: 'var(--text-muted)',
+                          cursor: 'pointer',
+                        }}
                         onClick={() => generateRandomVector()}
                       />
                     </Tooltip>
                   </Text>
                   <TextArea
-                    placeholder={selectedVectorField && collectionSchema.vectors[selectedVectorField]?.vectorType === 'sparse'
-                      ? '{indices: [0, 5, 10], values: [0.1, 0.2, 0.3]} or [0.1, 0.2, ...] for dense'
-                      : '[0.1, 0.2, ...] or comma-separated values. For sparse: {indices: [], values: []}'}
+                    placeholder={
+                      selectedVectorField &&
+                      collectionSchema.vectors[selectedVectorField]?.vectorType === 'sparse'
+                        ? '{indices: [0, 5, 10], values: [0.1, 0.2, 0.3]} or [0.1, 0.2, ...] for dense'
+                        : '[0.1, 0.2, ...] or comma-separated values. For sparse: {indices: [], values: []}'
+                    }
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     rows={4}
@@ -1096,37 +1247,43 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                 {/* Show vector field selector if there are multiple vectors OR if there are named vectors (not default) */}
                 {(collectionSchema.multipleVectors ||
                   (Object.keys(collectionSchema.vectors).length > 0 &&
-                    !Object.keys(collectionSchema.vectors).includes(COLLECTION_DEFAULT_VECTOR))) && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                      <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>VECTOR FIELD</Text>
-                      <Select
-                        value={selectedVectorField}
-                        onChange={(value) => {
-                          console.log('[SearchTab] Vector field changed:', value);
-                          setSelectedVectorField(value);
-                        }}
-                        style={{ width: 160 }}
-                        size="small"
-                      >
-                        {Object.values(collectionSchema.vectors).map(field => {
-                          let label = field.name;
-                          if (field.vectorType === 'sparse') {
-                            label += ' (sparse)';
-                          } else if ('size' in field) {
-                            label += ` (${field.size}D)`;
-                          }
-                          return (
-                            <Option key={field.name} value={field.name}>
-                              {label}
-                            </Option>
-                          );
-                        })}
-                      </Select>
-                    </div>
-                  )}
+                    !Object.keys(collectionSchema.vectors).includes(
+                      COLLECTION_DEFAULT_VECTOR,
+                    ))) && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                      VECTOR FIELD
+                    </Text>
+                    <Select
+                      value={selectedVectorField}
+                      onChange={(value) => {
+                        console.log('[SearchTab] Vector field changed:', value);
+                        setSelectedVectorField(value);
+                      }}
+                      style={{ width: 160 }}
+                      size="small"
+                    >
+                      {Object.values(collectionSchema.vectors).map((field) => {
+                        let label = field.name;
+                        if (field.vectorType === 'sparse') {
+                          label += ' (sparse)';
+                        } else if ('size' in field) {
+                          label += ` (${field.size}D)`;
+                        }
+                        return (
+                          <Option key={field.name} value={field.name}>
+                            {label}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
+                )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>TOP K</Text>
+                  <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                    TOP K
+                  </Text>
                   <InputNumber
                     min={1}
                     max={100}
@@ -1137,7 +1294,9 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>THRESHOLD</Text>
+                  <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
+                    THRESHOLD
+                  </Text>
                   <InputNumber
                     min={0.001}
                     max={1}
@@ -1160,16 +1319,17 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                 <Button
                   type="primary"
                   onClick={() => handleSearch()}
-                  disabled={loading || (!searchInput.trim() && !(searchCapabilities?.lexical && lexicalQuery.trim()))}
+                  disabled={
+                    loading ||
+                    (!searchInput.trim() && !(searchCapabilities?.lexical && lexicalQuery.trim()))
+                  }
                   loading={loading}
                   size="small"
                   icon={<SearchOutlined />}
                 >
                   Search
                 </Button>
-                {searchMetadata && (
-                  <SearchStatistics metadata={searchMetadata} />
-                )}
+                {searchMetadata && <SearchStatistics metadata={searchMetadata} />}
               </div>
             </div>
           </div>
@@ -1180,7 +1340,9 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
           <Card
             size="small"
             title={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
                 <Text style={{ fontSize: 13, fontWeight: 500 }}>
                   <ClockCircleOutlined style={{ marginRight: 6 }} />
                   Search History
@@ -1252,7 +1414,13 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                         }}
                         onClick={() => restoreSearchFromHistory(item)}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}
+                        >
                           <Text style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                             {timeText}
                           </Text>
@@ -1275,7 +1443,10 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                             </Tag>
                           )}
                           {item.lexicalQuery && (
-                            <Tag color="orange" style={{ margin: 0, fontSize: 10, padding: '0 4px' }}>
+                            <Tag
+                              color="orange"
+                              style={{ margin: 0, fontSize: 10, padding: '0 4px' }}
+                            >
                               Keywords
                             </Tag>
                           )}
@@ -1291,7 +1462,14 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
                           )}
                         </div>
                       </div>
-                      <div style={{ width: 28, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                      <div
+                        style={{
+                          width: 28,
+                          flexShrink: 0,
+                          display: 'flex',
+                          justifyContent: 'center',
+                        }}
+                      >
                         <Tooltip title="Compare with latest search">
                           <Button
                             type="text"
@@ -1319,10 +1497,7 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
       </div>
 
       {/* Table */}
-      <div
-        className="data-table-container"
-        style={{ flex: 1, overflow: 'auto', minHeight: 0 }}
-      >
+      <div className="data-table-container" style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
         <Table
           sticky={true}
           columns={generateDocumentDynamicTableColumns(collectionSchema, documents)}
@@ -1352,10 +1527,8 @@ const SearchTab: React.FC<SearchTabProps> = ({ tab, collectionSchema, dataRequir
         items={contextMenu ? getContextMenuItems(contextMenu.document) : []}
         onClose={closeContextMenu}
       />
-
     </div>
   );
 };
 
 export default SearchTab;
-

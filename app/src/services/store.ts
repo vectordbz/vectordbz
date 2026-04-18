@@ -51,7 +51,7 @@ export const connectionStore = {
     const connections = store.get('connections') || [];
     const index = connections.findIndex((c: SavedConnection) => c.id === id);
     if (index === -1) return null;
-    
+
     connections[index] = { ...connections[index], ...updates };
     store.set('connections', connections);
     return connections[index];
@@ -61,7 +61,7 @@ export const connectionStore = {
     const connections = store.get('connections') || [];
     const filtered = connections.filter((c: SavedConnection) => c.id !== id);
     if (filtered.length === connections.length) return false;
-    
+
     store.set('connections', filtered);
     return true;
   },

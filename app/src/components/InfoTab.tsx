@@ -15,10 +15,10 @@ interface JsonViewerProps {
   path?: string;
 }
 
-const JsonViewer: React.FC<JsonViewerProps> = ({ 
-  data, 
-  level = 0, 
-  collapsed = new Set(), 
+const JsonViewer: React.FC<JsonViewerProps> = ({
+  data,
+  level = 0,
+  collapsed = new Set(),
   onToggle,
   path = '',
 }) => {
@@ -127,9 +127,10 @@ const JsonViewer: React.FC<JsonViewerProps> = ({
             {entries.map(([key, value], index) => {
               const keyPath = path ? `${path}.${key}` : key;
               const isValueCollapsed = collapsed.has(keyPath);
-              const isValueObject = typeof value === 'object' && value !== null && !Array.isArray(value);
+              const isValueObject =
+                typeof value === 'object' && value !== null && !Array.isArray(value);
               const isValueArray = Array.isArray(value);
-              
+
               return (
                 <div key={key} style={{ marginBottom: 4 }}>
                   <span
@@ -139,16 +140,19 @@ const JsonViewer: React.FC<JsonViewerProps> = ({
                       }
                     }}
                     style={{
-                      cursor: (isValueObject || isValueArray) ? 'pointer' : 'default',
+                      cursor: isValueObject || isValueArray ? 'pointer' : 'default',
                       userSelect: 'none',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 4,
                     }}
                   >
-                    {(isValueObject || isValueArray) && (
-                      isValueCollapsed ? <RightOutlined style={{ fontSize: 10 }} /> : <DownOutlined style={{ fontSize: 10 }} />
-                    )}
+                    {(isValueObject || isValueArray) &&
+                      (isValueCollapsed ? (
+                        <RightOutlined style={{ fontSize: 10 }} />
+                      ) : (
+                        <DownOutlined style={{ fontSize: 10 }} />
+                      ))}
                     <span style={{ color: '#eab308', fontWeight: 500 }}>"{key}"</span>
                     <span style={{ color: '#9ca3af' }}>:</span>{' '}
                   </span>
@@ -179,9 +183,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({
   return <span>{String(data)}</span>;
 };
 
-const InfoTab: React.FC<InfoTabProps> = ({
-  tab,
-}) => {
+const InfoTab: React.FC<InfoTabProps> = ({ tab }) => {
   const [infoData, setInfoData] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -192,7 +194,10 @@ const InfoTab: React.FC<InfoTabProps> = ({
       setLoading(true);
       setError(null);
       try {
-        const result = await window.electronAPI.db.getCollectionInfo(tab.connectionId, tab.collection.name);
+        const result = await window.electronAPI.db.getCollectionInfo(
+          tab.connectionId,
+          tab.collection.name,
+        );
         if (result.success && result.data) {
           setInfoData(result.data);
         } else {
@@ -222,35 +227,41 @@ const InfoTab: React.FC<InfoTabProps> = ({
   const jsonString = infoData ? JSON.stringify(infoData, null, 2) : '';
 
   return (
-    <div style={{ 
-      height: '100%', 
-      display: 'flex', 
-      flexDirection: 'column',
-      background: 'var(--bg-primary)',
-    }}>
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'var(--bg-primary)',
+      }}
+    >
       {/* JSON Content */}
-      <div style={{ 
-        flex: 1, 
-        overflow: 'auto',
-        padding: 20,
-      }}>
+      <div
+        style={{
+          flex: 1,
+          overflow: 'auto',
+          padding: 20,
+        }}
+      >
         {loading ? (
-          <div style={{ 
-            textAlign: 'center', 
-            padding: 60,
-            color: 'var(--text-secondary)',
-          }}>
+          <div
+            style={{
+              textAlign: 'center',
+              padding: 60,
+              color: 'var(--text-secondary)',
+            }}
+          >
             <Spin size="large" />
-            <div style={{ marginTop: 16, fontSize: 13 }}>
-              Loading collection information...
-            </div>
+            <div style={{ marginTop: 16, fontSize: 13 }}>Loading collection information...</div>
           </div>
         ) : error ? (
-          <div style={{ 
-            textAlign: 'center', 
-            padding: 60,
-            color: 'var(--error-color, #ff4d4f)',
-          }}>
+          <div
+            style={{
+              textAlign: 'center',
+              padding: 60,
+              color: 'var(--error-color, #ff4d4f)',
+            }}
+          >
             {error}
           </div>
         ) : infoData ? (
@@ -281,11 +292,7 @@ const InfoTab: React.FC<InfoTabProps> = ({
             >
               Copy JSON
             </Button>
-            <JsonViewer
-              data={infoData}
-              collapsed={collapsed}
-              onToggle={handleToggle}
-            />
+            <JsonViewer data={infoData} collapsed={collapsed} onToggle={handleToggle} />
           </div>
         ) : null}
       </div>

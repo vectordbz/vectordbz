@@ -69,7 +69,11 @@ export const pineconeCreateIndexSchema: DynamicFormSchema = {
           description: 'Unique name for your index (lowercase, alphanumeric, hyphens)',
           rules: [
             { type: 'minLength', value: 1, message: 'Index name is required' },
-            { type: 'pattern', value: '^[a-z0-9-]+$', message: 'Must be lowercase, alphanumeric with hyphens only' },
+            {
+              type: 'pattern',
+              value: '^[a-z0-9-]+$',
+              message: 'Must be lowercase, alphanumeric with hyphens only',
+            },
           ],
         },
         {
@@ -103,7 +107,11 @@ export const pineconeCreateIndexSchema: DynamicFormSchema = {
           direction: 'vertical',
           defaultValue: 'serverless',
           options: [
-            { label: 'Serverless', value: 'serverless', description: 'Fully managed, pay-as-you-go (recommended)' },
+            {
+              label: 'Serverless',
+              value: 'serverless',
+              description: 'Fully managed, pay-as-you-go (recommended)',
+            },
             { label: 'Pod-based', value: 'pod', description: 'Dedicated pods with fixed capacity' },
           ],
         },
@@ -194,15 +202,15 @@ export const pineconeCreateIndexSchema: DynamicFormSchema = {
 
 /**
  * Pinecone Client Implementation
- * 
+ *
  * Mapping between Pinecone and our application:
  * - Our "Collection" = Pinecone "Index" (top-level container)
  * - Our "dataRequirements.namespace" = Pinecone "Namespace" (logical partition within index)
- * 
+ *
  * Example:
  * - Collection: "product_index" → Pinecone Index: "product_index"
  * - Namespace: "electronics" → Pinecone Namespace: "electronics"
- * 
+ *
  * Note: Pinecone doesn't have a "database" concept - only indexes and namespaces.
  */
 export class PineconeClient implements VectorDBClient {
@@ -271,7 +279,7 @@ export class PineconeClient implements VectorDBClient {
             dimension: index.dimension,
             metric: index.metric,
           } as Collection;
-        })
+        }),
       );
 
       return { success: true, collections };
@@ -323,7 +331,7 @@ export class PineconeClient implements VectorDBClient {
 
       const dimension = indexInfo.data.dimension as number;
       const index = this.getIndex(collection);
-      
+
       // Get namespaces from index stats
       const stats = await index.describeIndexStats();
       // Get all namespace names (empty string represents default namespace)
@@ -336,15 +344,15 @@ export class PineconeClient implements VectorDBClient {
         // Generate a random normalized vector to query (better than zero vector)
         const randomVector = Array.from({ length: dimension }, () => (Math.random() - 0.5) * 2);
         const norm = Math.sqrt(randomVector.reduce((sum, val) => sum + val * val, 0));
-        const normalizedVector = norm > 0 ? randomVector.map(val => val / norm) : randomVector;
-        
+        const normalizedVector = norm > 0 ? randomVector.map((val) => val / norm) : randomVector;
+
         // Use namespace if provided, otherwise use default (empty string)
         const ns = firstNamespace || '';
         const queryResponse = await index.namespace(ns).query({
           topK: 1,
           vector: normalizedVector,
         });
-        
+
         const matches = queryResponse.matches || [];
         if (matches.length > 0) {
           sampleDoc = this.matchToDocument(matches[0]);
@@ -362,8 +370,8 @@ export class PineconeClient implements VectorDBClient {
           else if (value && typeof value === 'object') type = 'object';
 
           // Pinecone doesn't support text search, so fields are not searchable
-          fields[key] = { 
-            name: key, 
+          fields[key] = {
+            name: key,
             type,
             searchable: false,
           };
@@ -391,13 +399,16 @@ export class PineconeClient implements VectorDBClient {
 
       // Always include namespaces in dataRequirements if they exist
       // Convert empty string (default namespace) to "__default__" for UI display
-      const namespaceValues = namespaces.map(ns => ns === '' ? '__default__' : ns);
-      const dataRequirements = namespaces.length > 0 ? {
-        namespace: {
-          key: 'namespace',
-          value: namespaceValues,
-        },
-      } : undefined;
+      const namespaceValues = namespaces.map((ns) => (ns === '' ? '__default__' : ns));
+      const dataRequirements =
+        namespaces.length > 0
+          ? {
+              namespace: {
+                key: 'namespace',
+                value: namespaceValues,
+              },
+            }
+          : undefined;
 
       return {
         success: true,
@@ -416,13 +427,16 @@ export class PineconeClient implements VectorDBClient {
     }
   }
 
-  async getSearchCapabilities(_collection: string, schema?: CollectionSchema | null): Promise<SearchCapabilities> {
+  async getSearchCapabilities(
+    _collection: string,
+    schema?: CollectionSchema | null,
+  ): Promise<SearchCapabilities> {
     return mergeWithDefault(
       {
         sparse: true,
         fusionStrategies: ['rrf', 'weighted', 'server'],
       },
-      schema
+      schema,
     );
   }
 
@@ -432,7 +446,11 @@ export class PineconeClient implements VectorDBClient {
    * @param data - Document data
    * @param dataRequirements - Optional namespace (Pinecone namespace for data isolation)
    */
-  async upsertDocument(collection: string, data: UpsertDocumentData, dataRequirements?: Record<string, string>): Promise<UpsertDocumentResult> {
+  async upsertDocument(
+    collection: string,
+    data: UpsertDocumentData,
+    dataRequirements?: Record<string, string>,
+  ): Promise<UpsertDocumentResult> {
     try {
       const { document } = data;
       const { primary, vectors, payload } = document;
@@ -447,7 +465,8 @@ export class PineconeClient implements VectorDBClient {
 
       const index = this.getIndex(collection);
       // Convert "__default__" back to empty string for Pinecone API
-      const namespace = dataRequirements?.namespace === '__default__' ? '' : (dataRequirements?.namespace || '');
+      const namespace =
+        dataRequirements?.namespace === '__default__' ? '' : dataRequirements?.namespace || '';
 
       // Extract dense and sparse vectors
       let denseVector: number[] | undefined;
@@ -470,7 +489,11 @@ export class PineconeClient implements VectorDBClient {
       if (payload) {
         Object.entries(payload).forEach(([key, value]) => {
           if (value !== null && value !== undefined) {
-            if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+            if (
+              typeof value === 'string' ||
+              typeof value === 'number' ||
+              typeof value === 'boolean'
+            ) {
               metadata[key] = value;
             } else if (Array.isArray(value)) {
               metadata[key] = value;
@@ -502,17 +525,23 @@ export class PineconeClient implements VectorDBClient {
       };
     } catch (error: any) {
       console.error('[Pinecone] Upsert error:', error);
-      const message = error?.message || 
-        (error instanceof Error ? error.message : 'Failed to upsert document');
+      const message =
+        error?.message || (error instanceof Error ? error.message : 'Failed to upsert document');
       return { success: false, error: message };
     }
   }
 
-  async getDocuments(collection: string, options?: GetDocumentsOptions): Promise<GetDocumentsResult> {
+  async getDocuments(
+    collection: string,
+    options?: GetDocumentsOptions,
+  ): Promise<GetDocumentsResult> {
     try {
       const limit = options?.limit || 50;
       // Convert "__default__" back to empty string for Pinecone API
-      const namespace = options?.dataRequirements?.namespace === '__default__' ? '' : (options?.dataRequirements?.namespace || '');
+      const namespace =
+        options?.dataRequirements?.namespace === '__default__'
+          ? ''
+          : options?.dataRequirements?.namespace || '';
       const index = this.getIndex(collection);
 
       // Use namespace if provided, otherwise use default (empty string)
@@ -528,7 +557,7 @@ export class PineconeClient implements VectorDBClient {
         // If offset is a number, it means we're paginating through IDs we already fetched
         const numericOffset = typeof options?.offset === 'number' ? options.offset : 0;
         const paginationToken = typeof options?.offset === 'string' ? options.offset : undefined;
-        
+
         const listResponse = await namespaceIndex.listPaginated({
           prefix: '', // Empty prefix lists all IDs
           paginationToken,
@@ -536,31 +565,33 @@ export class PineconeClient implements VectorDBClient {
 
         const listItems = listResponse.vectors || [];
         // Extract IDs from list items (ListItem has an 'id' property or is a string)
-        const allIds = listItems.map((item: any) => typeof item === 'string' ? item : item.id).filter(Boolean);
-        
+        const allIds = listItems
+          .map((item: any) => (typeof item === 'string' ? item : item.id))
+          .filter(Boolean);
+
         // Check if there are more items available from Pinecone's pagination
         const hasPineconePagination = !!listResponse.pagination?.next;
-        
+
         // Calculate which IDs to fetch based on offset
         const startIdx = numericOffset;
         const endIdx = startIdx + limit;
         const idsToFetch = allIds.slice(startIdx, endIdx);
         const hasMoreIds = endIdx < allIds.length;
-        
+
         // If we have IDs, fetch the actual records
         if (idsToFetch.length > 0) {
           // Fetch records in batches (Pinecone fetch has limits)
           const batchSize = 100; // Pinecone typically allows up to 100 IDs per fetch
-          
+
           for (let i = 0; i < idsToFetch.length; i += batchSize) {
             const batch = idsToFetch.slice(i, i + batchSize);
             const fetchResponse = await namespaceIndex.fetch(batch);
             const records = fetchResponse.records || {};
-            
+
             // Convert fetched records to documents
             Object.entries(records).forEach(([id, record]: [string, any]) => {
               const vectors: Record<string, DocumentVector> = {};
-              
+
               // Add dense vector
               if (record.values && record.values.length > 0) {
                 vectors[COLLECTION_DEFAULT_VECTOR] = {
@@ -572,9 +603,13 @@ export class PineconeClient implements VectorDBClient {
                   },
                 };
               }
-              
+
               // Add sparse vector if present
-              if (record.sparseValues && record.sparseValues.indices && record.sparseValues.values) {
+              if (
+                record.sparseValues &&
+                record.sparseValues.indices &&
+                record.sparseValues.values
+              ) {
                 vectors['sparse'] = {
                   key: 'sparse',
                   vectorType: 'sparse',
@@ -584,7 +619,7 @@ export class PineconeClient implements VectorDBClient {
                   },
                 };
               }
-              
+
               documents.push({
                 primary: { name: 'id', value: id },
                 vectors,
@@ -609,8 +644,11 @@ export class PineconeClient implements VectorDBClient {
       } catch (listError: any) {
         // Fallback for pod-based indexes or if listPaginated is not supported
         // Use query with a random vector (less efficient but works for all index types)
-        log.warn('[Pinecone] listPaginated not available, falling back to query method:', listError.message);
-        
+        log.warn(
+          '[Pinecone] listPaginated not available, falling back to query method:',
+          listError.message,
+        );
+
         const indexInfo = await this.getCollectionInfo(collection);
         if (!indexInfo.success || !indexInfo.data) {
           return { success: false, error: 'Failed to get index info' };
@@ -620,8 +658,8 @@ export class PineconeClient implements VectorDBClient {
         // Generate a random normalized vector to query
         const randomVector = Array.from({ length: dimension }, () => (Math.random() - 0.5) * 2);
         const norm = Math.sqrt(randomVector.reduce((sum, val) => sum + val * val, 0));
-        const normalizedVector = norm > 0 ? randomVector.map(val => val / norm) : randomVector;
-        
+        const normalizedVector = norm > 0 ? randomVector.map((val) => val / norm) : randomVector;
+
         const queryResponse = await namespaceIndex.query({
           topK: Math.min(limit, 10000), // Pinecone max is 10000
           vector: normalizedVector,
@@ -631,7 +669,10 @@ export class PineconeClient implements VectorDBClient {
 
         const matches = queryResponse.matches || [];
         documents = matches.map((match: any) => this.matchToDocument(match));
-        nextOffset = documents.length >= limit ? (typeof options?.offset === 'number' ? options.offset : 0) + limit : null;
+        nextOffset =
+          documents.length >= limit
+            ? (typeof options?.offset === 'number' ? options.offset : 0) + limit
+            : null;
       }
 
       // Apply filters if provided
@@ -658,12 +699,19 @@ export class PineconeClient implements VectorDBClient {
     }
   }
 
-  async search(collection: string, vectors: Record<string, DocumentVector>, options?: SearchOptions): Promise<SearchResult> {
+  async search(
+    collection: string,
+    vectors: Record<string, DocumentVector>,
+    options?: SearchOptions,
+  ): Promise<SearchResult> {
     const startTime = performance.now();
     try {
       const limit = options?.limit || 10;
       // Convert "__default__" back to empty string for Pinecone API
-      const namespace = options?.dataRequirements?.namespace === '__default__' ? '' : (options?.dataRequirements?.namespace || '');
+      const namespace =
+        options?.dataRequirements?.namespace === '__default__'
+          ? ''
+          : options?.dataRequirements?.namespace || '';
       const index = this.getIndex(collection);
 
       // Build filter for Pinecone metadata
@@ -736,11 +784,16 @@ export class PineconeClient implements VectorDBClient {
     }
   }
 
-  async deleteDocument(collection: string, primary: Document['primary'], dataRequirements?: Record<string, string>): Promise<DeleteDocumentResult> {
+  async deleteDocument(
+    collection: string,
+    primary: Document['primary'],
+    dataRequirements?: Record<string, string>,
+  ): Promise<DeleteDocumentResult> {
     try {
       const index = this.getIndex(collection);
       // Convert "__default__" back to empty string for Pinecone API
-      const namespace = dataRequirements?.namespace === '__default__' ? '' : (dataRequirements?.namespace || '');
+      const namespace =
+        dataRequirements?.namespace === '__default__' ? '' : dataRequirements?.namespace || '';
 
       // Use namespace if provided, otherwise use default (empty string)
       const ns = namespace || '';
@@ -754,11 +807,16 @@ export class PineconeClient implements VectorDBClient {
     }
   }
 
-  async deleteDocuments(collection: string, filter: FilterQuery, dataRequirements?: Record<string, string>): Promise<DeleteDocumentsResult> {
+  async deleteDocuments(
+    collection: string,
+    filter: FilterQuery,
+    dataRequirements?: Record<string, string>,
+  ): Promise<DeleteDocumentsResult> {
     try {
       const index = this.getIndex(collection);
       // Convert "__default__" back to empty string for Pinecone API
-      const namespace = dataRequirements?.namespace === '__default__' ? '' : (dataRequirements?.namespace || '');
+      const namespace =
+        dataRequirements?.namespace === '__default__' ? '' : dataRequirements?.namespace || '';
 
       // Use namespace if provided, otherwise use default (empty string)
       const ns = namespace || '';
@@ -768,7 +826,7 @@ export class PineconeClient implements VectorDBClient {
       // Get all documents matching the filter
       const allDocs: Document[] = [];
       let offset: string | number | null | undefined = null;
-      
+
       do {
         const result = await this.getDocuments(collection, {
           filter,
@@ -776,11 +834,11 @@ export class PineconeClient implements VectorDBClient {
           offset: offset ?? undefined,
           dataRequirements,
         });
-        
+
         if (!result.success || !result.documents) {
           break;
         }
-        
+
         allDocs.push(...result.documents);
         offset = result.nextOffset;
       } while (offset !== null);
@@ -790,9 +848,9 @@ export class PineconeClient implements VectorDBClient {
       }
 
       // Delete by IDs in batches
-      const idsToDelete = allDocs.map(doc => String(doc.primary.value));
+      const idsToDelete = allDocs.map((doc) => String(doc.primary.value));
       const batchSize = 1000; // Pinecone allows up to 1000 IDs per deleteMany
-      
+
       for (let i = 0; i < idsToDelete.length; i += batchSize) {
         const batch = idsToDelete.slice(i, i + batchSize);
         await namespaceIndex.deleteMany(batch);
@@ -810,19 +868,21 @@ export class PineconeClient implements VectorDBClient {
     try {
       await this.client.deleteIndex(collection);
       this.indexCache.delete(collection); // Clear cache
-      
+
       // Pinecone deletion is asynchronous, but typically completes quickly (2-5 seconds)
       // Do a quick verification with minimal wait to avoid blocking
       let deleted = false;
       const maxAttempts = 5; // Only wait up to 5 seconds
-      
+
       for (let attempt = 0; attempt < maxAttempts && !deleted; attempt++) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         try {
           // Check if index still exists by listing all indexes
           const indexes = await this.client.listIndexes();
-          const indexExists = indexes.indexes?.some((idx: { name: string }) => idx.name === collection);
-          
+          const indexExists = indexes.indexes?.some(
+            (idx: { name: string }) => idx.name === collection,
+          );
+
           if (!indexExists) {
             deleted = true;
             break;
@@ -836,33 +896,38 @@ export class PineconeClient implements VectorDBClient {
             // If describeIndex fails, index is likely deleted
             const errorMessage = describeError?.message?.toLowerCase() || '';
             const errorStatus = describeError?.status;
-            
-            if (errorStatus === 404 || 
-                errorMessage.includes('not found') || 
-                errorMessage.includes('does not exist') ||
-                errorMessage.includes('404')) {
+
+            if (
+              errorStatus === 404 ||
+              errorMessage.includes('not found') ||
+              errorMessage.includes('does not exist') ||
+              errorMessage.includes('404')
+            ) {
               deleted = true;
               break;
             }
           }
         }
       }
-      
+
       // Always return success since deleteIndex was called successfully
       // Deletion is in progress even if verification hasn't completed yet
       return { success: true };
     } catch (error: any) {
       // If the index doesn't exist, that's also a success
       const errorMessage = error?.message?.toLowerCase() || '';
-      if (error?.status === 404 || 
-          errorMessage.includes('not found') || 
-          errorMessage.includes('does not exist')) {
+      if (
+        error?.status === 404 ||
+        errorMessage.includes('not found') ||
+        errorMessage.includes('does not exist')
+      ) {
         this.indexCache.delete(collection); // Clear cache anyway
         return { success: true };
       }
-      
+
       console.error('[Pinecone] Drop index error:', error);
-      const message = error?.message || (error instanceof Error ? error.message : 'Failed to drop index');
+      const message =
+        error?.message || (error instanceof Error ? error.message : 'Failed to drop index');
       return { success: false, error: message };
     }
   }
@@ -887,10 +952,12 @@ export class PineconeClient implements VectorDBClient {
       let attempts = 0;
       const maxAttempts = 15; // Increased to allow more time for propagation
       while (attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         try {
           const verifyStats = await index.describeIndexStats();
-          const allEmpty = (verifyStats.namespaces ? Object.keys(verifyStats.namespaces) : ['']).every(ns => {
+          const allEmpty = (
+            verifyStats.namespaces ? Object.keys(verifyStats.namespaces) : ['']
+          ).every((ns) => {
             const count = verifyStats.namespaces?.[ns]?.recordCount || 0;
             return count === 0;
           });
@@ -928,7 +995,7 @@ export class PineconeClient implements VectorDBClient {
       const name = config.name as string;
       const dimension = config.dimension as number;
       const metric = (config.metric as string) || 'cosine';
-      const spec = config.spec as string || 'serverless';
+      const spec = (config.spec as string) || 'serverless';
 
       const indexConfig: any = {
         name,
@@ -960,7 +1027,7 @@ export class PineconeClient implements VectorDBClient {
       let ready = false;
       let attempts = 0;
       while (!ready && attempts < 30) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         try {
           const status = await this.client.describeIndex(name);
           if (status.status?.ready) {
@@ -976,8 +1043,8 @@ export class PineconeClient implements VectorDBClient {
       return { success: true };
     } catch (error: any) {
       console.error('[Pinecone] Create index error:', error);
-      const message = error?.message || 
-        (error instanceof Error ? error.message : 'Failed to create index');
+      const message =
+        error?.message || (error instanceof Error ? error.message : 'Failed to create index');
       return { success: false, error: message };
     }
   }
@@ -1028,7 +1095,7 @@ export class PineconeClient implements VectorDBClient {
       return undefined;
     }
 
-    const conditions = filter.conditions.map(cond => {
+    const conditions = filter.conditions.map((cond) => {
       const field = cond.field;
       const value = cond.value;
 
@@ -1068,7 +1135,7 @@ export class PineconeClient implements VectorDBClient {
       return true;
     }
 
-    const results = filter.conditions.map(cond => {
+    const results = filter.conditions.map((cond) => {
       const fieldValue = metadata[cond.field];
       const filterValue = cond.value;
 
@@ -1078,13 +1145,29 @@ export class PineconeClient implements VectorDBClient {
         case 'neq':
           return fieldValue !== filterValue;
         case 'gt':
-          return typeof fieldValue === 'number' && typeof filterValue === 'number' && fieldValue > filterValue;
+          return (
+            typeof fieldValue === 'number' &&
+            typeof filterValue === 'number' &&
+            fieldValue > filterValue
+          );
         case 'gte':
-          return typeof fieldValue === 'number' && typeof filterValue === 'number' && fieldValue >= filterValue;
+          return (
+            typeof fieldValue === 'number' &&
+            typeof filterValue === 'number' &&
+            fieldValue >= filterValue
+          );
         case 'lt':
-          return typeof fieldValue === 'number' && typeof filterValue === 'number' && fieldValue < filterValue;
+          return (
+            typeof fieldValue === 'number' &&
+            typeof filterValue === 'number' &&
+            fieldValue < filterValue
+          );
         case 'lte':
-          return typeof fieldValue === 'number' && typeof filterValue === 'number' && fieldValue <= filterValue;
+          return (
+            typeof fieldValue === 'number' &&
+            typeof filterValue === 'number' &&
+            fieldValue <= filterValue
+          );
         case 'contains':
           return String(fieldValue).includes(String(filterValue));
         case 'starts_with':
@@ -1095,10 +1178,9 @@ export class PineconeClient implements VectorDBClient {
     });
 
     if (filter.logic === 'or') {
-      return results.some(r => r);
+      return results.some((r) => r);
     } else {
-      return results.every(r => r);
+      return results.every((r) => r);
     }
   }
 }
-

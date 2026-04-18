@@ -123,10 +123,20 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
           description: 'Unique name for your collection',
           rules: [
             { type: 'minLength', value: 1, message: 'Collection name is required' },
-            { type: 'pattern', value: '^[a-zA-Z_][a-zA-Z0-9_]*$', message: 'Must start with letter or underscore' },
+            {
+              type: 'pattern',
+              value: '^[a-zA-Z_][a-zA-Z0-9_]*$',
+              message: 'Must start with letter or underscore',
+            },
           ],
         },
-        { key: 'description', label: 'Description', type: 'textarea', rows: 2, placeholder: 'Optional description of the collection' },
+        {
+          key: 'description',
+          label: 'Description',
+          type: 'textarea',
+          rows: 2,
+          placeholder: 'Optional description of the collection',
+        },
       ],
     },
     {
@@ -140,8 +150,16 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
           direction: 'vertical',
           defaultValue: 'simple',
           options: [
-            { label: 'Simple (Auto ID)', value: 'simple', description: 'Just specify vector dimensions, auto-generate IDs' },
-            { label: 'Custom Schema', value: 'custom', description: 'Define primary key, vector fields, and scalar fields' },
+            {
+              label: 'Simple (Auto ID)',
+              value: 'simple',
+              description: 'Just specify vector dimensions, auto-generate IDs',
+            },
+            {
+              label: 'Custom Schema',
+              value: 'custom',
+              description: 'Define primary key, vector fields, and scalar fields',
+            },
           ],
         },
       ],
@@ -152,9 +170,31 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
       description: 'Configure your vector field',
       showWhen: { field: 'schemaType', operator: 'equals', value: 'simple' },
       items: [
-        { key: 'dimension', label: 'Vector Dimensions', type: 'number', required: true, defaultValue: MILVUS_DEFAULTS.dimension, min: 1, max: 32768, description: 'Number of dimensions (e.g., 1536 for OpenAI, 768 for many models)' },
-        { key: 'metric_type', label: 'Metric Type', type: 'select', defaultValue: MILVUS_DEFAULTS.metricType, options: [...MILVUS_METRIC_TYPES], description: 'Distance metric for similarity search' },
-        { key: 'enable_dynamic_field', label: 'Enable Dynamic Schema', type: 'switch', defaultValue: true, description: 'Allow inserting fields not defined in schema' },
+        {
+          key: 'dimension',
+          label: 'Vector Dimensions',
+          type: 'number',
+          required: true,
+          defaultValue: MILVUS_DEFAULTS.dimension,
+          min: 1,
+          max: 32768,
+          description: 'Number of dimensions (e.g., 1536 for OpenAI, 768 for many models)',
+        },
+        {
+          key: 'metric_type',
+          label: 'Metric Type',
+          type: 'select',
+          defaultValue: MILVUS_DEFAULTS.metricType,
+          options: [...MILVUS_METRIC_TYPES],
+          description: 'Distance metric for similarity search',
+        },
+        {
+          key: 'enable_dynamic_field',
+          label: 'Enable Dynamic Schema',
+          type: 'switch',
+          defaultValue: true,
+          description: 'Allow inserting fields not defined in schema',
+        },
       ],
     },
     {
@@ -163,11 +203,45 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
       description: 'Define your collection schema',
       showWhen: { field: 'schemaType', operator: 'equals', value: 'custom' },
       items: [
-        { key: 'primaryKeyType', label: 'Primary Key Type', type: 'select', defaultValue: 'Int64', options: [...MILVUS_PRIMARY_KEY_TYPES] },
-        { key: 'primaryKeyName', label: 'Primary Key Field Name', type: 'text', defaultValue: 'id', required: true },
-        { key: 'autoId', label: 'Auto Generate ID', type: 'switch', defaultValue: true, description: 'Automatically generate primary key values', showWhen: { field: 'primaryKeyType', operator: 'equals', value: 'Int64' } },
-        { key: 'maxLength', label: 'Max String Length', type: 'number', defaultValue: MILVUS_DEFAULTS.maxVarCharLength, min: 1, max: 65535, description: 'Maximum length for VarChar primary key', showWhen: { field: 'primaryKeyType', operator: 'equals', value: 'VarChar' } },
-        { key: 'enable_dynamic_field', label: 'Enable Dynamic Schema', type: 'switch', defaultValue: true, description: 'Allow inserting fields not defined in schema' },
+        {
+          key: 'primaryKeyType',
+          label: 'Primary Key Type',
+          type: 'select',
+          defaultValue: 'Int64',
+          options: [...MILVUS_PRIMARY_KEY_TYPES],
+        },
+        {
+          key: 'primaryKeyName',
+          label: 'Primary Key Field Name',
+          type: 'text',
+          defaultValue: 'id',
+          required: true,
+        },
+        {
+          key: 'autoId',
+          label: 'Auto Generate ID',
+          type: 'switch',
+          defaultValue: true,
+          description: 'Automatically generate primary key values',
+          showWhen: { field: 'primaryKeyType', operator: 'equals', value: 'Int64' },
+        },
+        {
+          key: 'maxLength',
+          label: 'Max String Length',
+          type: 'number',
+          defaultValue: MILVUS_DEFAULTS.maxVarCharLength,
+          min: 1,
+          max: 65535,
+          description: 'Maximum length for VarChar primary key',
+          showWhen: { field: 'primaryKeyType', operator: 'equals', value: 'VarChar' },
+        },
+        {
+          key: 'enable_dynamic_field',
+          label: 'Enable Dynamic Schema',
+          type: 'switch',
+          defaultValue: true,
+          description: 'Allow inserting fields not defined in schema',
+        },
       ],
     },
     {
@@ -183,8 +257,21 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
           itemLabel: 'Vector Field',
           minItems: 1,
           itemFields: [
-            { key: 'name', label: 'Field Name', type: 'text', required: true, defaultValue: 'vector', placeholder: 'vector' },
-            { key: 'dataType', label: 'Data Type', type: 'select', defaultValue: 'FloatVector', options: [...MILVUS_VECTOR_TYPES] },
+            {
+              key: 'name',
+              label: 'Field Name',
+              type: 'text',
+              required: true,
+              defaultValue: 'vector',
+              placeholder: 'vector',
+            },
+            {
+              key: 'dataType',
+              label: 'Data Type',
+              type: 'select',
+              defaultValue: 'FloatVector',
+              options: [...MILVUS_VECTOR_TYPES],
+            },
             {
               key: 'dimension',
               label: 'Dimensions',
@@ -193,9 +280,15 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
               defaultValue: MILVUS_DEFAULTS.dimension,
               min: 1,
               max: 32768,
-              description: 'Number of dimensions (not required for sparse vectors)'
+              description: 'Number of dimensions (not required for sparse vectors)',
             },
-            { key: 'metric_type', label: 'Metric Type', type: 'select', defaultValue: MILVUS_DEFAULTS.metricType, options: [...MILVUS_METRIC_TYPES] },
+            {
+              key: 'metric_type',
+              label: 'Metric Type',
+              type: 'select',
+              defaultValue: MILVUS_DEFAULTS.metricType,
+              options: [...MILVUS_METRIC_TYPES],
+            },
           ],
           addButtonText: 'Add Vector Field',
         },
@@ -216,9 +309,31 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
           itemLabel: 'Scalar Field',
           minItems: 0,
           itemFields: [
-            { key: 'name', label: 'Field Name', type: 'text', required: true, placeholder: 'title' },
-            { key: 'dataType', label: 'Data Type', type: 'select', required: true, defaultValue: 'VarChar', options: [...MILVUS_SCALAR_TYPES] },
-            { key: 'maxLength', label: 'Max Length', type: 'number', defaultValue: MILVUS_DEFAULTS.maxVarCharLength, min: 1, max: 65535, description: 'For VarChar type only', showWhen: { field: 'dataType', operator: 'equals', value: 'VarChar' } },
+            {
+              key: 'name',
+              label: 'Field Name',
+              type: 'text',
+              required: true,
+              placeholder: 'title',
+            },
+            {
+              key: 'dataType',
+              label: 'Data Type',
+              type: 'select',
+              required: true,
+              defaultValue: 'VarChar',
+              options: [...MILVUS_SCALAR_TYPES],
+            },
+            {
+              key: 'maxLength',
+              label: 'Max Length',
+              type: 'number',
+              defaultValue: MILVUS_DEFAULTS.maxVarCharLength,
+              min: 1,
+              max: 65535,
+              description: 'For VarChar type only',
+              showWhen: { field: 'dataType', operator: 'equals', value: 'VarChar' },
+            },
             { key: 'nullable', label: 'Nullable', type: 'switch', defaultValue: true },
           ],
           addButtonText: 'Add Scalar Field',
@@ -232,11 +347,66 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'createIndex', label: 'Create Index on Vector Field', type: 'switch', defaultValue: true, description: 'Automatically create an index after collection creation' },
-        { key: 'index_type', label: 'Index Type', type: 'select', defaultValue: MILVUS_DEFAULTS.indexType, showWhen: { field: 'createIndex', operator: 'equals', value: true }, options: [...MILVUS_INDEX_TYPES] },
-        { key: 'hnsw_M', label: 'M (Max Connections)', type: 'number', defaultValue: MILVUS_DEFAULTS.hnswM, min: 4, max: 64, description: 'Maximum number of outgoing edges per node', showWhen: { field: 'index_type', operator: 'equals', value: 'HNSW', and: [{ field: 'createIndex', operator: 'equals', value: true }] } },
-        { key: 'hnsw_efConstruction', label: 'EF Construction', type: 'number', defaultValue: MILVUS_DEFAULTS.hnswEfConstruction, min: 8, max: 512, description: 'Search depth during index build', showWhen: { field: 'index_type', operator: 'equals', value: 'HNSW', and: [{ field: 'createIndex', operator: 'equals', value: true }] } },
-        { key: 'ivf_nlist', label: 'nlist (Number of Clusters)', type: 'number', defaultValue: MILVUS_DEFAULTS.ivfNlist, min: 1, max: 65536, description: 'Number of cluster units', showWhen: { field: 'index_type', operator: 'in', values: ['IVF_FLAT', 'IVF_SQ8', 'IVF_PQ'], and: [{ field: 'createIndex', operator: 'equals', value: true }] } },
+        {
+          key: 'createIndex',
+          label: 'Create Index on Vector Field',
+          type: 'switch',
+          defaultValue: true,
+          description: 'Automatically create an index after collection creation',
+        },
+        {
+          key: 'index_type',
+          label: 'Index Type',
+          type: 'select',
+          defaultValue: MILVUS_DEFAULTS.indexType,
+          showWhen: { field: 'createIndex', operator: 'equals', value: true },
+          options: [...MILVUS_INDEX_TYPES],
+        },
+        {
+          key: 'hnsw_M',
+          label: 'M (Max Connections)',
+          type: 'number',
+          defaultValue: MILVUS_DEFAULTS.hnswM,
+          min: 4,
+          max: 64,
+          description: 'Maximum number of outgoing edges per node',
+          showWhen: {
+            field: 'index_type',
+            operator: 'equals',
+            value: 'HNSW',
+            and: [{ field: 'createIndex', operator: 'equals', value: true }],
+          },
+        },
+        {
+          key: 'hnsw_efConstruction',
+          label: 'EF Construction',
+          type: 'number',
+          defaultValue: MILVUS_DEFAULTS.hnswEfConstruction,
+          min: 8,
+          max: 512,
+          description: 'Search depth during index build',
+          showWhen: {
+            field: 'index_type',
+            operator: 'equals',
+            value: 'HNSW',
+            and: [{ field: 'createIndex', operator: 'equals', value: true }],
+          },
+        },
+        {
+          key: 'ivf_nlist',
+          label: 'nlist (Number of Clusters)',
+          type: 'number',
+          defaultValue: MILVUS_DEFAULTS.ivfNlist,
+          min: 1,
+          max: 65536,
+          description: 'Number of cluster units',
+          showWhen: {
+            field: 'index_type',
+            operator: 'in',
+            values: ['IVF_FLAT', 'IVF_SQ8', 'IVF_PQ'],
+            and: [{ field: 'createIndex', operator: 'equals', value: true }],
+          },
+        },
       ],
     },
     {
@@ -246,7 +416,13 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'consistency_level', label: 'Consistency Level', type: 'select', defaultValue: MILVUS_DEFAULTS.consistencyLevel, options: [...MILVUS_CONSISTENCY_LEVELS] },
+        {
+          key: 'consistency_level',
+          label: 'Consistency Level',
+          type: 'select',
+          defaultValue: MILVUS_DEFAULTS.consistencyLevel,
+          options: [...MILVUS_CONSISTENCY_LEVELS],
+        },
       ],
     },
     {
@@ -256,14 +432,22 @@ export const milvusCreateCollectionSchema: DynamicFormSchema = {
       collapsible: true,
       defaultCollapsed: true,
       items: [
-        { key: 'shards_num', label: 'Number of Shards', type: 'number', defaultValue: MILVUS_DEFAULTS.shardsNum, min: 1, max: 64, description: 'Number of shards for distributed storage' },
+        {
+          key: 'shards_num',
+          label: 'Number of Shards',
+          type: 'number',
+          defaultValue: MILVUS_DEFAULTS.shardsNum,
+          min: 1,
+          max: 64,
+          description: 'Number of shards for distributed storage',
+        },
       ],
     },
   ],
   showSubmit: true,
   showCancel: true,
   submitText: 'Create Collection',
-}
+};
 
 export class MilvusClient implements VectorDBClient {
   private client: MilvusSDK;
@@ -294,7 +478,11 @@ export class MilvusClient implements VectorDBClient {
       }
     }
 
-    log.info('[Milvus] Connecting with config:', { address, ssl: config.https, hasToken: !!config.apiKey });
+    log.info('[Milvus] Connecting with config:', {
+      address,
+      ssl: config.https,
+      hasToken: !!config.apiKey,
+    });
     this.client = new MilvusSDK(connectionConfig);
   }
 
@@ -307,7 +495,7 @@ export class MilvusClient implements VectorDBClient {
       log.warn('[Milvus] Connection test failed:', error.message);
       return {
         success: false,
-        error: `Failed to connect to Milvus: ${error.message}`
+        error: `Failed to connect to Milvus: ${error.message}`,
       };
     }
   }
@@ -329,7 +517,8 @@ export class MilvusClient implements VectorDBClient {
 
             // Find vector field to get dimension
             const vectorField = desc.schema?.fields?.find(
-              (f: { data_type: string }) => f.data_type === 'FloatVector' || f.data_type === 'BinaryVector'
+              (f: { data_type: string }) =>
+                f.data_type === 'FloatVector' || f.data_type === 'BinaryVector',
             );
 
             const stats = await this.client.getCollectionStats({ collection_name: name });
@@ -347,7 +536,7 @@ export class MilvusClient implements VectorDBClient {
               count: 0,
             };
           }
-        })
+        }),
       );
 
       return { success: true, collections };
@@ -366,7 +555,7 @@ export class MilvusClient implements VectorDBClient {
         data: {
           collection: desc,
           stats,
-        }
+        },
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to fetch collection info';
@@ -433,7 +622,7 @@ export class MilvusClient implements VectorDBClient {
           vectors,
           multipleVectors: totalVectors > 1,
           hasVectors: totalVectors > 0,
-        }
+        },
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to fetch collection schema';
@@ -441,24 +630,30 @@ export class MilvusClient implements VectorDBClient {
     }
   }
 
-  async getSearchCapabilities(_collection: string, schema?: CollectionSchema | null): Promise<SearchCapabilities> {
+  async getSearchCapabilities(
+    _collection: string,
+    schema?: CollectionSchema | null,
+  ): Promise<SearchCapabilities> {
     return mergeWithDefault(
       {
         sparse: true,
         clientSideFusion: true,
         fusionStrategies: ['rrf', 'weighted'],
       },
-      schema
+      schema,
     );
   }
 
-  async upsertDocument(collection: string, data: UpsertDocumentData): Promise<UpsertDocumentResult> {
+  async upsertDocument(
+    collection: string,
+    data: UpsertDocumentData,
+  ): Promise<UpsertDocumentResult> {
     try {
       const { document } = data;
       const { primary, vectors, payload } = document;
       const upsertData: Record<string, any> = {
         ...payload,
-      }
+      };
 
       if (primary) {
         upsertData[primary.name] = primary.value;
@@ -509,11 +704,11 @@ export class MilvusClient implements VectorDBClient {
 
   async getDocuments(
     collection: string,
-    options?: GetDocumentsOptions
+    options?: GetDocumentsOptions,
   ): Promise<GetDocumentsResult> {
     try {
       const limit = options?.limit;
-      const offset = typeof options?.offset === "number" ? options.offset : 0;
+      const offset = typeof options?.offset === 'number' ? options.offset : 0;
 
       // Build filter expression
       let filterExpr: string | undefined = undefined;
@@ -522,7 +717,7 @@ export class MilvusClient implements VectorDBClient {
       }
 
       // Milvus requires a valid expr. If no filter provided, use * always true expression *
-      const expr = filterExpr || "";
+      const expr = filterExpr || '';
       // Note: empty string means no filter in Milvus
 
       const response = await this.client.query({
@@ -530,14 +725,16 @@ export class MilvusClient implements VectorDBClient {
         expr,
         limit,
         offset,
-        output_fields: ["*"],
+        output_fields: ['*'],
       });
 
       // Response shape:
       // { data: [ { field1: value1, field2: value2, ... }, ... ] }
       const raw = Array.isArray(response.data) ? response.data : [];
       const { schema } = await this.getCollectionSchema(collection);
-      let documents: Document[] = raw.map((item) => this.recordToDocument(item, schema as CollectionSchema));
+      let documents: Document[] = raw.map((item) =>
+        this.recordToDocument(item, schema as CollectionSchema),
+      );
 
       // Milvus doesn't support native sorting, so sort client-side if requested
       if (options?.sort && options.sort.length > 0) {
@@ -550,8 +747,7 @@ export class MilvusClient implements VectorDBClient {
         nextOffset: documents.length === limit ? offset + limit : null,
       };
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to fetch documents";
+      const message = error instanceof Error ? error.message : 'Failed to fetch documents';
 
       return { success: false, error: message };
     }
@@ -564,7 +760,11 @@ export class MilvusClient implements VectorDBClient {
     return key;
   }
 
-  async search(collection: string, vectors: Record<string, DocumentVector>, options?: SearchOptions): Promise<SearchResult> {
+  async search(
+    collection: string,
+    vectors: Record<string, DocumentVector>,
+    options?: SearchOptions,
+  ): Promise<SearchResult> {
     const startTime = performance.now();
     try {
       const { schema } = await this.getCollectionSchema(collection);
@@ -614,7 +814,9 @@ export class MilvusClient implements VectorDBClient {
         // Apply threshold filter
         let results = allResults.map(({ doc, score, vectorKey }) => ({ ...doc, score, vectorKey }));
         if (options?.scoreThreshold !== undefined) {
-          results = results.filter(doc => doc.score !== undefined && doc.score >= options.scoreThreshold!);
+          results = results.filter(
+            (doc) => doc.score !== undefined && doc.score >= options.scoreThreshold!,
+          );
         }
 
         return {
@@ -648,12 +850,14 @@ export class MilvusClient implements VectorDBClient {
 
       const searchTimeMs = performance.now() - startTime;
       let results: Document[] = (response.results || []).map((item) =>
-        this.recordToDocument(item, schema as CollectionSchema)
+        this.recordToDocument(item, schema as CollectionSchema),
       );
 
       // Apply threshold filter
       if (options?.scoreThreshold !== undefined) {
-        results = results.filter(doc => doc.score !== undefined && doc.score >= options.scoreThreshold!);
+        results = results.filter(
+          (doc) => doc.score !== undefined && doc.score >= options.scoreThreshold!,
+        );
       }
 
       return {
@@ -667,7 +871,10 @@ export class MilvusClient implements VectorDBClient {
     }
   }
 
-  async deleteDocument(collection: string, primary: Document['primary']): Promise<DeleteDocumentResult> {
+  async deleteDocument(
+    collection: string,
+    primary: Document['primary'],
+  ): Promise<DeleteDocumentResult> {
     try {
       await this.client.delete({
         collection_name: collection,
@@ -732,7 +939,7 @@ export class MilvusClient implements VectorDBClient {
         // Delete all by primary key batches
         for (let i = 0; i < allPrimaryKeys.length; i += 1000) {
           const batch = allPrimaryKeys.slice(i, i + 1000);
-          const primaryKeyFilter = `${primaryKeyField} in [${batch.map(pk => typeof pk === 'string' ? `"${pk}"` : pk).join(',')}]`;
+          const primaryKeyFilter = `${primaryKeyField} in [${batch.map((pk) => (typeof pk === 'string' ? `"${pk}"` : pk)).join(',')}]`;
           await this.client.delete({
             collection_name: collection,
             filter: primaryKeyFilter,
@@ -780,13 +987,14 @@ export class MilvusClient implements VectorDBClient {
   async createCollection(config: Record<string, unknown>): Promise<CreateCollectionResult> {
     try {
       const collectionName = (config.collection_name || config.name) as string;
-      const schemaType = config.schemaType as string || (config.vectorFields ? 'custom' : 'simple');
-      const description = config.description as string || '';
+      const schemaType =
+        (config.schemaType as string) || (config.vectorFields ? 'custom' : 'simple');
+      const description = (config.description as string) || '';
 
       if (schemaType === 'simple') {
         // Simple schema with auto ID
         const dimension = config.dimension as number;
-        const metricType = config.metric_type as string || 'COSINE';
+        const metricType = (config.metric_type as string) || 'COSINE';
         const enableDynamicField = config.enable_dynamic_field !== false;
 
         await this.client.createCollection({
@@ -799,8 +1007,8 @@ export class MilvusClient implements VectorDBClient {
         });
       } else {
         // Custom schema
-        const primaryKeyType = config.primaryKeyType as string || 'Int64';
-        const primaryKeyName = (config.primaryKeyName || config.primaryField) as string || 'id';
+        const primaryKeyType = (config.primaryKeyType as string) || 'Int64';
+        const primaryKeyName = ((config.primaryKeyName || config.primaryField) as string) || 'id';
         const autoId = config.autoId !== false;
         const enableDynamicField = config.enable_dynamic_field !== false;
 
@@ -888,7 +1096,7 @@ export class MilvusClient implements VectorDBClient {
         // Create index if requested
         let hasIndexes = false;
         if (config.createIndex && vectorFields && vectorFields.length > 0) {
-          const indexType = config.index_type as string || 'AUTOINDEX';
+          const indexType = (config.index_type as string) || 'AUTOINDEX';
 
           // Create index for each vector field
           for (const vectorField of vectorFields) {
@@ -927,9 +1135,13 @@ export class MilvusClient implements VectorDBClient {
             try {
               await this.client.createIndex(indexParams);
               hasIndexes = true;
-              log.info(`[Milvus] Created ${indexParams.index_type} index for field ${vectorField.name}`);
+              log.info(
+                `[Milvus] Created ${indexParams.index_type} index for field ${vectorField.name}`,
+              );
             } catch (error) {
-              log.warn(`[Milvus] Could not create index for field ${vectorField.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+              log.warn(
+                `[Milvus] Could not create index for field ${vectorField.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              );
             }
           }
         }
@@ -940,15 +1152,19 @@ export class MilvusClient implements VectorDBClient {
         for (let attempt = 0; attempt < 3 && !loaded; attempt++) {
           try {
             if (attempt > 0) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
+              await new Promise((resolve) => setTimeout(resolve, 1000));
             }
             await this.client.loadCollection({ collection_name: collectionName });
-            log.info(`[Milvus] Loaded collection ${collectionName}${hasIndexes ? ' with indexes' : ''}${attempt > 0 ? ` (attempt ${attempt + 1})` : ''}`);
+            log.info(
+              `[Milvus] Loaded collection ${collectionName}${hasIndexes ? ' with indexes' : ''}${attempt > 0 ? ` (attempt ${attempt + 1})` : ''}`,
+            );
             loaded = true;
           } catch (error) {
             if (attempt === 2) {
               // Last attempt failed
-              log.error(`[Milvus] Failed to load collection ${collectionName} after ${attempt + 1} attempts: ${error instanceof Error ? error.message : 'Unknown error'}`);
+              log.error(
+                `[Milvus] Failed to load collection ${collectionName} after ${attempt + 1} attempts: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              );
             }
           }
         }
@@ -1057,7 +1273,7 @@ export class MilvusClient implements VectorDBClient {
   }
 
   private buildFilterExpression(filter: FilterQuery): string {
-    const conditions = filter.conditions.map(cond => {
+    const conditions = filter.conditions.map((cond) => {
       const field = cond.field;
       const value = cond.valueType === 'string' ? `"${cond.value}"` : cond.value;
 
@@ -1119,7 +1335,7 @@ export class MilvusClient implements VectorDBClient {
   private fuseSearchResults(
     results: Array<{ doc: Document; score: number; vectorKey: string }>,
     method: 'rrf' | 'dbsf',
-    limit: number
+    limit: number,
   ): Document[] {
     if (method === 'rrf') {
       // Reciprocal Rank Fusion (RRF)
@@ -1140,7 +1356,7 @@ export class MilvusClient implements VectorDBClient {
       results.forEach(({ doc, vectorKey }) => {
         const docId = String(doc.primary.value);
         const vectorResults = resultsByVector.get(vectorKey)!;
-        const rank = vectorResults.findIndex(r => String(r.doc.primary.value) === docId) + 1;
+        const rank = vectorResults.findIndex((r) => String(r.doc.primary.value) === docId) + 1;
 
         const rrfContribution = 1 / (k + rank);
 
@@ -1183,6 +1399,4 @@ export class MilvusClient implements VectorDBClient {
         .slice(0, limit);
     }
   }
-
 }
-

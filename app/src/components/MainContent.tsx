@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Tabs,
-  Typography,
-  Space,
-} from 'antd';
-import {
-  TableOutlined,
-} from '@ant-design/icons';
+import { Tabs, Typography, Space } from 'antd';
+import { TableOutlined } from '@ant-design/icons';
 import { TabInfo } from '../types';
 import CollectionTab from './CollectionTab';
 
@@ -64,7 +58,14 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'var(--bg-primary)',
+      }}
+    >
       {/* Tab bar */}
       <Tabs
         type="editable-card"
@@ -86,7 +87,7 @@ const MainContent: React.FC<MainContentProps> = ({
           margin: 0,
           padding: '8px 12px 0',
         }}
-        items={tabs.map(tab => ({
+        items={tabs.map((tab) => ({
           key: tab.id,
           label: (
             <Space size={8} align="center">
@@ -108,7 +109,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
       {/* Tab content - render all tabs but only show active to preserve state */}
       <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-        {tabs.map(tab => (
+        {tabs.map((tab) => (
           <div
             key={tab.id}
             style={{

@@ -35,7 +35,16 @@ export interface SelectOption {
 }
 
 export interface ValidationRule {
-  type: 'required' | 'min' | 'max' | 'minLength' | 'maxLength' | 'pattern' | 'email' | 'url' | 'custom';
+  type:
+    | 'required'
+    | 'min'
+    | 'max'
+    | 'minLength'
+    | 'maxLength'
+    | 'pattern'
+    | 'email'
+    | 'url'
+    | 'custom';
   value?: number | string | RegExp;
   message: string;
   validator?: (value: unknown, formValues: Record<string, unknown>) => boolean | Promise<boolean>;
@@ -43,7 +52,17 @@ export interface ValidationRule {
 
 export interface ConditionalRule {
   field: string;
-  operator: 'equals' | 'notEquals' | 'contains' | 'notContains' | 'greaterThan' | 'lessThan' | 'isEmpty' | 'isNotEmpty' | 'in' | 'notIn';
+  operator:
+    | 'equals'
+    | 'notEquals'
+    | 'contains'
+    | 'notContains'
+    | 'greaterThan'
+    | 'lessThan'
+    | 'isEmpty'
+    | 'isNotEmpty'
+    | 'in'
+    | 'notIn';
   value?: unknown;
   values?: unknown[]; // for 'in' and 'notIn' operators
   and?: ConditionalRule[];
@@ -202,14 +221,14 @@ export type FieldOptions =
 export interface FormField extends BaseFormField {
   // Field-specific options (type-safe based on field type)
   options?: SelectOption[];
-  
+
   // Text/Textarea options
   maxLength?: number;
   showCount?: boolean;
   allowClear?: boolean;
   rows?: number;
   autoSize?: boolean | { minRows?: number; maxRows?: number };
-  
+
   // Number/Slider options
   min?: number;
   max?: number;
@@ -217,34 +236,34 @@ export interface FormField extends BaseFormField {
   precision?: number;
   marks?: Record<number, string | { label: string; style?: React.CSSProperties }>;
   range?: boolean;
-  
+
   // Select options
   showSearch?: boolean;
   filterOption?: boolean | ((input: string, option: SelectOption) => boolean);
   loading?: boolean;
   mode?: 'multiple' | 'tags';
-  
+
   // Radio/Checkbox options
   direction?: 'horizontal' | 'vertical';
   buttonStyle?: 'outline' | 'solid';
-  
+
   // Tags options
   maxTags?: number;
   allowDuplicates?: boolean;
   tokenSeparators?: string[];
-  
+
   // Date options
   format?: string;
   showTime?: boolean | { format?: string };
   picker?: 'date' | 'week' | 'month' | 'quarter' | 'year';
   disabledDate?: (current: Date) => boolean;
-  
+
   // Code/JSON options
   language?: string;
   lineNumbers?: boolean;
   minHeight?: number;
   maxHeight?: number;
-  
+
   // Object/Array options
   fields?: FormField[];
   itemType?: FieldType;
@@ -259,7 +278,7 @@ export interface FormField extends BaseFormField {
   collapsible?: boolean;
   defaultCollapsed?: boolean;
   bordered?: boolean;
-  
+
   // Custom render
   render?: (props: {
     value: unknown;
@@ -308,7 +327,10 @@ export interface DynamicFormProps {
   initialValues?: Record<string, unknown>;
   onSubmit?: (values: Record<string, unknown>) => void | Promise<void>;
   onCancel?: () => void;
-  onValuesChange?: (changedValues: Record<string, unknown>, allValues: Record<string, unknown>) => void;
+  onValuesChange?: (
+    changedValues: Record<string, unknown>,
+    allValues: Record<string, unknown>,
+  ) => void;
   loading?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -328,4 +350,3 @@ export interface DynamicFormInstance {
   setFieldError: (key: string, error: string) => void;
   clearFieldError: (key: string) => void;
 }
-

@@ -1,4 +1,4 @@
-import { DatabaseOption } from "../types";
+import { DatabaseOption } from '../types';
 
 export function getDatabaseColor(type: string) {
   const colors: Record<string, string> = {
@@ -30,56 +30,55 @@ export const databaseOptions: DatabaseOption[] = [
     label: 'Qdrant',
     color: getDatabaseColor('qdrant'),
     fields: ['host', 'port', 'apiKey'],
-    presets: { ...defaultPresets, host: 'localhost', port: 6333 }
+    presets: { ...defaultPresets, host: 'localhost', port: 6333 },
   },
   {
     value: 'weaviate',
     label: 'Weaviate',
     color: getDatabaseColor('weaviate'),
     fields: ['host', 'port', 'apiKey'],
-    presets: { ...defaultPresets, host: 'localhost', port: 8080 }
+    presets: { ...defaultPresets, host: 'localhost', port: 8080 },
   },
   {
     value: 'milvus',
     label: 'Milvus',
     color: getDatabaseColor('milvus'),
     fields: ['host', 'port', 'apiKey', 'database'],
-    presets: { ...defaultPresets, host: 'localhost', port: 19530, database: '' }
+    presets: { ...defaultPresets, host: 'localhost', port: 19530, database: '' },
   },
   {
     value: 'chromadb',
     label: 'ChromaDB',
     color: getDatabaseColor('chromadb'),
     fields: ['host', 'port', 'apiKey', 'database', 'tenant'],
-    presets: { ...defaultPresets, host: 'localhost', port: 8000 }
+    presets: { ...defaultPresets, host: 'localhost', port: 8000 },
   },
   {
     value: 'pgvector',
     label: 'PGVector',
     color: getDatabaseColor('pgvector'),
     fields: ['host', 'port', 'database', 'user', 'password'],
-    presets: { ...defaultPresets, host: 'localhost', port: 5432 }
+    presets: { ...defaultPresets, host: 'localhost', port: 5432 },
   },
   {
     value: 'pinecone',
     label: 'Pinecone',
     color: getDatabaseColor('pinecone'),
     fields: ['apiKey'],
-    presets: { ...defaultPresets }
+    presets: { ...defaultPresets },
   },
   {
     value: 'elasticsearch',
     label: 'Elasticsearch',
     color: getDatabaseColor('elasticsearch'),
     fields: ['host', 'port', 'apiKey'],
-    presets: { ...defaultPresets, host: 'localhost', port: 9200 }
+    presets: { ...defaultPresets, host: 'localhost', port: 9200 },
   },
   {
     value: 'redissearch',
     label: 'RedisSearch',
     color: getDatabaseColor('redissearch'),
     fields: ['host', 'port', 'password'],
-    presets: { ...defaultPresets, host: 'localhost', port: 6379 }
+    presets: { ...defaultPresets, host: 'localhost', port: 6379 },
   },
 ];
-

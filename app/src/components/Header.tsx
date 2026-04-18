@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Button, Badge, Tooltip } from 'antd';
-import { SunOutlined, MoonOutlined, MinusOutlined, BorderOutlined, CloseOutlined } from '@ant-design/icons';
+import {
+  SunOutlined,
+  MoonOutlined,
+  MinusOutlined,
+  BorderOutlined,
+  CloseOutlined,
+} from '@ant-design/icons';
 import { useTheme, getThemeColors } from '../contexts/ThemeContext';
 import iconImage from '../assets/icon.png';
 
@@ -107,11 +113,17 @@ const Header: React.FC = () => {
       });
 
       window.electronAPI.update.onDownloaded(() => {
-        setUpdateStatus((prev) => prev ? { ...prev, downloaded: true } : { available: false, downloaded: true });
+        setUpdateStatus((prev) =>
+          prev ? { ...prev, downloaded: true } : { available: false, downloaded: true },
+        );
       });
 
       window.electronAPI.update.onError((error) => {
-        setUpdateStatus((prev) => prev ? { ...prev, error: error.error } : { available: false, downloaded: false, error: error.error });
+        setUpdateStatus((prev) =>
+          prev
+            ? { ...prev, error: error.error }
+            : { available: false, downloaded: false, error: error.error },
+        );
       });
 
       return () => {
@@ -147,20 +159,22 @@ const Header: React.FC = () => {
 
   return (
     <AntHeader
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: isMac ? '0 12px 0 76px' : '0 0 0 12px',
-        borderBottom: `1px solid ${colors.border}`,
-        background: colors.bgCard,
-        height: 36,
-        minHeight: 36,
-        lineHeight: '36px',
-        // Make draggable to move window
-        WebkitAppRegion: 'drag',
-        appRegion: 'drag',
-      } as React.CSSProperties}
+      style={
+        {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: isMac ? '0 12px 0 76px' : '0 0 0 12px',
+          borderBottom: `1px solid ${colors.border}`,
+          background: colors.bgCard,
+          height: 36,
+          minHeight: 36,
+          lineHeight: '36px',
+          // Make draggable to move window
+          WebkitAppRegion: 'drag',
+          appRegion: 'drag',
+        } as React.CSSProperties
+      }
     >
       {/* Left side: Logo (Windows/Linux only - macOS uses native title bar) */}
       {!isMac && (
@@ -182,29 +196,33 @@ const Header: React.FC = () => {
 
       {/* Right side: Version + Theme toggle + Window controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        
         {/* Theme Toggle */}
         <Button
           type="text"
           size="small"
-          icon={mode === 'dark' ?
-            <MoonOutlined style={{ color: '#818cf8', fontSize: 13 }} /> :
-            <SunOutlined style={{ color: '#f59e0b', fontSize: 13 }} />
+          icon={
+            mode === 'dark' ? (
+              <MoonOutlined style={{ color: '#818cf8', fontSize: 13 }} />
+            ) : (
+              <SunOutlined style={{ color: '#f59e0b', fontSize: 13 }} />
+            )
           }
           onClick={toggleTheme}
-          style={{
-            width: 26,
-            height: 26,
-            marginRight: showCustomControls ? 12 : 0,
-            borderRadius: 6,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: mode === 'dark' ? colors.bgElevated : colors.bgHover,
-            border: `1px solid ${colors.border}`,
-            WebkitAppRegion: 'no-drag',
-            appRegion: 'no-drag',
-          } as React.CSSProperties}
+          style={
+            {
+              width: 26,
+              height: 26,
+              marginRight: showCustomControls ? 12 : 0,
+              borderRadius: 6,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: mode === 'dark' ? colors.bgElevated : colors.bgHover,
+              border: `1px solid ${colors.border}`,
+              WebkitAppRegion: 'no-drag',
+              appRegion: 'no-drag',
+            } as React.CSSProperties
+          }
         />
 
         {/* Version Number - Simple display, update status handled by UpdateNotification */}
@@ -219,17 +237,19 @@ const Header: React.FC = () => {
             }
           >
             <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '2px 8px',
-                borderRadius: 4,
-                fontSize: 11,
-                color: colors.textSecondary,
-                WebkitAppRegion: 'no-drag',
-                appRegion: 'no-drag',
-              } as React.CSSProperties}
+              style={
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '2px 8px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  color: colors.textSecondary,
+                  WebkitAppRegion: 'no-drag',
+                  appRegion: 'no-drag',
+                } as React.CSSProperties
+              }
             >
               <span style={{ fontSize: 11 }}>v{appVersion}</span>
               {/* Small indicator dot if update is available */}
@@ -261,10 +281,7 @@ const Header: React.FC = () => {
                 isMaximized ? (
                   // Restore icon (two overlapping squares)
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                    <path
-                      d="M2 0v2H0v8h8V8h2V0H2zm6 8H1V3h7v5zm1-6H3V1h6v1z"
-                      fill={iconColor}
-                    />
+                    <path d="M2 0v2H0v8h8V8h2V0H2zm6 8H1V3h7v5zm1-6H3V1h6v1z" fill={iconColor} />
                   </svg>
                 ) : (
                   <BorderOutlined style={{ fontSize: 11, color: iconColor }} />

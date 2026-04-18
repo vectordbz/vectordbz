@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+out
+coverage
+.vite
+*.min.js
+package-lock.json

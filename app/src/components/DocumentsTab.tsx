@@ -28,7 +28,13 @@ import {
   SortDescendingOutlined,
   CheckOutlined,
 } from '@ant-design/icons';
-import { TabInfo, Document, FilterQuery, CollectionSchema, COLLECTION_DEFAULT_VECTOR } from '../types';
+import {
+  TabInfo,
+  Document,
+  FilterQuery,
+  CollectionSchema,
+  COLLECTION_DEFAULT_VECTOR,
+} from '../types';
 import FilterBuilder from './FilterBuilder';
 import SortBuilder from './SortBuilder';
 import DocumentDetailDrawer from './DocumentDetailDrawer';
@@ -61,12 +67,18 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
   // Limit (page size)
   const [limit, setLimit] = useState<number>(50);
   // Context menu state
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; document: Document } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    document: Document;
+  } | null>(null);
 
   // Filter state
   const [activeFilter, setActiveFilter] = useState<FilterQuery | undefined>();
   // Sort state
-  const [activeSort, setActiveSort] = useState<Array<{ field: string; order: 'asc' | 'desc' }> | undefined>();
+  const [activeSort, setActiveSort] = useState<
+    Array<{ field: string; order: 'asc' | 'desc' }> | undefined
+  >();
 
   const [documents, setDocuments] = useState<Document[]>([]);
   const [nextOffset, setNextOffset] = useState<string | number | null>(null);
@@ -75,14 +87,25 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
   const [hasMore, setHasMore] = useState<boolean>(true);
   // Track previous batches for backward navigation
   // Each batch stores: documents, offset used to fetch it, and nextOffset that was returned
-  const [previousBatches, setPreviousBatches] = useState<Array<{ documents: Document[], offset: string | number | null, nextOffset: string | number | null }>>([]);
+  const [previousBatches, setPreviousBatches] = useState<
+    Array<{
+      documents: Document[];
+      offset: string | number | null;
+      nextOffset: string | number | null;
+    }>
+  >([]);
   useEffect(() => {
     getDocuments({ limit }, true);
   }, []);
 
   const getDocuments = async (
-    options?: { filter?: FilterQuery, limit?: number, offset?: string | number, sort?: Array<{ field: string; order: 'asc' | 'desc' }> },
-    reset = false
+    options?: {
+      filter?: FilterQuery;
+      limit?: number;
+      offset?: string | number;
+      sort?: Array<{ field: string; order: 'asc' | 'desc' }>;
+    },
+    reset = false,
   ) => {
     const { filter, limit, offset, sort } = options || {};
 
@@ -127,7 +150,6 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
     getDocuments({ filter, limit, sort: activeSort }, true);
   };
 
-
   const handleDeleteDocument = async (primary: Document['primary']) => {
     const result = await window.electronAPI.db.deleteDocument(tab.connectionId, {
       collection: tab.collection.name,
@@ -136,7 +158,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
     });
     if (result.success) {
       message.success(`Deleted document ${primary.value}`);
-      const newDocuments = documents.filter(document => document.primary.value !== primary.value);
+      const newDocuments = documents.filter((document) => document.primary.value !== primary.value);
       setDocuments(newDocuments);
     }
   };
@@ -155,7 +177,9 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
     }
   };
 
-  const handleUpsertDocument = async (document: Partial<Document>): Promise<{ success: boolean; error?: string }> => {
+  const handleUpsertDocument = async (
+    document: Partial<Document>,
+  ): Promise<{ success: boolean; error?: string }> => {
     const result = await window.electronAPI.db.upsertDocument(tab.connectionId, {
       collection: tab.collection.name,
       document,
@@ -182,7 +206,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
     if (nextOffset === null || !hasMore) return;
 
     // Save current batch to history before moving forward
-    setPreviousBatches(prev => [...prev, { documents, offset: currentOffset, nextOffset }]);
+    setPreviousBatches((prev) => [...prev, { documents, offset: currentOffset, nextOffset }]);
     getDocuments({ filter: activeFilter, limit, offset: nextOffset, sort: activeSort }, false);
   };
 
@@ -324,10 +348,8 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
     return menuItems;
   };
 
-
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: 16 }}>
-
       {/* Item Detail Drawer */}
       <DocumentDetailDrawer
         open={Boolean(selectedDocument)}
@@ -345,19 +367,23 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
       />
 
       {/* Filter and actions bar */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 8,
+        }}
+      >
         <Space size={8}>
           <Button
             size="small"
             icon={<ReloadOutlined />}
             onClick={() => getDocuments({ limit, sort: activeSort }, true)}
             loading={loading}
-          >Reload</Button>
+          >
+            Reload
+          </Button>
           <FilterBuilder
             schema={collectionSchema}
             onApply={(filter) => {
@@ -388,26 +414,38 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
                 {
                   key: 'bulk-delete',
                   icon: <DeleteOutlined />,
-                  label: activeFilter?.conditions?.length ? 'Delete Filtered Documents' : 'Delete All Documents',
+                  label: activeFilter?.conditions?.length
+                    ? 'Delete Filtered Documents'
+                    : 'Delete All Documents',
                   danger: true,
                   onClick: () => {
                     const hasFilter = activeFilter && activeFilter.conditions.length > 0;
                     Modal.confirm({
                       title: hasFilter ? 'Bulk Delete (Filtered)' : '⚠️ Delete ALL Documents',
-                      icon: <ExclamationCircleOutlined style={{ color: hasFilter ? undefined : '#ff4d4f' }} />,
+                      icon: (
+                        <ExclamationCircleOutlined
+                          style={{ color: hasFilter ? undefined : '#ff4d4f' }}
+                        />
+                      ),
                       content: (
                         <div>
                           {hasFilter ? (
                             <>
-                              <p>Are you sure you want to delete all documents matching the current filter?</p>
+                              <p>
+                                Are you sure you want to delete all documents matching the current
+                                filter?
+                              </p>
                               <p style={{ marginTop: 8 }}>
                                 <Text type="secondary">
-                                  Filter: {activeFilter.conditions.length} condition{activeFilter.conditions.length > 1 ? 's' : ''} ({activeFilter.logic.toUpperCase()})
+                                  Filter: {activeFilter.conditions.length} condition
+                                  {activeFilter.conditions.length > 1 ? 's' : ''} (
+                                  {activeFilter.logic.toUpperCase()})
                                 </Text>
                               </p>
                               <p style={{ marginTop: 4 }}>
                                 <Text strong style={{ color: '#ff4d4f' }}>
-                                  Currently showing {documents.length} documents that may be affected
+                                  Currently showing {documents.length} documents that may be
+                                  affected
                                 </Text>
                               </p>
                             </>
@@ -418,18 +456,31 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
                               </p>
                               <p style={{ marginTop: 8 }}>
                                 <Text strong style={{ color: '#ff4d4f' }}>
-                                  Collection: {tab.collection.name} {dataRequirements ? `(${JSON.stringify(dataRequirements)})` : ''}
+                                  Collection: {tab.collection.name}{' '}
+                                  {dataRequirements ? `(${JSON.stringify(dataRequirements)})` : ''}
                                 </Text>
                               </p>
-                              {!dataRequirements && <p style={{ marginTop: 4 }}>
-                                <Text strong style={{ color: '#ff4d4f' }}>
-                                  Total documents: {tab.collection.count.toLocaleString()}
-                                </Text>
-                              </p>}
+                              {!dataRequirements && (
+                                <p style={{ marginTop: 4 }}>
+                                  <Text strong style={{ color: '#ff4d4f' }}>
+                                    Total documents: {tab.collection.count.toLocaleString()}
+                                  </Text>
+                                </p>
+                              )}
                             </>
                           )}
-                          <p style={{ marginTop: 12, fontSize: 12, padding: '8px', background: 'var(--bg-elevated)', borderRadius: 4 }}>
-                            <Text style={{ color: '#ff7875' }}>⚠️ This action cannot be undone!</Text>
+                          <p
+                            style={{
+                              marginTop: 12,
+                              fontSize: 12,
+                              padding: '8px',
+                              background: 'var(--bg-elevated)',
+                              borderRadius: 4,
+                            }}
+                          >
+                            <Text style={{ color: '#ff7875' }}>
+                              ⚠️ This action cannot be undone!
+                            </Text>
                           </p>
                         </div>
                       ),
@@ -437,7 +488,9 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
                       okType: 'danger',
                       cancelText: 'Cancel',
                       async onOk() {
-                        const filterToUse = hasFilter ? activeFilter : { conditions: [], logic: 'and' as const };
+                        const filterToUse = hasFilter
+                          ? activeFilter
+                          : { conditions: [], logic: 'and' as const };
                         await handleDeleteDocuments(filterToUse);
                       },
                     });
@@ -484,10 +537,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
       </div>
 
       {/* Table */}
-      <div
-        className="data-table-container"
-        style={{ flex: 1, overflow: 'auto', minHeight: 0 }}
-      >
+      <div className="data-table-container" style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
         <Table
           sticky={true}
           columns={generateDocumentDynamicTableColumns(collectionSchema, documents, {
@@ -524,4 +574,3 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
 };
 
 export default DocumentsTab;
-

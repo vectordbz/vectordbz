@@ -9,7 +9,7 @@ export function computeSearchStatistics(
   queryVector: number[],
   requestedTopK: number,
   filter?: FilterQuery,
-  searchTimeMs?: number
+  searchTimeMs?: number,
 ): SearchMetadata {
   const metadata: SearchMetadata = {
     requestedTopK,
@@ -30,7 +30,7 @@ export function computeSearchStatistics(
 
   // Score statistics
   const scores = documents
-    .map(doc => doc.score)
+    .map((doc) => doc.score)
     .filter((score): score is number => score !== undefined);
 
   if (scores.length > 0) {
@@ -52,7 +52,7 @@ export function computeSearchStatistics(
 
     // Effective top-K (scores above a reasonable threshold)
     const threshold = metadata.scoreDistribution.avg * 0.5; // 50% of average
-    metadata.effectiveTopK = scores.filter(s => s >= threshold).length;
+    metadata.effectiveTopK = scores.filter((s) => s >= threshold).length;
 
     // Confidence level
     const confidence = computeConfidence(scores);
@@ -78,7 +78,7 @@ function computeMean(values: number[]): number {
 function computeVariance(values: number[]): number {
   if (values.length === 0) return 0;
   const mean = computeMean(values);
-  const squaredDiffs = values.map(val => Math.pow(val - mean, 2));
+  const squaredDiffs = values.map((val) => Math.pow(val - mean, 2));
   return computeMean(squaredDiffs);
 }
 
@@ -89,9 +89,7 @@ function computeMedian(values: number[]): number {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0
-    ? (sorted[mid - 1] + sorted[mid]) / 2
-    : sorted[mid];
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
 }
 
 /**
@@ -109,9 +107,9 @@ function computeEntropy(scores: number[]): number {
 
   if (range === 0) return 0;
 
-  const normalized = scores.map(s => (s - min) / range);
+  const normalized = scores.map((s) => (s - min) / range);
   const sum = normalized.reduce((a, b) => a + b, 0);
-  const probabilities = normalized.map(p => p / sum);
+  const probabilities = normalized.map((p) => p / sum);
 
   // Compute Shannon entropy
   let entropy = 0;
@@ -133,7 +131,10 @@ function computeConfidence(scores: number[]): { level: 'high' | 'medium' | 'low'
   }
 
   if (scores.length === 1) {
-    return { level: scores[0] > 0.7 ? 'high' : scores[0] > 0.4 ? 'medium' : 'low', score: scores[0] };
+    return {
+      level: scores[0] > 0.7 ? 'high' : scores[0] > 0.4 ? 'medium' : 'low',
+      score: scores[0],
+    };
   }
 
   // Heuristic 1: Gap between rank 1 and 2
@@ -146,7 +147,7 @@ function computeConfidence(scores: number[]): { level: 'high' | 'medium' | 'low'
   const relativeScore = avg > 0 ? Math.min(topScore / avg, 2.0) / 2.0 : 0;
 
   // Combined confidence score
-  const confidenceScore = (gapScore * 0.6 + relativeScore * 0.4);
+  const confidenceScore = gapScore * 0.6 + relativeScore * 0.4;
 
   let level: 'high' | 'medium' | 'low';
   if (confidenceScore > 0.7) {
@@ -159,4 +160,3 @@ function computeConfidence(scores: number[]): { level: 'high' | 'medium' | 'low'
 
   return { level, score: confidenceScore };
 }
-
