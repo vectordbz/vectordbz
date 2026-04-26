@@ -235,12 +235,22 @@ export class ChromaDBClient implements VectorDBClient {
       const port = config.port;
       const protocol = config.https ? 'https' : 'http';
       const path = `${protocol}://${host}:${port}`;
+      const tenant = config.tenant;
+      const database = config.database;
 
       this.client = new ChromaClient({
         path,
+        tenant,
+        database,
       });
       this.isCloud = false;
-      log.info('[ChromaDB] Connecting to local ChromaDB', { path, host, port });
+      log.info('[ChromaDB] Connecting to local ChromaDB', {
+        path,
+        host,
+        port,
+        tenant,
+        database,
+      });
     }
 
     // Create default embedding function (will be overridden when we know dimension)
