@@ -1,7 +1,7 @@
 {
   "name": "vectordbz",
   "productName": "VectorDBZ",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "A desktop GUI for exploring and managing vector databases",
   "main": ".vite/build/main.js",
   "scripts": {
