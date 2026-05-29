@@ -44,20 +44,28 @@ const config: ForgeConfig = {
     // macOS - icon is handled by packagerConfig.icon
     new MakerZIP({}, ['darwin']),
     // Linux
-    new MakerDeb({
-      options: {
-        name: 'vectordbz',
-        bin: 'vectordbz',
-        icon: path.join(__dirname, 'assets', 'icon', 'icon.png'),
+    new MakerDeb(
+      {
+        options: {
+          name: 'vectordbz',
+          bin: 'vectordbz',
+          maintainer: 'Snir Kara <snirjka@gmail.com>',
+          homepage: 'https://github.com/vectordbz/vectordbz',
+          icon: path.join(__dirname, 'assets', 'icon', 'icon.png'),
+        },
       },
-    }),
-    new MakerRpm({
-      options: {
-        name: 'vectordbz',
-        bin: 'vectordbz',
-        icon: path.join(__dirname, 'assets', 'icon', 'icon.png'),
+      ['linux'],
+    ),
+    new MakerRpm(
+      {
+        options: {
+          name: 'vectordbz',
+          bin: 'vectordbz',
+          icon: path.join(__dirname, 'assets', 'icon', 'icon.png'),
+        },
       },
-    }),
+      ['linux'],
+    ),
   ],
   publishers: [
     new PublisherGithub({

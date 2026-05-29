@@ -46,6 +46,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Linux packaging tools
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends dpkg fakeroot rpm xz-utils
+
       - name: Build and Make (Windows)
         if: matrix.platform == 'win32'
         run: npm run make -- --arch=${{ matrix.arch }}
@@ -74,11 +80,24 @@ jobs:
           VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
           VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
 
+      - name: Verify installers were built
+        run: |
+          if [ ! -d out/make ]; then
+            echo "out/make does not exist — makers likely did not run"
+            exit 1
+          fi
+          ls -laR out/make
+          if [ -z "$(find out/make -type f 2>/dev/null)" ]; then
+            echo "out/make has no files"
+            exit 1
+          fi
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.platform }}-${{ matrix.arch }}
           path: app/out/make/**/*
+          if-no-files-found: error
 
   release:
     needs: build
