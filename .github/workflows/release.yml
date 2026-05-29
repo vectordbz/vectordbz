@@ -64,14 +64,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
           VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
-          # Surface electron-forge's internal task trace; the CI listr renderer
-          # otherwise swallows the real error and exits 0 after "Finalizing package".
-          DEBUG: 'electron-forge:*'
+          # The CI listr renderer swallows errors thrown inside @electron/packager's
+          # copy/finalize step (and the native-rebuild step), exiting 0 with no out/.
+          # These namespaces surface the real underlying error (e.g. broken symlink).
+          DEBUG: 'electron-packager,@electron/packager,@electron/rebuild,electron-rebuild,electron-forge:*'
         run: |
           set +e
           npm run make -- --arch=${{ matrix.arch }}
           rc=$?
           echo "=== electron-forge make exit code: $rc ==="
+          echo "=== .vite tree (expect .vite/build/main.js) ==="
+          find .vite -maxdepth 4 -print 2>/dev/null || echo "(no .vite/ directory)"
           echo "=== Full out/ tree ==="
           find out -maxdepth 6 -print 2>/dev/null || echo "(no out/ directory)"
           echo "======================"
