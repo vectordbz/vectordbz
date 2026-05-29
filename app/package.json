@@ -1,12 +1,13 @@
 {
   "name": "vectordbz",
   "productName": "VectorDBZ",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "A desktop GUI for exploring and managing vector databases",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
+    "premake": "node ../scripts/generate-update-files.js",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "format": "prettier --write .",
@@ -19,6 +20,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage"
   },
+  "forge": "./forge.config.ts",
   "keywords": [],
   "author": {
     "name": "Snir Kara",
