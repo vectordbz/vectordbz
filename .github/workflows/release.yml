@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  actions: read
 
 jobs:
   build:
@@ -76,7 +75,7 @@ jobs:
           VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.platform }}-${{ matrix.arch }}
           path: app/out/make/**/*
@@ -96,24 +95,12 @@ jobs:
           node-version: 24
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v5
         with:
           path: artifacts
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Verify build artifacts
-        run: |
-          if [ ! -d artifacts ]; then
-            echo "::error::artifacts/ is missing. The release job needs build outputs from the matrix jobs (win32-x64, darwin-x64, darwin-arm64, linux-x64)."
-            echo "If you re-ran only this job, re-run the full workflow so build uploads artifacts first."
-            exit 1
-          fi
-          ls -laR artifacts
 
       - name: Generate update YAML files
         run: node scripts/generate-update-files.js
-        env:
-          ARTIFACTS_DIR: ${{ github.workspace }}/artifacts
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
