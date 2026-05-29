@@ -28,6 +28,10 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    # Vite renderer build (antd + plotly) exceeds default ~2GB heap on CI runners
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
+
     defaults:
       run:
         working-directory: app
