@@ -16,7 +16,7 @@ jobs:
           - os: windows-latest
             platform: win32
             arch: x64
-          - os: macos-15-intel
+          - os: macos-latest
             platform: darwin
             arch: x64
           - os: macos-latest
