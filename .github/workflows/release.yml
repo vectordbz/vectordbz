@@ -75,11 +75,24 @@ jobs:
           VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
           VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
 
+      - name: List make output
+        if: always()
+        shell: bash
+        run: |
+          if [ -d out/make ]; then
+            find out/make -type f | head -100
+          else
+            echo "::error::out/make does not exist — npm run make likely failed"
+            exit 1
+          fi
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.platform }}-${{ matrix.arch }}
-          path: app/out/make/**/*
+          # Directory path (v7 glob `**/*` often matches nothing); relative to repo root
+          path: app/out/make/
+          if-no-files-found: error
 
   release:
     needs: build
