@@ -12,7 +12,6 @@ permissions:
 jobs:
   build:
     strategy:
-      fail-fast: false
       matrix:
         include:
           - os: windows-latest
@@ -47,14 +46,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Linux packaging dependencies
-        if: matrix.platform == 'linux'
-        shell: bash
-        run: |
-          sudo apt-get update
-          # Needed for MakerDeb + MakerRpm on ubuntu runners
-          sudo apt-get install -y fakeroot rpm
 
       - name: Build and Make (Windows)
         if: matrix.platform == 'win32'
