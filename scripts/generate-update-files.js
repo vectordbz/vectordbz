@@ -21,11 +21,17 @@ const appName = packageJson.name; // e.g., 'VectorDBZ'
 const version = packageJson.version.replace(/^v/, ''); // e.g., '0.0.9' or '0.1.0'
 const releaseDate = new Date().toISOString();
 
-// Define the artifacts directory
-const artifactsDir = path.join(__dirname, '../artifacts');
+// Build outputs downloaded by the release job (not this script file)
+const artifactsDir = process.env.ARTIFACTS_DIR || path.join(__dirname, '../artifacts');
 
 if (!fs.existsSync(artifactsDir)) {
-    console.error('Artifacts directory not found. This script should only run in GitHub Actions workflow.');
+    console.error(`Build artifacts directory not found: ${artifactsDir}`);
+    console.error(
+        'Expected CI layout after download-artifact: artifacts/{win32-x64,darwin-x64,darwin-arm64,linux-x64}/',
+    );
+    console.error(
+        'If running locally, build installers first or download release assets into that folder.',
+    );
     process.exit(1);
 }
 
