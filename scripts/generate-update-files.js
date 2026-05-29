@@ -25,7 +25,10 @@ const releaseDate = new Date().toISOString();
 const artifactsDir = path.join(__dirname, '../artifacts');
 
 if (!fs.existsSync(artifactsDir)) {
-    console.error('Artifacts directory not found. This script should only run in GitHub Actions workflow.');
+    console.error(
+        'Artifacts directory not found at ../artifacts. ' +
+            'Run this from the release job after download-artifact, not via npm run make.',
+    );
     process.exit(1);
 }
 
