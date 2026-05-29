@@ -85,14 +85,13 @@ jobs:
           VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
 
       - name: Verify installers were built
+        shell: bash
         run: |
-          if [ ! -d out/make ]; then
-            echo "out/make does not exist — makers likely did not run"
-            exit 1
-          fi
-          ls -laR out/make
-          if [ -z "$(find out/make -type f 2>/dev/null)" ]; then
-            echo "out/make has no files"
+          echo "=== Full out/ tree ==="
+          find out -maxdepth 6 -print 2>/dev/null || echo "(no out/ directory)"
+          echo "======================"
+          if [ ! -d out/make ] || [ -z "$(find out/make -type f 2>/dev/null)" ]; then
+            echo "::error::No installers were produced in out/make"
             exit 1
           fi
 
