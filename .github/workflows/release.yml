@@ -70,6 +70,9 @@ jobs:
           DEBUG: 'electron-packager,@electron/packager,@electron/rebuild,electron-rebuild,electron-forge:*'
         run: |
           set +e
+          # Preload an exit tracer to defeat Forge's error-swallowing and reveal
+          # the real reason the process ends during packaging.
+          export NODE_OPTIONS="--require $PWD/forge-trace-exit.cjs --max-old-space-size=4096"
           npm run make -- --arch=${{ matrix.arch }}
           rc=$?
           echo "=== electron-forge make exit code: $rc ==="
