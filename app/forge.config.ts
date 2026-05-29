@@ -105,15 +105,19 @@ const config: ForgeConfig = {
       ],
     }),
     // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
+    // at package time, before code signing the application.
+    // Embedded ASAR integrity validation (and the OnlyLoadAppFromAsar fuse that
+    // depends on it) is only supported on Windows and macOS. Enabling it on
+    // Linux makes @electron/packager's "Finalizing package" step fail, so we
+    // gate those two fuses on the build host platform (== target in our matrix).
     new FusesPlugin({
       version: FuseVersion.V1,
       [FuseV1Options.RunAsNode]: false,
       [FuseV1Options.EnableCookieEncryption]: true,
       [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
       [FuseV1Options.EnableNodeCliInspectArguments]: false,
-      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
-      [FuseV1Options.OnlyLoadAppFromAsar]: true,
+      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: process.platform !== 'linux',
+      [FuseV1Options.OnlyLoadAppFromAsar]: process.platform !== 'linux',
     }),
   ],
 };

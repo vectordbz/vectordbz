@@ -28,9 +28,11 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    # Vite renderer build (antd + plotly) exceeds default ~2GB heap on CI runners
+    # Vite renderer build (antd + plotly) exceeds default ~2GB heap on CI runners.
+    # Keep at 4GB: multiple concurrent node processes each allowed 8GB on a 16GB
+    # runner can trip the cgroup OOM-killer during @electron/packager finalize.
     env:
-      NODE_OPTIONS: --max-old-space-size=8192
+      NODE_OPTIONS: --max-old-space-size=4096
 
     defaults:
       run:
@@ -56,40 +58,27 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends dpkg fakeroot rpm xz-utils
 
-      - name: Build and Make (Windows)
-        if: matrix.platform == 'win32'
-        run: npm run make -- --arch=${{ matrix.arch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
-          VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
-
-      - name: Build and Make (macOS)
-        if: matrix.platform == 'darwin'
-        run: npm run make -- --arch=${{ matrix.arch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
-          VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
-          # For code signing (optional):
-          # APPLE_ID: ${{ secrets.APPLE_ID }}
-          # APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-
-      - name: Build and Make (Linux)
-        if: matrix.platform == 'linux'
-        run: npm run make -- --arch=${{ matrix.arch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
-          VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
-
-      - name: Verify installers were built
+      - name: Build and Make
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
+          VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
+          # Surface electron-forge's internal task trace; the CI listr renderer
+          # otherwise swallows the real error and exits 0 after "Finalizing package".
+          DEBUG: 'electron-forge:*'
         run: |
+          set +e
+          npm run make -- --arch=${{ matrix.arch }}
+          rc=$?
+          echo "=== electron-forge make exit code: $rc ==="
           echo "=== Full out/ tree ==="
           find out -maxdepth 6 -print 2>/dev/null || echo "(no out/ directory)"
           echo "======================"
+          if [ "$rc" -ne 0 ]; then
+            echo "::error::electron-forge make exited with code $rc"
+            exit "$rc"
+          fi
           if [ ! -d out/make ] || [ -z "$(find out/make -type f 2>/dev/null)" ]; then
             echo "::error::No installers were produced in out/make"
             exit 1
