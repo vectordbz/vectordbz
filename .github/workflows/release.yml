@@ -28,9 +28,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    # Vite renderer build (antd + plotly) exceeds default ~2GB heap on CI runners.
-    # Keep at 4GB: multiple concurrent node processes each allowed 8GB on a 16GB
-    # runner can trip the cgroup OOM-killer during @electron/packager finalize.
+    # Vite renderer build (antd + plotly) exceeds the default ~2GB heap on CI runners.
     env:
       NODE_OPTIONS: --max-old-space-size=4096
 
@@ -42,10 +40,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      # Node 22 LTS: Electron Forge / @electron/packager require >=22.12, and
+      # Node 24.16.0+ has a regression that makes extract-zip (used to unpack the
+      # Electron template) silently hang and exit 0 with no output.
+      # See nodejs/node#63487 and electron/electron#51619.
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 22
           cache: 'npm'
           cache-dependency-path: app/package-lock.json
 
@@ -64,29 +66,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
           VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
-          # The CI listr renderer swallows errors thrown inside @electron/packager's
-          # copy/finalize step (and the native-rebuild step), exiting 0 with no out/.
-          # These namespaces surface the real underlying error (e.g. broken symlink).
-          DEBUG: 'electron-packager,@electron/packager,@electron/rebuild,electron-rebuild,electron-forge:*'
         run: |
           set +e
-          # Preload an exit tracer to defeat Forge's error-swallowing and reveal
-          # the real reason the process ends during packaging.
-          export NODE_OPTIONS="--require $PWD/forge-trace-exit.cjs --max-old-space-size=4096"
           npm run make -- --arch=${{ matrix.arch }}
           rc=$?
           echo "=== electron-forge make exit code: $rc ==="
-          echo "=== .vite tree (expect .vite/build/main.js) ==="
-          find .vite -maxdepth 4 -print 2>/dev/null || echo "(no .vite/ directory)"
-          echo "=== Full out/ tree ==="
-          find out -maxdepth 6 -print 2>/dev/null || echo "(no out/ directory)"
-          echo "======================"
           if [ "$rc" -ne 0 ]; then
             echo "::error::electron-forge make exited with code $rc"
             exit "$rc"
           fi
           if [ ! -d out/make ] || [ -z "$(find out/make -type f 2>/dev/null)" ]; then
             echo "::error::No installers were produced in out/make"
+            find out -maxdepth 6 -print 2>/dev/null || echo "(no out/ directory)"
             exit 1
           fi
 
