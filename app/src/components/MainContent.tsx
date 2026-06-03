@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs, Typography, Space } from 'antd';
 import { TableOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { TabInfo } from '../types';
 import CollectionTab from './CollectionTab';
 
@@ -19,6 +20,7 @@ const MainContent: React.FC<MainContentProps> = ({
   onChangeTab,
   onCloseTab,
 }) => {
+  const { t } = useTranslation();
   // Early return check - must be after all hooks
   if (tabs.length === 0) {
     return (
@@ -48,10 +50,10 @@ const MainContent: React.FC<MainContentProps> = ({
           <TableOutlined style={{ fontSize: 36, color: 'var(--border-light)' }} />
         </div>
         <Title level={5} style={{ color: 'var(--text-primary)', margin: 0 }}>
-          No Collections Open
+          {t('main.noCollectionsOpen')}
         </Title>
         <Text type="secondary" style={{ marginTop: 8, fontSize: 13 }}>
-          Select a collection from the sidebar
+          {t('main.selectCollection')}
         </Text>
       </div>
     );

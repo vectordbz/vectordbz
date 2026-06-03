@@ -13,6 +13,7 @@ import {
   ExclamationCircleOutlined,
   FolderAddOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { ActiveConnection, Collection, TabInfo } from '../types';
 import CreateCollectionModal from './CreateCollectionModal';
 import { getDatabaseColor } from '../services/databases';
@@ -63,6 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   activeTabId,
   tabs,
 }) => {
+  const { t } = useTranslation();
   const [createCollectionModal, setCreateCollectionModal] = useState<{
     open: boolean;
     connectionId: string;
@@ -82,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         {/* Add button at top */}
         <div style={{ padding: '0 12px', marginBottom: 16 }}>
-          <Tooltip title="New Connection" placement="right">
+          <Tooltip title={t('sidebar.newConnection')} placement="right">
             <Button
               type="primary"
               icon={<PlusOutlined />}
@@ -153,7 +155,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             fontWeight: 500,
           }}
         >
-          New Connection
+          {t('sidebar.newConnection')}
         </Button>
       </div>
 
@@ -184,10 +186,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             <DatabaseOutlined style={{ fontSize: 28, color: 'var(--border-light)' }} />
           </div>
           <Text type="secondary" style={{ fontSize: 13, textAlign: 'center' }}>
-            No connections yet
+            {t('sidebar.noConnections')}
           </Text>
           <Text type="secondary" style={{ fontSize: 11, textAlign: 'center', marginTop: 4 }}>
-            Click above to connect to a database
+            {t('sidebar.clickToConnect')}
           </Text>
         </div>
       ) : (
@@ -236,14 +238,14 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div style={{ color: '#6366f1', fontWeight: 600, fontSize: 14 }}>
                 {connections.length}
               </div>
-              <div style={{ color: 'var(--text-muted)' }}>Connections</div>
+              <div style={{ color: 'var(--text-muted)' }}>{t('sidebar.connections')}</div>
             </div>
             <div style={{ width: 1, background: 'var(--border-color)' }} />
             <div style={{ textAlign: 'center' }}>
               <div style={{ color: '#22c55e', fontWeight: 600, fontSize: 14 }}>
                 {connections.reduce((sum, c) => sum + c.collections.length, 0)}
               </div>
-              <div style={{ color: 'var(--text-muted)' }}>Collections</div>
+              <div style={{ color: 'var(--text-muted)' }}>{t('sidebar.collections')}</div>
             </div>
           </div>
         </div>
@@ -291,6 +293,7 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
   activeTabId,
   tabs,
 }) => {
+  const { t } = useTranslation();
   const color = getDatabaseColor(connection.config.type);
 
   return (
@@ -376,7 +379,7 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
               {
                 key: 'create',
                 icon: <FolderAddOutlined />,
-                label: 'Create Collection',
+                label: t('sidebar.createCollection'),
                 onClick: (e) => {
                   e.domEvent.stopPropagation();
                   onCreateCollection();
@@ -385,7 +388,7 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
               {
                 key: 'refresh',
                 icon: <ReloadOutlined />,
-                label: 'Refresh',
+                label: t('common.refresh'),
                 onClick: (e) => {
                   e.domEvent.stopPropagation();
                   onRefresh();
@@ -395,7 +398,7 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
               {
                 key: 'disconnect',
                 icon: <DisconnectOutlined />,
-                label: 'Disconnect',
+                label: t('common.disconnect'),
                 danger: true,
                 onClick: (e) => {
                   e.domEvent.stopPropagation();
@@ -433,7 +436,7 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
                 fontStyle: 'italic',
               }}
             >
-              No collections found
+              {t('sidebar.noCollections')}
             </div>
           ) : (
             connection.collections
@@ -520,39 +523,36 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
                           {
                             key: 'truncate',
                             icon: <ClearOutlined />,
-                            label: 'Truncate Collection',
+                            label: t('sidebar.truncateCollection'),
                             onClick: (e) => {
                               e.domEvent.stopPropagation();
                               Modal.confirm({
-                                title: 'Truncate Collection',
+                                title: t('sidebar.truncateCollection'),
                                 icon: <ExclamationCircleOutlined style={{ color: '#faad14' }} />,
                                 content: (
                                   <div>
-                                    <p>
-                                      Are you sure you want to truncate the collection{' '}
-                                      <strong>{collection.name}</strong>?
-                                    </p>
+                                    <p dangerouslySetInnerHTML={{ __html: t('sidebar.truncateConfirm', { name: collection.name }) }} />
                                     <p>
                                       <Text type="secondary">
-                                        Current items: {collection.count.toLocaleString()}
+                                        {t('sidebar.currentItems', { count: collection.count.toLocaleString() })}
                                       </Text>
                                     </p>
                                     <p style={{ color: '#ff7875', fontSize: 12 }}>
-                                      ⚠️ This action cannot be undone!
+                                      ⚠️ {t('sidebar.truncateWarning')}
                                     </p>
                                   </div>
                                 ),
-                                okText: 'Truncate Collection',
+                                okText: t('sidebar.truncateCollection'),
                                 okType: 'danger',
-                                cancelText: 'Cancel',
+                                cancelText: t('common.cancel'),
                                 async onOk() {
                                   const result = await onTruncateCollection(collection.name);
                                   if (result.success) {
                                     message.success(
-                                      `Truncated ${result.deletedCount || 0} documents`,
+                                      t('sidebar.truncatedSuccess', { count: result.deletedCount || 0 }),
                                     );
                                   } else {
-                                    message.error(result.error || 'Failed to truncate');
+                                    message.error(result.error || t('sidebar.truncateFailed'));
                                   }
                                 },
                               });
@@ -562,41 +562,40 @@ const ConnectionItem: React.FC<ConnectionItemProps> = ({
                           {
                             key: 'drop',
                             icon: <DeleteOutlined />,
-                            label: 'Drop Collection',
+                            label: t('sidebar.dropCollection'),
                             danger: true,
                             onClick: (e) => {
                               e.domEvent.stopPropagation();
                               Modal.confirm({
-                                title: 'Drop Collection',
+                                title: t('sidebar.dropCollection'),
                                 icon: <ExclamationCircleOutlined style={{ color: '#ff4d4f' }} />,
                                 content: (
                                   <div>
                                     <p style={{ color: '#ff4d4f', fontWeight: 'bold' }}>
-                                      Are you sure you want to DROP the collection "
-                                      {collection.name}"?
+                                      {t('sidebar.dropConfirm', { name: collection.name })}
                                     </p>
                                     <p>
-                                      <Text type="secondary">This will permanently delete:</Text>
+                                      <Text type="secondary">{t('sidebar.dropWillDelete')}</Text>
                                     </p>
                                     <ul style={{ color: 'var(--text-secondary)', fontSize: 12 }}>
-                                      <li>All {collection.count.toLocaleString()} vectors</li>
-                                      <li>All metadata and indexes</li>
-                                      <li>The collection itself</li>
+                                      <li>{t('sidebar.dropAllVectors', { count: collection.count.toLocaleString() })}</li>
+                                      <li>{t('sidebar.dropAllMetadata')}</li>
+                                      <li>{t('sidebar.dropCollectionItself')}</li>
                                     </ul>
                                     <p style={{ color: '#ff7875', fontSize: 12, marginTop: 12 }}>
-                                      ⚠️ This action CANNOT be undone!
+                                      ⚠️ {t('sidebar.dropWarning')}
                                     </p>
                                   </div>
                                 ),
-                                okText: 'DROP Collection',
+                                okText: t('sidebar.dropCollection'),
                                 okType: 'danger',
-                                cancelText: 'Cancel',
+                                cancelText: t('common.cancel'),
                                 async onOk() {
                                   const result = await onDropCollection(collection.name);
                                   if (result.success) {
-                                    message.success(`Collection "${collection.name}" dropped`);
+                                    message.success(t('sidebar.collectionDropped', { name: collection.name }));
                                   } else {
-                                    message.error(result.error || 'Failed to drop');
+                                    message.error(result.error || t('sidebar.dropFailed'));
                                   }
                                 },
                               });

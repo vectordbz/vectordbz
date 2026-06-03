@@ -15,6 +15,7 @@ import {
   Tooltip,
   Segmented,
 } from 'antd';
+import { useTranslation } from 'react-i18next';
 import {
   SyncOutlined,
   CloseOutlined,
@@ -197,6 +198,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
   dataRequirements,
   navigationState,
 }) => {
+  const { t } = useTranslation();
   const { mode } = useTheme();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(false);
@@ -771,7 +773,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
           {/* Sample Size */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-              SAMPLE SIZE
+              {t('visualize.sampleSize')}
             </Text>
             <Select
               value={sampleSize}
@@ -799,15 +801,15 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
           {/* View mode */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-              VIEW
+              {t('visualize.view')}
             </Text>
             <Segmented
               value={viewMode}
               onChange={(v) => v && setViewMode(v as 'scatter2d' | 'scatter3d')}
               size="small"
               options={[
-                { label: 'Scatter 2D', value: 'scatter2d' },
-                { label: 'Scatter 3D', value: 'scatter3d' },
+                { label: t('visualize.scatter2d'), value: 'scatter2d' },
+                { label: t('visualize.scatter3d'), value: 'scatter3d' },
               ]}
             />
           </div>
@@ -820,7 +822,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             size="small"
             type="primary"
           >
-            Load
+            {t('visualize.load')}
           </Button>
         </div>
 
@@ -831,7 +833,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             {collectionSchema?.multipleVectors && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                  VECTOR FIELD
+                  {t('visualize.vectorField')}
                 </Text>
                 <Select
                   value={selectedVectorField}
@@ -864,7 +866,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             {/* Projection Method Selector */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                PROJECTION METHOD
+                {t('visualize.projectionMethod')}
                 <Tooltip
                   title={Object.entries(PROJECTION_CONFIGS)
                     .map(([k, v]) => `${v.label}: ${v.description}`)
@@ -920,8 +922,8 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             {Object.keys(collectionSchema.fields).length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                  COLOR BY
-                  <Tooltip title="Disabled when cluster preview is shown">
+                  {t('visualize.colorBy')}
+                  <Tooltip title={t('visualize.colorByDisabled')}>
                     <InfoCircleOutlined
                       style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
                     />
@@ -946,7 +948,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 200 }}>
               <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                POINT SIZE
+                {t('visualize.pointSize')}
               </Text>
               <div style={{ height: 24, display: 'flex', alignItems: 'center' }}>
                 <Slider
@@ -962,8 +964,8 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
             {/* Clustering */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                CLUSTERING (HD)
-                <Tooltip title="Clustering is performed on original high-dimensional vectors, not the 2D projection. This provides semantically meaningful clusters.">
+                {t('visualize.clusteringHd')}
+                <Tooltip title={t('visualize.clusteringTooltip')}>
                   <InfoCircleOutlined
                     style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
                   />
@@ -978,7 +980,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                 />
                 {clusteringLoading && (
                   <Text type="secondary" style={{ fontSize: 10 }}>
-                    Computing...
+                    {t('visualize.computing')}
                   </Text>
                 )}
               </div>
@@ -988,7 +990,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
               <>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                    METHOD
+                    {t('visualize.method')}
                   </Text>
                   <Select
                     value={clusteringMethod}
@@ -1004,7 +1006,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                 {clusteringMethod === 'kmeans' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                      CLUSTERS
+                      {t('visualize.clusters')}
                     </Text>
                     <InputNumber
                       value={numClusters}
@@ -1020,8 +1022,8 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                   <>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                        EPS
-                        <Tooltip title="Maximum distance for points to be considered neighbors (cosine distance)">
+                        {t('visualize.eps')}
+                        <Tooltip title={t('visualize.epsTooltip')}>
                           <InfoCircleOutlined
                             style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
                           />
@@ -1039,8 +1041,8 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                        MIN PTS
-                        <Tooltip title="Minimum points required to form a cluster">
+                        {t('visualize.minPts')}
+                        <Tooltip title={t('visualize.minPtsTooltip')}>
                           <InfoCircleOutlined
                             style={{ marginLeft: 6, fontSize: 12, color: 'var(--text-muted)' }}
                           />
@@ -1159,7 +1161,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                   minHeight: 400,
                 }}
               >
-                <Empty description="No data to visualize" />
+                <Empty description={t('visualize.noDataToVisualize')} />
               </div>
             ) : (
               <PlotlyScatterView
@@ -1185,7 +1187,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
                 <Text strong style={{ fontSize: 13 }}>
-                  Details
+                  {t('visualize.details')}
                 </Text>
                 <Button
                   type="text"
@@ -1322,7 +1324,7 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                     ) : (
                       <RightOutlined style={{ fontSize: 10, color: 'var(--text-secondary)' }} />
                     )}
-                    <Text style={{ fontSize: 12 }}>Payload</Text>
+                    <Text style={{ fontSize: 12 }}>{t('visualize.payload')}</Text>
                   </div>
                   {showFullPayload && (
                     <pre
@@ -1360,9 +1362,9 @@ const VisualizeTab: React.FC<VisualizeTabProps> = ({
                       ) : (
                         <RightOutlined style={{ fontSize: 10, color: 'var(--text-secondary)' }} />
                       )}
-                      <Text style={{ fontSize: 12 }}>Nearest Neighbors (HD Space)</Text>
+                      <Text style={{ fontSize: 12 }}>{t('visualize.nearestNeighbors')}</Text>
                       <Tooltip
-                        title="Computed in original high-dimensional vector space, not 2D projection. Green lines show connections."
+                        title={t('visualize.nearestNeighborsTooltip')}
                         placement="right"
                       >
                         <InfoCircleOutlined style={{ fontSize: 10, color: 'var(--text-muted)' }} />

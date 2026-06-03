@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tag, Typography, Space, Modal, Divider } from 'antd';
 import { InfoCircleOutlined, FilterOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { SearchMetadata } from '../types';
 
 const { Text } = Typography;
@@ -10,6 +11,7 @@ interface SearchStatisticsProps {
 }
 
 const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
+  const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
 
   if (!metadata) return null;
@@ -96,7 +98,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
       {/* Summary Section */}
       <div style={{ marginBottom: 12 }}>
         <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
-          Summary
+          {t('search.statistics.summary')}
         </Text>
         <div
           style={{
@@ -109,7 +111,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
           {metadata.searchTimeMs !== undefined && (
             <div>
               <Text type="secondary" style={{ fontSize: 11 }}>
-                Time
+                {t('search.statistics.time')}
               </Text>
               <div>
                 <Text strong style={{ fontSize: 13 }}>
@@ -121,7 +123,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
           {metadata.returnedCount !== undefined && (
             <div>
               <Text type="secondary" style={{ fontSize: 11 }}>
-                Results
+                {t('search.statistics.results')}
               </Text>
               <div>
                 <Text strong style={{ fontSize: 13 }}>
@@ -133,7 +135,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
           {scoreDist && (
             <div>
               <Text type="secondary" style={{ fontSize: 11 }}>
-                Score
+                {t('search.statistics.score')}
               </Text>
               <div>
                 <Text strong style={{ fontSize: 13 }}>
@@ -145,7 +147,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
           {metadata.confidenceLevel && (
             <div>
               <Text type="secondary" style={{ fontSize: 11 }}>
-                Confidence
+                {t('search.statistics.confidence')}
               </Text>
               <div>
                 <Text
@@ -184,7 +186,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
           <Divider style={{ margin: '12px 0' }} />
           <div style={{ marginBottom: 12 }}>
             <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
-              Score Distribution
+              {t('search.statistics.scoreDistribution')}
             </Text>
             <div
               style={{
@@ -196,7 +198,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
             >
               <div>
                 <Text type="secondary" style={{ fontSize: 11 }}>
-                  Min
+                  {t('search.statistics.min')}
                 </Text>
                 <div>
                   <Text strong>
@@ -206,7 +208,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
               </div>
               <div>
                 <Text type="secondary" style={{ fontSize: 11 }}>
-                  Max
+                  {t('search.statistics.max')}
                 </Text>
                 <div>
                   <Text strong>
@@ -216,7 +218,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
               </div>
               <div>
                 <Text type="secondary" style={{ fontSize: 11 }}>
-                  Avg
+                  {t('search.statistics.avg')}
                 </Text>
                 <div>
                   <Text strong>
@@ -226,7 +228,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
               </div>
               <div>
                 <Text type="secondary" style={{ fontSize: 11 }}>
-                  Median
+                  {t('search.statistics.median')}
                 </Text>
                 <div>
                   <Text strong>
@@ -240,7 +242,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
                 {metadata.scoreEntropy !== undefined ? (
                   <div>
                     <Text type="secondary" style={{ fontSize: 11 }}>
-                      Entropy
+                      {t('search.statistics.entropy')}
                     </Text>
                     <div>
                       <Text strong>{metadata.scoreEntropy.toFixed(3)}</Text>
@@ -252,7 +254,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
                 {metadata.scoreGapRank1Rank2 !== undefined ? (
                   <div>
                     <Text type="secondary" style={{ fontSize: 11 }}>
-                      Gap (R1→R2)
+                      {t('search.statistics.gapR1R2')}
                     </Text>
                     <div>
                       <Text strong>{metadata.scoreGapRank1Rank2.toFixed(4)}</Text>
@@ -274,7 +276,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
           <Divider style={{ margin: '12px 0' }} />
           <div style={{ marginBottom: 12 }}>
             <Text strong style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
-              Query Embedding
+              {t('search.statistics.queryEmbedding')}
             </Text>
             <div
               style={{
@@ -286,7 +288,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
             >
               <div>
                 <Text type="secondary" style={{ fontSize: 11 }}>
-                  Dimension
+                  {t('search.statistics.dimension')}
                 </Text>
                 <div>
                   <Text strong>{metadata.queryVectorDimension}</Text>
@@ -453,7 +455,7 @@ const SearchStatistics: React.FC<SearchStatisticsProps> = ({ metadata }) => {
         }}
       />
       <Modal
-        title="Search Statistics"
+        title={t('search.statistics.title')}
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         footer={null}

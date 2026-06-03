@@ -20,6 +20,7 @@ import {
   QuestionCircleOutlined,
   BulbOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import Editor from '@monaco-editor/react';
 import {
   EmbeddingFunction,
@@ -44,6 +45,7 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
   onSave,
   editingFunction,
 }) => {
+  const { t } = useTranslation();
   const { mode } = useTheme();
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -81,11 +83,11 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
 
   const handleSave = () => {
     if (!name.trim()) {
-      message.error('Name is required');
+      message.error(t('embeddingConfig.nameRequired'));
       return;
     }
     if (!code.trim()) {
-      message.error('Code is required');
+      message.error(t('embeddingConfig.codeRequired'));
       return;
     }
 
@@ -104,7 +106,7 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
     };
 
     onSave(func);
-    message.success(isEditing ? 'Embedding function updated' : 'Embedding function saved');
+    message.success(isEditing ? t('embeddingConfig.functionUpdated') : t('embeddingConfig.functionSaved'));
     onClose();
   };
 
@@ -113,7 +115,7 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
 
     if (window.confirm(`Delete "${editingFunction.name}"?`)) {
       embeddingStore.delete(editingFunction.id);
-      message.success('Embedding function deleted');
+      message.success(t('embeddingConfig.functionDeleted'));
       onClose();
     }
   };
@@ -126,7 +128,7 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <CodeOutlined style={{ fontSize: 18 }} />
           <Text strong style={{ fontSize: 16 }}>
-            {isEditing ? 'Edit' : 'Create'} Embedding Function
+            {isEditing ? t('embeddingConfig.editFunction') : t('embeddingConfig.createFunction')}
           </Text>
         </div>
       }
@@ -141,14 +143,14 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
           <div>
             {isEditing && (
               <Button danger icon={<DeleteOutlined />} onClick={handleDelete}>
-                Delete
+                {t('embeddingConfig.delete')}
               </Button>
             )}
           </div>
           <Space>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onClose}>{t('embeddingConfig.cancel')}</Button>
             <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
-              {isEditing ? 'Update' : 'Save'}
+              {isEditing ? t('embeddingConfig.update') : t('embeddingConfig.save')}
             </Button>
           </Space>
         </div>
@@ -177,13 +179,11 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
             {/* Info Alert */}
             {!isEditing && (
               <Alert
-                message="What are Embedding Functions?"
+                message={t('embeddingConfig.whatAreFunctions')}
                 description={
                   <div style={{ marginTop: 8 }}>
                     <Paragraph style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}>
-                      Embedding functions allow you to generate vector embeddings from text or files
-                      using any API or service. They run in a secure sandbox and can integrate with
-                      OpenAI, Hugging Face, local models, or any custom endpoint.
+                      {t('embeddingConfig.whatAreFunctionsDesc')}
                     </Paragraph>
                   </div>
                 }
@@ -208,10 +208,10 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
                     letterSpacing: 0.5,
                   }}
                 >
-                  Name
+                  {t('embeddingConfig.name')}
                 </Text>
                 <Input
-                  placeholder="e.g., OpenAI Embeddings"
+                  placeholder={t('embeddingConfig.namePlaceholder')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   size="small"
@@ -231,13 +231,13 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
                     letterSpacing: 0.5,
                   }}
                 >
-                  Description{' '}
+                  {t('embeddingConfig.description')}{' '}
                   <Text type="secondary" style={{ fontWeight: 400 }}>
-                    (optional)
+                    {t('embeddingConfig.descriptionOptional')}
                   </Text>
                 </Text>
                 <Input
-                  placeholder="Brief description of what this function does"
+                  placeholder={t('embeddingConfig.descriptionPlaceholder')}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   size="small"
@@ -261,7 +261,7 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
                     letterSpacing: 0.5,
                   }}
                 >
-                  Quick Start Examples
+                  {t('embeddingConfig.quickStartExamples')}
                 </Text>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -305,7 +305,7 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
                       letterSpacing: 0.5,
                     }}
                   >
-                    Function Code
+                    {t('embeddingConfig.functionCode')}
                   </Text>
                   <Popover
                     content={
@@ -415,7 +415,7 @@ const EmbeddingConfigModal: React.FC<EmbeddingConfigModalProps> = ({
                         </div>
                       </div>
                     }
-                    title="How to write an embedding function"
+                    title={t('embeddingConfig.howToWrite')}
                     trigger="click"
                     placement="rightTop"
                   >

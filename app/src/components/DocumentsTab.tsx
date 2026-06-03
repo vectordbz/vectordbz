@@ -12,6 +12,7 @@ import {
   Tag,
   Empty,
 } from 'antd';
+import { useTranslation } from 'react-i18next';
 import {
   SearchOutlined,
   ReloadOutlined,
@@ -60,6 +61,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
   onNavigateToVisualize,
   onNavigateToSearch,
 }) => {
+  const { t } = useTranslation();
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   // Upsert modal state
   const [upsertModalOpen, setUpsertModalOpen] = useState(false);
@@ -157,7 +159,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
       dataRequirements,
     });
     if (result.success) {
-      message.success(`Deleted document ${primary.value}`);
+      message.success(t('documents.deletedDocument', { id: primary.value }));
       const newDocuments = documents.filter((document) => document.primary.value !== primary.value);
       setDocuments(newDocuments);
     }
@@ -170,10 +172,10 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
       dataRequirements,
     });
     if (result.success) {
-      message.success(`Deleted ${result.deletedCount || 0} documents`);
+      message.success(t('documents.deletedDocuments', { count: result.deletedCount || 0 }));
       getDocuments({ filter, limit }, true);
     } else {
-      message.error(result.error || 'Failed to delete documents');
+      message.error(result.error || t('documents.deleteFailed'));
     }
   };
 
@@ -231,7 +233,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
     const menuItems: any[] = [
       {
         key: 'view',
-        label: 'View',
+        label: t('documents.view'),
         icon: <EyeOutlined />,
         onClick: () => {
           setSelectedDocument(record);
@@ -240,7 +242,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
       },
       {
         key: 'edit',
-        label: 'Edit',
+        label: t('documents.edit'),
         icon: <EditOutlined />,
         onClick: () => {
           openUpsertModal(record);
@@ -257,7 +259,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
         if (onNavigateToSearch) {
           menuItems.push({
             key: 'find-similar',
-            label: 'Find Similar',
+            label: t('documents.findSimilar'),
             icon: <SearchOutlined />,
             onClick: () => {
               const vectorKey = Object.keys(record.vectors)[0];
@@ -283,7 +285,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
           if (findSimilarChildren.length > 0) {
             menuItems.push({
               key: 'find-similar',
-              label: 'Find Similar',
+              label: t('documents.findSimilar'),
               icon: <SearchOutlined />,
               children: findSimilarChildren,
             });
@@ -298,7 +300,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
           // Single vector - simple option
           menuItems.push({
             key: 'view-in-visualize',
-            label: 'Visualize',
+            label: t('documents.visualize'),
             icon: <DotChartOutlined />,
             onClick: () => {
               onNavigateToVisualize(record, Object.keys(record.vectors)[0]);
@@ -321,7 +323,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
           if (visualizeChildren.length > 0) {
             menuItems.push({
               key: 'view-in-visualize',
-              label: 'Visualize',
+              label: t('documents.visualize'),
               icon: <DotChartOutlined />,
               children: visualizeChildren,
             });
@@ -336,7 +338,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
     });
     menuItems.push({
       key: 'delete',
-      label: 'Delete',
+      label: t('documents.deleteDoc'),
       icon: <DeleteOutlined />,
       danger: true,
       onClick: () => {
@@ -382,7 +384,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
             onClick={() => getDocuments({ limit, sort: activeSort }, true)}
             loading={loading}
           >
-            Reload
+            {t('documents.reload')}
           </Button>
           <FilterBuilder
             schema={collectionSchema}
@@ -407,7 +409,7 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
                 {
                   key: 'add-document',
                   icon: <PlusOutlined />,
-                  label: 'Add Document',
+                  label: t('documents.addDocument'),
                   onClick: () => openUpsertModal(),
                 },
                 { type: 'divider' },
@@ -415,8 +417,8 @@ const DocumentsTab: React.FC<DocumentsTabProps> = ({
                   key: 'bulk-delete',
                   icon: <DeleteOutlined />,
                   label: activeFilter?.conditions?.length
-                    ? 'Delete Filtered Documents'
-                    : 'Delete All Documents',
+                    ? t('documents.bulkDeleteFiltered')
+                    : t('documents.bulkDeleteAll'),
                   danger: true,
                   onClick: () => {
                     const hasFilter = activeFilter && activeFilter.conditions.length > 0;

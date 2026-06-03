@@ -28,6 +28,7 @@ import {
   ApartmentOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { ConnectionConfig, DatabaseType, DatabaseOption, SavedConnection } from '../types';
 import { databaseOptions } from '../services/databases';
 
@@ -40,6 +41,7 @@ interface ConnectionModalProps {
 }
 
 const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConnect }) => {
+  const { t } = useTranslation();
   const [savedConnections, setSavedConnections] = useState<SavedConnection[]>([]);
   const [form] = Form.useForm();
   const [selectedType, setSelectedType] = useState<DatabaseType>('qdrant');
@@ -109,24 +111,24 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
           success: true,
           message: `Connection successful${result.version ? ` (${result.version})` : ''}`,
         });
-        message.success('Connection test successful!');
+        message.success(t('connection.testSuccess'));
       } else {
         setTestResult({
           success: false,
           message: result.error || 'Connection test failed',
         });
-        message.error(result.error || 'Connection test failed');
+        message.error(result.error || t('connection.connectionFailed'));
       }
     } catch (error: any) {
       if (error.errorFields) {
         // Form validation error
-        message.error('Please fill in all required fields');
+        message.error(t('connection.fillRequiredFields'));
       } else {
         setTestResult({
           success: false,
-          message: error instanceof Error ? error.message : 'Connection test failed',
+          message: error instanceof Error ? error.message : t('connection.connectionFailed'),
         });
-        message.error('Connection test failed');
+        message.error(t('connection.connectionFailed'));
       }
     } finally {
       setTestingConnection(false);
@@ -137,9 +139,9 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
     try {
       await window.electronAPI.store.deleteConnection(id);
       await loadSavedConnections();
-      message.success('Connection deleted');
+      message.success(t('connection.connectionDeleted'));
     } catch (error) {
-      message.error('Failed to delete connection');
+      message.error(t('connection.deleteConnectionFailed'));
     }
   };
 
@@ -211,11 +213,11 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
           });
         }
       } else {
-        throw new Error(result.error || 'Connection failed');
+        throw new Error(result.error || t('connection.connectionFailed'));
       }
     } catch (error) {
       message.error(
-        'Connection failed: ' + (error instanceof Error ? error.message : 'Unknown error'),
+        t('connection.connectionFailedMsg', { error: error instanceof Error ? error.message : 'Unknown error' }),
       );
     } finally {
       setLoading(false);
@@ -265,10 +267,10 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
             <CloudOutlined style={{ fontSize: 28, color: 'white' }} />
           </div>
           <Title level={4} style={{ margin: 0, color: 'var(--text-primary)' }}>
-            Connect to Database
+            {t('connection.title')}
           </Title>
           <Text type="secondary" style={{ fontSize: 13 }}>
-            Connect to a vector database to explore your data
+            {t('connection.subtitle')}
           </Text>
         </div>
 
@@ -281,7 +283,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
               label: (
                 <Space>
                   <PlusOutlined />
-                  New Connection
+                  {t('connection.newConnectionTab')}
                 </Space>
               ),
               children: (
@@ -291,7 +293,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                       type="secondary"
                       style={{ fontSize: 12, display: 'block', marginBottom: 10 }}
                     >
-                      Database Type
+                      {t('connection.databaseType')}
                     </Text>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {databaseOptions.map((db) => (
@@ -326,7 +328,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                                 Host
                               </Text>
                             }
-                            rules={[{ required: false, message: 'Required' }]}
+                            rules={[{ required: false, message: t('common.required') }]}
                             style={{ flex: 1, marginBottom: 16 }}
                           >
                             <Input
@@ -340,10 +342,10 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                             name="port"
                             label={
                               <Text type="secondary" style={{ fontSize: 12 }}>
-                                Port
+                                {t('connection.port')}
                               </Text>
                             }
-                            rules={[{ required: false, message: 'Required' }]}
+                            rules={[{ required: false, message: t('common.required') }]}
                             style={{ width: 100, marginBottom: 16 }}
                           >
                             <InputNumber
@@ -364,7 +366,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                         >
                           <SafetyOutlined style={{ color: 'var(--text-muted)' }} />
                           <Text type="secondary" style={{ fontSize: 12 }}>
-                            Use HTTPS
+                            {t('connection.useHttps')}
                           </Text>
                           <Switch size="small" checked={useHttps} onChange={setUseHttps} />
                         </div>
@@ -376,14 +378,14 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                         name="apiKey"
                         label={
                           <Text type="secondary" style={{ fontSize: 12 }}>
-                            API Key
+                            {t('connection.apiKey')}
                           </Text>
                         }
                         style={{ marginBottom: 16 }}
                       >
                         <Input.Password
                           prefix={<LockOutlined style={{ color: 'var(--text-muted)' }} />}
-                          placeholder="Enter API key if required"
+                          placeholder={t('connection.apiKeyPlaceholder')}
                           style={{ borderRadius: 8 }}
                         />
                       </Form.Item>
@@ -394,15 +396,15 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                           name="tenant"
                           label={
                             <Text type="secondary" style={{ fontSize: 12 }}>
-                              Tenant
+                              {t('connection.tenant')}
                             </Text>
                           }
-                          rules={[{ required: false, message: 'Required' }]}
+                          rules={[{ required: false, message: t('common.required') }]}
                           style={{ flex: 1, marginBottom: 16 }}
                         >
                           <Input
                             prefix={<ApartmentOutlined style={{ color: 'var(--text-muted)' }} />}
-                            placeholder="Enter tenant if required"
+                            placeholder={t('connection.tenantPlaceholder')}
                             style={{ borderRadius: 8 }}
                           />
                         </Form.Item>
@@ -412,15 +414,15 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                           name="database"
                           label={
                             <Text type="secondary" style={{ fontSize: 12 }}>
-                              Database
+                              {t('connection.database')}
                             </Text>
                           }
-                          rules={[{ required: false, message: 'Required' }]}
+                          rules={[{ required: false, message: t('common.required') }]}
                           style={{ flex: 1, marginBottom: 16 }}
                         >
                           <Input
                             prefix={<DatabaseOutlined style={{ color: 'var(--text-muted)' }} />}
-                            placeholder="Enter database if required"
+                            placeholder={t('connection.databasePlaceholder')}
                             style={{ borderRadius: 8 }}
                           />
                         </Form.Item>
@@ -430,15 +432,15 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                           name="user"
                           label={
                             <Text type="secondary" style={{ fontSize: 12 }}>
-                              User
+                              {t('connection.user')}
                             </Text>
                           }
-                          rules={[{ required: false, message: 'Required' }]}
+                          rules={[{ required: false, message: t('common.required') }]}
                           style={{ flex: 1, marginBottom: 16 }}
                         >
                           <Input
                             prefix={<UserOutlined style={{ color: 'var(--text-muted)' }} />}
-                            placeholder="Enter user if required"
+                            placeholder={t('connection.userPlaceholder')}
                             style={{ borderRadius: 8 }}
                           />
                         </Form.Item>
@@ -448,15 +450,15 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                           name="password"
                           label={
                             <Text type="secondary" style={{ fontSize: 12 }}>
-                              Password
+                              {t('connection.password')}
                             </Text>
                           }
-                          rules={[{ required: false, message: 'Required' }]}
+                          rules={[{ required: false, message: t('common.required') }]}
                           style={{ flex: 1, marginBottom: 16 }}
                         >
                           <Input.Password
                             prefix={<LockOutlined style={{ color: 'var(--text-muted)' }} />}
-                            placeholder="Enter password if required"
+                            placeholder={t('connection.passwordPlaceholder')}
                             style={{ borderRadius: 8 }}
                           />
                         </Form.Item>
@@ -469,14 +471,14 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                     >
                       <Switch size="small" checked={saveConnection} onChange={setSaveConnection} />
                       <Text type="secondary" style={{ fontSize: 12 }}>
-                        Save this connection
+                        {t('connection.saveConnection')}
                       </Text>
                     </div>
 
                     {saveConnection && (
                       <Form.Item style={{ marginBottom: 16 }}>
                         <Input
-                          placeholder="Connection name (optional)"
+                          placeholder={t('connection.connectionNamePlaceholder')}
                           value={connectionName}
                           onChange={(e) => setConnectionName(e.target.value)}
                           style={{ borderRadius: 8 }}
@@ -501,7 +503,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                             boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)',
                           }}
                         >
-                          Connect
+                          {t('common.connect')}
                         </Button>
                         <Button
                           type="text"
@@ -525,9 +527,9 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                                 ? '#ff4d4f'
                                 : 'var(--text-secondary)',
                           }}
-                          title={testResult?.message || 'Test connection'}
+                          title={testResult?.message || t('connection.testConnection')}
                         >
-                          Test
+                          {t('connection.test')}
                         </Button>
                       </div>
                     </Form.Item>
@@ -540,7 +542,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
               label: (
                 <Space>
                   <HistoryOutlined />
-                  Saved ({savedConnections.length})
+                  {t('connection.savedTab', { count: savedConnections.length })}
                 </Space>
               ),
               children: (
@@ -551,10 +553,10 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                         style={{ fontSize: 48, color: 'var(--border-light)', marginBottom: 16 }}
                       />
                       <Text type="secondary" style={{ display: 'block' }}>
-                        No saved connections yet
+                        {t('connection.noSavedConnections')}
                       </Text>
                       <Text type="secondary" style={{ fontSize: 12 }}>
-                        Save a connection to quickly reconnect later
+                        {t('connection.saveConnectionHint')}
                       </Text>
                     </div>
                   ) : (
@@ -580,14 +582,14 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                                 loadingConnectionId !== null && loadingConnectionId !== conn.id
                               }
                             >
-                              Connect
+                              {t('common.connect')}
                             </Button>,
                             <Popconfirm
                               key="delete"
-                              title="Delete this connection?"
+                              title={t('connection.deleteConfirm')}
                               onConfirm={() => handleDeleteSavedConnection(conn.id)}
-                              okText="Delete"
-                              cancelText="Cancel"
+                              okText={t('common.delete')}
+                              cancelText={t('common.cancel')}
                             >
                               <Button type="text" danger size="small" icon={<DeleteOutlined />} />
                             </Popconfirm>,

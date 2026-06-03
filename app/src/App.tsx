@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Layout, message } from 'antd';
+import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import ConnectionModal from './components/ConnectionModal';
@@ -17,6 +18,7 @@ import MainContent from './components/MainContent';
 const { Sider, Content } = Layout;
 
 const App: React.FC = () => {
+  const { t } = useTranslation();
   const [state, setState] = useState<AppState>({
     connections: [],
     tabs: [],
@@ -76,15 +78,15 @@ const App: React.FC = () => {
         ),
       }));
       setConnectionModalOpen(false);
-      message.success(`Connected to ${config.type}`);
+      message.success(t('app.connected', { type: config.type }));
     } else {
       // Remove failed connection
       setState((prev) => ({
         ...prev,
         connections: prev.connections.filter((c) => c.id !== connectionId),
       }));
-      message.error(collectionsResult.error || 'Failed to fetch collections');
-      throw new Error(collectionsResult.error || 'Failed to fetch collections');
+      message.error(collectionsResult.error || t('connection.failedFetchCollections'));
+      throw new Error(collectionsResult.error || t('connection.failedFetchCollections'));
     }
   };
 
@@ -113,7 +115,7 @@ const App: React.FC = () => {
     });
 
     await window.electronAPI.db.disconnect(connectionId);
-    message.info(`Disconnected from ${connection.name}`);
+    message.info(t('app.disconnected', { name: connection.name }));
   };
 
   const handleToggleConnection = (connectionId: string) => {
@@ -157,7 +159,7 @@ const App: React.FC = () => {
               : c,
           ),
         }));
-        message.success('Collections refreshed');
+        message.success(t('app.collectionsRefreshed'));
       }
     } catch (error) {
       setState((prev) => ({
@@ -395,7 +397,7 @@ const App: React.FC = () => {
     if (result?.success) {
       setUpdateStatus((prev) => ({ ...prev, downloading: true, progress: 0 }));
     } else {
-      message.error(result?.error || 'Failed to start download');
+      message.error(result?.error || t('update.failedToStartDownload'));
     }
   };
 
@@ -406,7 +408,7 @@ const App: React.FC = () => {
   const handleRestartNow = async () => {
     const result = await window.electronAPI?.update?.restartAndInstall();
     if (!result?.success) {
-      message.error(result?.error || 'Failed to restart');
+      message.error(result?.error || t('update.failedToRestart'));
     }
     // If successful, app will restart automatically
   };

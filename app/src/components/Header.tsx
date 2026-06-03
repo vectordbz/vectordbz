@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Button, Badge, Tooltip } from 'antd';
+import { Layout, Button, Badge, Tooltip, Dropdown } from 'antd';
 import {
   SunOutlined,
   MoonOutlined,
   MinusOutlined,
   BorderOutlined,
   CloseOutlined,
+  GlobalOutlined,
 } from '@ant-design/icons';
 import { useTheme, getThemeColors } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import iconImage from '../assets/icon.png';
 
 const { Header: AntHeader } = Layout;
@@ -48,6 +50,7 @@ const WindowButton: React.FC<{
 const Header: React.FC = () => {
   const { mode, toggleTheme } = useTheme();
   const colors = getThemeColors(mode);
+  const { t, i18n } = useTranslation();
   const isMac = navigator.platform.toLowerCase().includes('mac');
   // Show custom controls on Windows and Linux (not macOS which has native traffic lights)
   const showCustomControls = !isMac;
@@ -194,8 +197,44 @@ const Header: React.FC = () => {
       {/* Empty spacer for macOS to maintain layout */}
       {isMac && <div />}
 
-      {/* Right side: Version + Theme toggle + Window controls */}
+      {/* Right side: Version + Theme toggle + Language switcher + Window controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Language Switcher */}
+        <Dropdown
+          menu={{
+            items: [
+              { key: 'en', label: 'English' },
+              { key: 'zh-CN', label: '中文' },
+            ],
+            selectedKeys: [i18n.language],
+            onClick: ({ key }) => {
+              i18n.changeLanguage(key);
+              localStorage.setItem('vectordbz-lang', key);
+            },
+          }}
+          trigger={['click']}
+        >
+          <Button
+            type="text"
+            size="small"
+            icon={<GlobalOutlined style={{ color: colors.textSecondary, fontSize: 13 }} />}
+            style={
+              {
+                width: 26,
+                height: 26,
+                borderRadius: 6,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: mode === 'dark' ? colors.bgElevated : colors.bgHover,
+                border: `1px solid ${colors.border}`,
+                WebkitAppRegion: 'no-drag',
+                appRegion: 'no-drag',
+              } as React.CSSProperties
+            }
+          />
+        </Dropdown>
+
         {/* Theme Toggle */}
         <Button
           type="text"
@@ -230,10 +269,10 @@ const Header: React.FC = () => {
           <Tooltip
             title={
               updateStatus?.available || updateStatus?.downloaded
-                ? `Update available - see notification`
+                ? t('header.updateAvailableTooltip')
                 : updateStatus?.error
-                  ? `Update error: ${updateStatus.error}`
-                  : `Version ${appVersion}`
+                  ? t('header.updateErrorTooltip', { error: updateStatus.error })
+                  : t('header.versionTooltip', { version: appVersion })
             }
           >
             <div

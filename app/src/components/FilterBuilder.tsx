@@ -19,6 +19,7 @@ import {
   ReloadOutlined,
   CheckOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { CollectionSchema } from '../types';
 
 const { Text } = Typography;
@@ -69,6 +70,7 @@ const OPERATORS = {
 };
 
 const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
+  const { t } = useTranslation();
   const [conditions, setConditions] = useState<InternalFilterCondition[]>([]);
   const [logic, setLogic] = useState<'and' | 'or'>('and');
   const [fields, setFields] = useState<{ name: string; type: 'string' | 'number' | 'boolean' }[]>(
@@ -277,13 +279,13 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
               onChange={(value) => updateCondition(condition.id, { value: value ?? 0 })}
               style={{ width: '100%' }}
               size="small"
-              placeholder="Number..."
+              placeholder={t('filter.numberPlaceholder')}
             />
           ) : (
             <Input
               value={condition.value as string}
               onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-              placeholder="Value..."
+              placeholder={t('filter.valuePlaceholder')}
               size="small"
             />
           )}
@@ -344,7 +346,7 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
     <div style={{ width: 400, maxHeight: '70vh', display: 'flex', flexDirection: 'column' }}>
       {fields.length === 0 ? (
         <Empty
-          description="No filterable fields detected"
+          description={t('filter.noFilterableFields')}
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           style={{ marginTop: 20, marginBottom: 20 }}
         />
@@ -353,7 +355,7 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
           {/* Quick field buttons */}
           <div style={{ marginBottom: 12 }}>
             <Text type="secondary" style={{ fontSize: 10, display: 'block', marginBottom: 6 }}>
-              AVAILABLE FIELDS
+              {t('filter.availableFields')}
             </Text>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {fields.map((f) => (
@@ -407,12 +409,12 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
               }}
             >
               <Text type="secondary" style={{ fontSize: 10 }}>
-                ACTIVE FILTERS
+                {t('filter.activeFilters')}
               </Text>
               {conditions.length > 1 && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   <Text type="secondary" style={{ fontSize: 10 }}>
-                    Match:
+                    {t('filter.match')}:
                   </Text>
                   <Button
                     size="small"
@@ -463,10 +465,10 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
                   style={{ fontSize: 20, color: 'var(--border-light)', marginBottom: 6 }}
                 />
                 <Text type="secondary" style={{ display: 'block', fontSize: 11 }}>
-                  No filters added yet
+                  {t('filter.noFiltersAdded')}
                 </Text>
                 <Text type="secondary" style={{ display: 'block', fontSize: 10, marginTop: 2 }}>
-                  Click a field above or add manually
+                  {t('filter.addFilterHint')}
                 </Text>
               </div>
             ) : (
@@ -484,7 +486,7 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
             style={{ width: '100%', borderRadius: 6, marginBottom: 12 }}
             size="small"
           >
-            Add Filter Condition
+            {t('filter.addFilterCondition')}
           </Button>
 
           {/* Footer buttons */}
@@ -498,7 +500,7 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
           >
             {conditions.length > 0 && (
               <Button icon={<ReloadOutlined />} onClick={clearAll} style={{ flex: 1 }} size="small">
-                Reset
+                {t('common.reset')}
               </Button>
             )}
             <Button
@@ -513,7 +515,7 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
               }}
               size="small"
             >
-              Apply
+              {t('common.apply')}
             </Button>
           </div>
         </>
@@ -529,7 +531,7 @@ const FilterBuilder: React.FC<FilterBuilderProps> = ({ schema, onApply }) => {
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <FilterOutlined style={{ color: '#6366f1' }} />
-            <span>Filters</span>
+            <span>{t('filter.filters')}</span>
             {activeCount > 0 && (
               <Tag color="blue" style={{ margin: 0 }}>
                 {activeCount}

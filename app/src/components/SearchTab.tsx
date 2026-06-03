@@ -17,6 +17,7 @@ import {
   Popover,
   List,
 } from 'antd';
+import { useTranslation } from 'react-i18next';
 import {
   SearchOutlined,
   ThunderboltOutlined,
@@ -94,6 +95,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
   navigationState,
   onNavigateToVisualize,
 }) => {
+  const { t } = useTranslation();
   // Search state
   const [searchInput, setSearchInput] = useState<string>('');
   const [topK, setTopK] = useState<number>(10);
@@ -909,7 +911,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                 key="embedding"
                 header={
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Text style={{ fontSize: 13 }}>Generate Embedding</Text>
+                    <Text style={{ fontSize: 13 }}>{t('search.embedding.title')}</Text>
                     <span onClick={(e) => e.stopPropagation()}>
                       <Popover
                         content={
@@ -980,7 +982,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                             </div>
                           </div>
                         }
-                        title="About Embedding Generation"
+                        title={t('search.embedding.aboutTitle')}
                         trigger="click"
                         placement="rightTop"
                       >
@@ -1006,7 +1008,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                   <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                        INPUT TYPE
+                        {t('search.embedding.inputType')}
                       </Text>
                       <Radio.Group
                         value={inputMode}
@@ -1021,26 +1023,26 @@ const SearchTab: React.FC<SearchTabProps> = ({
                         }}
                         size="small"
                       >
-                        <Radio.Button value="text">Text</Radio.Button>
-                        <Radio.Button value="file">File</Radio.Button>
+                        <Radio.Button value="text">{t('search.embedding.text')}</Radio.Button>
+                        <Radio.Button value="file">{t('search.embedding.file')}</Radio.Button>
                       </Radio.Group>
                     </div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                          FUNCTION
+                          {t('search.embedding.function')}
                         </Text>
                         <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                           <Select
                             value={selectedEmbeddingFunction}
                             onChange={(value) => setSelectedEmbeddingFunction(value)}
-                            placeholder="Embedding function"
+                            placeholder={t('search.embedding.functionPlaceholder')}
                             style={{ width: 120 }}
                             size="small"
                             notFoundContent={
                               <div style={{ padding: 8, textAlign: 'center' }}>
                                 <Text type="secondary" style={{ fontSize: 11 }}>
-                                  No functions
+                                  {t('search.embedding.noFunctions')}
                                 </Text>
                               </div>
                             }
@@ -1076,7 +1078,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                   {inputMode === 'text' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       <TextArea
-                        placeholder="Enter text to embed..."
+                        placeholder={t('search.embedding.enterTextPlaceholder')}
                         value={embeddingText}
                         onChange={(e) => setEmbeddingText(e.target.value)}
                         rows={3}
@@ -1090,7 +1092,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <Upload beforeUpload={handleFileUpload} showUploadList={false}>
                           <Button size="small">
-                            {embeddingFile ? embeddingFile.name : 'Upload File'}
+                            {embeddingFile ? embeddingFile.name : t('search.embedding.uploadFile')}
                           </Button>
                         </Upload>
                         {embeddingFile && (
@@ -1101,7 +1103,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                             onClick={() => setEmbeddingFile(null)}
                             style={{ padding: 0, height: 'auto' }}
                           >
-                            Remove
+                            {t('search.embedding.remove')}
                           </Button>
                         )}
                       </div>
@@ -1123,7 +1125,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                       size="small"
                       icon={<ApiOutlined />}
                     >
-                      Generate Embedding
+                      {t('search.embedding.generateButton')}
                     </Button>
                   </div>
                 </div>
@@ -1164,8 +1166,8 @@ const SearchTab: React.FC<SearchTabProps> = ({
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                   <div style={{ flex: 1, minWidth: 120 }}>
                     <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                      KEYWORDS
-                      <Tooltip title="Keyword / full-text search (BM25 or FTS). Enter text to combine with vector search for hybrid results.">
+                      {t('search.keywords')}
+                      <Tooltip title={t('search.keywordsTooltip')}>
                         <InfoCircleOutlined
                           style={{
                             marginLeft: 6,
@@ -1187,7 +1189,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                 </div>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', flexWrap: 'wrap' }}>
                   <Input
-                    placeholder="Optional keywords for hybrid search"
+                    placeholder={t('search.keywordsPlaceholder')}
                     value={lexicalQuery}
                     onChange={(e) => setLexicalQuery(e.target.value)}
                     size="small"
@@ -1215,8 +1217,8 @@ const SearchTab: React.FC<SearchTabProps> = ({
                 {/* Search Vector Input */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
                   <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                    SEARCH VECTOR
-                    <Tooltip title="Generate random vector">
+                    {t('search.searchVector')}
+                    <Tooltip title={t('search.generateRandomVector')}>
                       <ThunderboltOutlined
                         style={{
                           marginLeft: 6,
@@ -1252,7 +1254,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                     ))) && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                      VECTOR FIELD
+                      {t('search.vectorField')}
                     </Text>
                     <Select
                       value={selectedVectorField}
@@ -1282,7 +1284,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                    TOP K
+                    {t('search.topK')}
                   </Text>
                   <InputNumber
                     min={1}
@@ -1295,7 +1297,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <Text type="secondary" style={{ fontSize: 11, fontWeight: 500 }}>
-                    THRESHOLD
+                    {t('search.threshold')}
                   </Text>
                   <InputNumber
                     min={0.001}
@@ -1303,7 +1305,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                     step={0.001}
                     value={scoreThreshold}
                     onChange={(v) => setScoreThreshold(v || undefined)}
-                    placeholder="None"
+                    placeholder={t('search.thresholdPlaceholder')}
                     size="small"
                     style={{ width: 100 }}
                   />
@@ -1327,7 +1329,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                   size="small"
                   icon={<SearchOutlined />}
                 >
-                  Search
+                  {t('search.searchButton')}
                 </Button>
                 {searchMetadata && <SearchStatistics metadata={searchMetadata} />}
               </div>
@@ -1345,7 +1347,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
               >
                 <Text style={{ fontSize: 13, fontWeight: 500 }}>
                   <ClockCircleOutlined style={{ marginRight: 6 }} />
-                  Search History
+                  {t('search.searchHistory')}
                 </Text>
                 <Button
                   type="text"
@@ -1355,7 +1357,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                   onClick={clearSearchHistory}
                   style={{ fontSize: 11 }}
                 >
-                  Clear
+                  {t('common.clear')}
                 </Button>
               </div>
             }
@@ -1470,7 +1472,7 @@ const SearchTab: React.FC<SearchTabProps> = ({
                           justifyContent: 'center',
                         }}
                       >
-                        <Tooltip title="Compare with latest search">
+                        <Tooltip title={t('search.comparison.compareWithLatest')}>
                           <Button
                             type="text"
                             size="small"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, message, Spin } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { DynamicForm, DynamicFormSchema } from './DynamicForm';
 
 interface CreateCollectionModalProps {
@@ -17,6 +18,7 @@ const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [schema, setSchema] = useState<DynamicFormSchema | null>(null);
   const [schemaLoading, setSchemaLoading] = useState(false);
@@ -30,7 +32,7 @@ const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
         .then(setSchema)
         .catch((err) => {
           console.error('Failed to load schema:', err);
-          message.error('Failed to load form schema');
+          message.error(t('collection.failedToLoadSchema'));
         })
         .finally(() => setSchemaLoading(false));
     }
@@ -46,13 +48,13 @@ const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
     try {
       const result = await onSubmit(values);
       if (result.success) {
-        message.success(`Collection created successfully`);
+        message.success(t('collection.collectionCreated'));
         onClose();
       } else {
-        message.error(result.error || 'Failed to create collection');
+        message.error(result.error || t('collection.failedToCreate'));
       }
     } catch (error) {
-      message.error('Failed to create collection');
+      message.error(t('collection.failedToCreate'));
     } finally {
       setLoading(false);
     }
@@ -86,7 +88,7 @@ const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{connectionName}</span>
           <span style={{ color: 'var(--text-muted)' }}>→</span>
-          <span>New Collection</span>
+          <span>{t('collection.newCollection')}</span>
         </div>
       }
     >

@@ -4,6 +4,7 @@ import { PostHogProvider } from 'posthog-js/react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import App from './App';
 import './styles/global.css';
+import './i18n';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Spin, Space, Button } from 'antd';
 import { CopyOutlined, RightOutlined, DownOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { TabInfo } from '../types';
 
 interface InfoTabProps {
@@ -184,6 +185,7 @@ const JsonViewer: React.FC<JsonViewerProps> = ({
 };
 
 const InfoTab: React.FC<InfoTabProps> = ({ tab }) => {
+  const { t } = useTranslation();
   const [infoData, setInfoData] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -201,10 +203,10 @@ const InfoTab: React.FC<InfoTabProps> = ({ tab }) => {
         if (result.success && result.data) {
           setInfoData(result.data);
         } else {
-          setError(result.error || 'Failed to fetch collection info');
+          setError(result.error || t('info.failedToFetch'));
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch collection info');
+        setError(err instanceof Error ? err.message : t('info.failedToFetch'));
       } finally {
         setLoading(false);
       }
@@ -252,7 +254,7 @@ const InfoTab: React.FC<InfoTabProps> = ({ tab }) => {
             }}
           >
             <Spin size="large" />
-            <div style={{ marginTop: 16, fontSize: 13 }}>Loading collection information...</div>
+            <div style={{ marginTop: 16, fontSize: 13 }}>{t('info.loading')}</div>
           </div>
         ) : error ? (
           <div
@@ -290,7 +292,7 @@ const InfoTab: React.FC<InfoTabProps> = ({ tab }) => {
                 zIndex: 10,
               }}
             >
-              Copy JSON
+              {t('common.copyJson')}
             </Button>
             <JsonViewer data={infoData} collapsed={collapsed} onToggle={handleToggle} />
           </div>
