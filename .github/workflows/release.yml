@@ -31,6 +31,8 @@ jobs:
     # Vite renderer build (antd + plotly) exceeds the default ~2GB heap on CI runners.
     env:
       NODE_OPTIONS: --max-old-space-size=4096
+      # Let Corepack download the pinned npm version non-interactively.
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
 
     defaults:
       run:
@@ -50,6 +52,12 @@ jobs:
           node-version: 22
           cache: 'npm'
           cache-dependency-path: app/package-lock.json
+
+      # Use the npm version pinned via package.json "packageManager" so the
+      # lockfile resolves identically locally and in CI (avoids npm 10 vs 11
+      # "package.json and package-lock.json are in sync" failures).
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install dependencies
         run: npm ci
