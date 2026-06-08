@@ -9,6 +9,7 @@ import {
   BorderlessTableOutlined,
   FundOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { CollectionSchema, Document, TabInfo } from '../types';
 import InfoTab from './InfoTab';
 import VisualizeTab from './VisualizeTab';
@@ -30,6 +31,7 @@ export interface NavigationState {
 type ActiveViewTab = 'documents' | 'search' | 'visualize' | 'info';
 
 const CollectionTab: React.FC<CollectionTabProps> = ({ tab }) => {
+  const { t } = useTranslation();
   const [activeViewTab, setActiveViewTab] = useState<ActiveViewTab>('documents');
   const [loading, setLoading] = useState<boolean>(true);
   const [collectionSchema, setCollectionSchema] = useState<CollectionSchema | undefined>();
@@ -234,20 +236,20 @@ const CollectionTab: React.FC<CollectionTabProps> = ({ tab }) => {
           }}
         >
           {[
-            { key: 'documents', icon: <BorderlessTableOutlined />, label: 'Documents' },
+            { key: 'documents', icon: <BorderlessTableOutlined />, label: t('collection.documents') },
             {
               key: 'search',
               icon: <SearchOutlined />,
-              label: 'Search',
+              label: t('collection.search'),
               hidden: !collectionSchema?.hasVectors,
             },
             {
               key: 'visualize',
               icon: <DotChartOutlined />,
-              label: 'Visualize',
+              label: t('collection.visualize'),
               hidden: !collectionSchema?.hasVectors,
             },
-            { key: 'info', icon: <InfoCircleOutlined />, label: 'Collection Info' },
+            { key: 'info', icon: <InfoCircleOutlined />, label: t('collection.collectionInfo') },
           ]
             .filter((tab) => !tab.hidden)
             .map((tab) => (

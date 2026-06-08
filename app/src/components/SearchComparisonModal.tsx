@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Tag, Typography, Empty } from 'antd';
 import { CheckOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { Document, SearchMetadata, COLLECTION_DEFAULT_VECTOR } from '../types';
 
 const { Text, Title } = Typography;
@@ -31,10 +32,11 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
   currentSearch,
   previousSearch,
 }) => {
+  const { t } = useTranslation();
   if (!currentSearch || !previousSearch) {
     return (
-      <Modal open={open} onCancel={onClose} footer={null} width={900} title="Compare Searches">
-        <Empty description="No searches to compare" />
+      <Modal open={open} onCancel={onClose} footer={null} width={900} title={t('search.comparison.title')}>
+        <Empty description={t('search.comparison.noSearchesToCompare')} />
       </Modal>
     );
   }
@@ -157,7 +159,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
       width={850}
       title={
         <Title level={5} style={{ margin: 0, fontSize: 15, fontWeight: 600 }}>
-          Search Comparison
+          {t('search.comparison.title')}
         </Title>
       }
       styles={{
@@ -187,7 +189,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
             type="secondary"
             style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase' }}
           >
-            Metric
+            {t('search.comparison.metric')}
           </Text>
         </div>
         <div
@@ -201,7 +203,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
           }}
         >
           <Text strong style={{ fontSize: 13 }}>
-            Latest
+            {t('search.comparison.latest')}
           </Text>
           <Tag color="blue" style={{ margin: 0, fontSize: 11 }}>
             {formatDate(currentSearch.timestamp)}
@@ -217,7 +219,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
           }}
         >
           <Text strong style={{ fontSize: 13 }}>
-            Previous
+            {t('search.comparison.previous')}
           </Text>
           <Tag color="purple" style={{ margin: 0, fontSize: 11 }}>
             {formatDate(previousSearch.timestamp)}
@@ -230,12 +232,12 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
         <div style={{ padding: '16px 0 8px' }}>
           <div style={{ padding: '0 12px 8px' }}>
             <Text strong style={{ fontSize: 13, fontWeight: 600 }}>
-              Search Parameters
+              {t('search.comparison.searchParameters')}
             </Text>
           </div>
 
           <ComparisonRow
-            label="Vector"
+            label={t('search.comparison.vector')}
             currentValue={
               <>
                 <Text style={{ fontSize: 13 }}>
@@ -271,7 +273,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
           />
 
           <ComparisonRow
-            label="Top K"
+            label={t('search.comparison.topK')}
             currentValue={
               <>
                 <Text style={{ fontSize: 13 }}>{currentSearch.topK}</Text>
@@ -286,7 +288,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
 
           {currentSearch.vectorField && currentSearch.vectorField !== COLLECTION_DEFAULT_VECTOR && (
             <ComparisonRow
-              label="Vector Field"
+              label={t('search.comparison.vectorField')}
               currentValue={
                 <>
                   <Tag style={{ fontSize: 11 }}>{currentSearch.vectorField}</Tag>
@@ -301,7 +303,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
           )}
 
           <ComparisonRow
-            label="Score Threshold"
+            label={t('search.comparison.scoreThreshold')}
             currentValue={
               <>
                 <Tag style={{ fontSize: 11 }}>{currentSearch.scoreThreshold ?? 'None'}</Tag>
@@ -317,7 +319,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
           />
 
           <ComparisonRow
-            label="Filter Applied"
+            label={t('search.comparison.filterApplied')}
             currentValue={
               <>
                 {currentSearch.filter ? (
@@ -351,12 +353,12 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
         <div style={{ padding: '12px 0 8px' }}>
           <div style={{ padding: '0 12px 8px' }}>
             <Text strong style={{ fontSize: 13, fontWeight: 600 }}>
-              Results
+              {t('search.comparison.results')}
             </Text>
           </div>
 
           <ComparisonRow
-            label="Results Count"
+            label={t('search.comparison.resultsCount')}
             currentValue={
               <>
                 <Text style={{ fontSize: 13, fontWeight: 500 }}>
@@ -381,7 +383,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
           />
 
           <ComparisonRow
-            label="Overlap"
+            label={t('search.comparison.overlap')}
             currentValue={
               <Text style={{ fontSize: 13 }}>
                 {overlap}
@@ -405,7 +407,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
           />
 
           <ComparisonRow
-            label="Average Score"
+            label={t('search.comparison.averageScore')}
             currentValue={
               <Tag color="blue" style={{ fontSize: 11 }}>
                 {avgScore(currentScores)}
@@ -427,7 +429,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
           />
 
           <ComparisonRow
-            label="Search Time"
+            label={t('search.comparison.searchTime')}
             currentValue={
               <Text style={{ fontSize: 13 }}>
                 {currentSearch.metadata?.searchTimeMs
@@ -467,7 +469,7 @@ const SearchComparisonModal: React.FC<SearchComparisonModalProps> = ({
             strong
             style={{ fontSize: 13, display: 'block', marginBottom: 12, fontWeight: 600 }}
           >
-            Top 5
+            {t('search.comparison.top5')}
           </Text>
 
           <div style={{ display: 'flex', gap: 14 }}>

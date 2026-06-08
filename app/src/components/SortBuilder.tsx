@@ -6,6 +6,7 @@ import {
   ReloadOutlined,
   CheckOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { CollectionSchema, Document } from '../types';
 
 const { Text } = Typography;
@@ -24,6 +25,7 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
   activeSort,
   onSortChange,
 }) => {
+  const { t } = useTranslation();
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedField, setSelectedField] = useState<string>(activeSort?.[0]?.field || '');
   const [selectedOrder, setSelectedOrder] = useState<'asc' | 'desc'>(
@@ -84,7 +86,7 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
     <div style={{ width: 300 }}>
       {sortableFields.length === 0 ? (
         <Empty
-          description="No sortable fields detected"
+          description={t('sort.noSortableFields')}
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           style={{ marginTop: 20, marginBottom: 20 }}
         />
@@ -93,12 +95,12 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
           {/* Field selection */}
           <div style={{ marginBottom: 12 }}>
             <Text type="secondary" style={{ fontSize: 10, display: 'block', marginBottom: 6 }}>
-              SORT BY FIELD
+              {t('sort.sortByField')}
             </Text>
             <Select
               style={{ width: '100%' }}
               size="small"
-              placeholder="Select field to sort by"
+              placeholder={t('sort.selectFieldPlaceholder')}
               value={selectedField || undefined}
               onChange={setSelectedField}
             >
@@ -113,7 +115,7 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
           {/* Order selection - always show */}
           <div style={{ marginBottom: 12 }}>
             <Text type="secondary" style={{ fontSize: 10, display: 'block', marginBottom: 6 }}>
-              ORDER
+              {t('sort.order')}
             </Text>
             <div style={{ display: 'flex', gap: 8 }}>
               <Button
@@ -130,7 +132,7 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
                   border: selectedOrder === 'asc' ? 'none' : undefined,
                 }}
               >
-                Ascending
+                {t('sort.ascending')}
               </Button>
               <Button
                 size="small"
@@ -146,7 +148,7 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
                   border: selectedOrder === 'desc' ? 'none' : undefined,
                 }}
               >
-                Descending
+                {t('sort.descending')}
               </Button>
             </div>
           </div>
@@ -167,7 +169,7 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
                 style={{ flex: 1 }}
                 size="small"
               >
-                Clear
+                {t('common.clear')}
               </Button>
             )}
             <Button
@@ -182,7 +184,7 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
               }}
               size="small"
             >
-              Apply
+              {t('common.apply')}
             </Button>
           </div>
         </>
@@ -197,7 +199,7 @@ const SortBuilder: React.FC<SortBuilderProps> = ({
       title={
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <SortAscendingOutlined style={{ color: '#6366f1' }} />
-          <span>Sort</span>
+          <span>{t('sort.sort')}</span>
           {hasActiveSort && (
             <Tag color="blue" style={{ margin: 0 }}>
               1

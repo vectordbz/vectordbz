@@ -1,6 +1,7 @@
 import React from 'react';
 import { Drawer, Space, Typography, Button, message } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { COLLECTION_DEFAULT_VECTOR, Document, DocumentVector } from '../types';
 import { isImageUrl, getImages } from '../services/documentUtils';
 import { getVectorLabel, formatVectorForDisplay } from '../services/vectorUtils';
@@ -14,14 +15,15 @@ interface DocumentDetailDrawerProps {
 }
 
 const DocumentDetailDrawer: React.FC<DocumentDetailDrawerProps> = ({ open, onClose, document }) => {
+  const { t } = useTranslation();
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        message.success(`${label} copied to clipboard`);
+        message.success(t('detail.copiedToClipboard', { label }));
       })
       .catch(() => {
-        message.error('Failed to copy to clipboard');
+        message.error(t('detail.copyFailed'));
       });
   };
 
@@ -39,13 +41,13 @@ const DocumentDetailDrawer: React.FC<DocumentDetailDrawerProps> = ({ open, onClo
         const values = 'values' in vector.value ? vector.value.values : [];
         textToCopy = JSON.stringify({ indices, values }, null, 2);
       } else {
-        message.error('Unknown vector type');
+        message.error(t('detail.unknownVectorType'));
         return;
       }
 
       copyToClipboard(textToCopy, 'Vector');
     } catch (error) {
-      message.error('Failed to copy vector');
+      message.error(t('detail.failedToCopyVector'));
     }
   };
 
@@ -59,7 +61,7 @@ const DocumentDetailDrawer: React.FC<DocumentDetailDrawerProps> = ({ open, onClo
       }
       copyToClipboard(textToCopy, key);
     } catch (error) {
-      message.error('Failed to copy payload');
+      message.error(t('detail.failedToCopyPayload'));
     }
   };
 
@@ -88,7 +90,7 @@ const DocumentDetailDrawer: React.FC<DocumentDetailDrawerProps> = ({ open, onClo
     <Drawer
       title={
         <Space>
-          <span>Document</span>
+          <span>{t('detail.document')}</span>
         </Space>
       }
       open={open}
@@ -138,13 +140,13 @@ const DocumentDetailDrawer: React.FC<DocumentDetailDrawerProps> = ({ open, onClo
             <div style={{ marginBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <Text type="secondary" style={{ fontSize: 12 }}>
-                  Similarity Score
+                  {t('detail.similarityScore')}
                 </Text>
                 <CopyButton
                   onClick={() =>
                     copyToClipboard(Number(document.score).toFixed(6), 'Similarity Score')
                   }
-                  title="Copy score to clipboard"
+                  title={t('detail.copyScore')}
                 />
               </div>
               <Text style={{ fontSize: 20, color: '#22c55e', fontWeight: 600 }}>
@@ -182,7 +184,7 @@ const DocumentDetailDrawer: React.FC<DocumentDetailDrawerProps> = ({ open, onClo
                   </Text>
                   <CopyButton
                     onClick={() => copyVectorToClipboard(vector)}
-                    title="Copy vector to clipboard"
+                    title={t('detail.copyVector')}
                   />
                 </div>
                 <div

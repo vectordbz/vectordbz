@@ -7,6 +7,7 @@ import {
   CheckCircleOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme, getThemeColors } from '../contexts/ThemeContext';
 
 const { Text } = Typography;
@@ -46,6 +47,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
 }) => {
   const { mode } = useTheme();
   const colors = getThemeColors(mode);
+  const { t } = useTranslation();
   const [dismissed, setDismissed] = useState(false);
 
   // Reset dismissed state when new update becomes available
@@ -88,10 +90,10 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
             >
               <Space direction="vertical" size={4} style={{ flex: 1 }}>
                 <Text strong style={{ color: colors.text, fontSize: 14 }}>
-                  Update Available
+                  {t('update.updateAvailable')}
                 </Text>
                 <Text type="secondary" style={{ fontSize: 12 }}>
-                  Version {version || updateInfo?.version} is now available
+                  {t('update.versionAvailable', { version: version || updateInfo?.version })}
                 </Text>
                 {updateInfo?.releaseName && (
                   <Text type="secondary" style={{ fontSize: 11, fontStyle: 'italic' }}>
@@ -121,7 +123,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
                 onClick={onUpdateNow}
                 style={{ flex: 1 }}
               >
-                Update Now
+                {t('update.updateNow')}
               </Button>
               <Button
                 size="small"
@@ -131,7 +133,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
                 }}
                 style={{ flex: 1 }}
               >
-                Later
+                {t('common.later')}
               </Button>
             </Space>
           </Space>
@@ -178,7 +180,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <SyncOutlined spin style={{ color: colors.primary, fontSize: 16 }} />
               <Text strong style={{ color: colors.text, fontSize: 14, flex: 1 }}>
-                Downloading Update
+                {t('update.downloading')}
               </Text>
             </div>
             <Progress
@@ -189,7 +191,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
               format={(percent) => `${percent}%`}
             />
             <Text type="secondary" style={{ fontSize: 11 }}>
-              Version {version || updateInfo?.version}
+              {t('update.versionAvailable', { version: version || updateInfo?.version })}
             </Text>
           </Space>
         </Card>
@@ -228,14 +230,14 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <CheckCircleOutlined style={{ color: colors.success, fontSize: 16 }} />
                   <Text strong style={{ color: colors.text, fontSize: 14 }}>
-                    Update Ready
+                    {t('update.updateReady')}
                   </Text>
                 </div>
                 <Text type="secondary" style={{ fontSize: 12 }}>
-                  Version {version || updateInfo?.version} has been downloaded
+                  {t('update.versionDownloaded', { version: version || updateInfo?.version })}
                 </Text>
                 <Text type="secondary" style={{ fontSize: 11 }}>
-                  Restart the app to apply the update
+                  {t('update.restartToApply')}
                 </Text>
               </Space>
               <Button
@@ -263,7 +265,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
                 onClick={onRestartNow}
                 style={{ flex: 1, background: colors.success, borderColor: colors.success }}
               >
-                Restart App
+                {t('update.restartApp')}
               </Button>
               <Button
                 size="small"
@@ -273,7 +275,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({
                 }}
                 style={{ flex: 1 }}
               >
-                Later
+                {t('common.later')}
               </Button>
             </Space>
           </Space>
