@@ -6,6 +6,7 @@ import { seedPineconeDB }     from './seeds/pinecone.js';
 import { seedPgVectorDB }     from './seeds/pgvector.js';
 import { seedElasticsearchDB } from './seeds/elasticsearch.js';
 import { seedRedisSearchDB }  from './seeds/redissearch.js';
+import { seedAhnlichDB } from './seeds/ahnlich.js';
 
 const args = process.argv.slice(2);
 const seedAll = args.length === 0;
@@ -18,6 +19,7 @@ const seedPinecone     = seedAll || args.includes('--pinecone');
 const seedPgVector     = seedAll || args.includes('--pgvector') || args.includes('--postgres');
 const seedElastic      = seedAll || args.includes('--elasticsearch') || args.includes('--elastic');
 const seedRedisSearch  = seedAll || args.includes('--redissearch') || args.includes('--redis');
+const seedAhnlich = seedAll || args.includes('--ahnlich');
 
 async function main() {
   console.log('VectorDB Seed');
@@ -31,6 +33,7 @@ async function main() {
   if (seedPgVector)    await seedPgVectorDB();
   if (seedElastic)     await seedElasticsearchDB();
   if (seedRedisSearch) await seedRedisSearchDB();
+  if (seedAhnlich) await seedAhnlichDB();
 
   console.log('\nDone. Open VectorDBZ and connect to explore the seeded data.');
 }

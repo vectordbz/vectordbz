@@ -208,6 +208,27 @@ services:
       - REDIS_ARGS=--save 60 1 --loglevel warning
     restart: unless-stopped
 
+  # Ahnlich Vector Database
+  # gRPC API: localhost:1369
+  ahnlich:
+    image: ghcr.io/deven96/ahnlich-db:${AHNLICH_DB_VERSION:-latest}
+    container_name: ahnlich-db
+    command: >
+      "ahnlich-db run --host 0.0.0.0 \
+      --enable-persistence --persist-location /root/.ahnlich/data/db.dat \
+      --persistence-interval 30000"
+    ports:
+      - "1369:1369"
+    volumes:
+      - ahnlich_data:/root/.ahnlich/data
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'PING' | ahnlich-cli ahnlich --agent db --host 127.0.0.1 --port 1369 --no-interactive"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
 volumes:
   qdrant_data:
   weaviate_data:
@@ -218,3 +239,4 @@ volumes:
   elasticsearch_data:
   postgres_data:
   redis_data:
+  ahnlich_data:

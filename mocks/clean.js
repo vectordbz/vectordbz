@@ -2,6 +2,11 @@ import axios from 'axios';
 import pg from 'pg';
 import { Client as ElasticsearchClient } from '@elastic/elasticsearch';
 import { createClient as createRedisClient } from 'redis';
+import { createDbClient } from '@deven96/ahnlich-client-node';
+import {
+  DropStore,
+  ListStores,
+} from '@deven96/ahnlich-client-node/grpc/db/query_pb';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,6 +25,9 @@ const REDIS_URL = process.env.REDIS_URL || (() => {
   const password = process.env.REDIS_PASSWORD || '';
   return password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`;
 })();
+const AHNLICH_HOST = process.env.AHNLICH_HOST || 'localhost';
+const AHNLICH_PORT = process.env.AHNLICH_PORT || '1369';
+const AHNLICH_SCHEMA = process.env.AHNLICH_SCHEMA || 'public';
 
 async function cleanQdrant() {
   console.log('\nCleaning Qdrant...');
@@ -145,6 +153,43 @@ async function cleanRedisSearch() {
   }
 }
 
+async function cleanAhnlich() {
+  console.log('\nCleaning Ahnlich...');
+
+  const client = createDbClient(`${AHNLICH_HOST}:${AHNLICH_PORT}`);
+  const demoStores = ['ahnlich_products', 'ahnlich_documents'];
+
+  try {
+    const response = await client.listStores(
+      new ListStores({
+        schema: AHNLICH_SCHEMA,
+      }),
+    );
+
+    const existingStores = new Set(response.stores.map((store) => store.name));
+
+    for (const store of demoStores) {
+      if (!existingStores.has(store)) {
+        continue;
+      }
+
+      await client.dropStore(
+        new DropStore({
+          store,
+          errorIfNotExists: false,
+          schema: AHNLICH_SCHEMA,
+        }),
+      );
+
+      console.log(`  Deleted: ${store}`);
+    }
+
+    console.log('Done.');
+  } catch (error) {
+    console.error(`Skipped (${error.message})`);
+  }
+}
+
 async function main() {
   console.log('VectorDB Cleaner');
   console.log('================');
@@ -156,6 +201,7 @@ async function main() {
   await cleanPgVector();
   await cleanElasticsearch();
   await cleanRedisSearch();
+  await cleanAhnlich();
 
   console.log('\nAll databases cleaned.');
 }

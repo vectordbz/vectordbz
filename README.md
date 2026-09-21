@@ -34,6 +34,7 @@ VectorDBZ lets you connect to local or cloud vector database instances, explore 
 | **pgvector (PostgreSQL)** | `PostgreSQL 11+` with `pgvector` extension |
 | **Elasticsearch** | `v8.x` |
 | **RedisSearch (Redis Stack)** | `v2.0+` |
+| **Ahnlich** | Latest |
 
 ---
 
