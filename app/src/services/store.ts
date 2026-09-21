@@ -11,6 +11,8 @@ interface StoreSchema {
 // Use type assertion to work with electron-store
 const store = new Store<StoreSchema>({
   name: 'vectordbz-config',
+  // electron-store forwards this option to Conf when tests run without Electron's app path.
+  // @ts-expect-error projectName is intentionally omitted from electron-store's public options.
   projectName: 'vectordbz', // Required for Node.js environments (tests)
   defaults: {
     connections: [],

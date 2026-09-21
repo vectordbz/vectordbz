@@ -12,7 +12,8 @@ export type DatabaseType =
   | 'pgvector'
   | 'pinecone'
   | 'elasticsearch'
-  | 'redissearch';
+  | 'redissearch'
+  | 'ahnlich';
 
 export interface DatabaseOption {
   value: DatabaseType;
@@ -32,6 +33,7 @@ export interface ConnectionConfig {
   database?: string; // For ChromaDB Cloud and PostgreSQL
   user?: string; // For PostgreSQL
   password?: string; // For PostgreSQL
+  schema?: string; // For databases with schema namespaces, such as Ahnlich
 }
 
 export interface SavedConnection extends ConnectionConfig {

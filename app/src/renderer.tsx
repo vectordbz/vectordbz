@@ -9,13 +9,7 @@ import './i18n';
 const container = document.getElementById('root');
 const root = createRoot(container!);
 
-// Get PostHog configuration from environment variables
-// IMPORTANT: Vite replaces import.meta.env.* at BUILD TIME, not runtime
-// During build, Vite reads .env file or environment variables and replaces
-// these references with actual string values in the built code
-// @ts-expect-error - Vite handles import.meta.env at build time
 const posthogApiKey = import.meta.env?.VITE_PUBLIC_POSTHOG_KEY;
-// @ts-expect-error - Vite handles import.meta.env at build time
 const posthogHost = import.meta.env?.VITE_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com';
 
 const posthogOptions = {
