@@ -17,5 +17,13 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "rules": {
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": ["^@deven96/ahnlich-client-node/grpc/"]
+      }
+    ]
+  },
   "ignorePatterns": ["node_modules/", "dist/", "out/", "coverage/", ".vite/"]
 }

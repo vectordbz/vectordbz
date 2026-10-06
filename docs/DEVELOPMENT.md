@@ -73,6 +73,7 @@ Default ports:
 | Elasticsearch | `9200` |
 | pgvector (PostgreSQL) | `5432` |
 | RedisSearch | `6379` |
+| Ahnlich | `1369` |
 
 ---
 
@@ -92,6 +93,7 @@ node seeds/milvus.js
 node seeds/pgvector.js
 node seeds/elasticsearch.js
 node seeds/redissearch.js
+node seeds/ahnlich.js
 
 # Or seed all local databases at once
 node seed.js

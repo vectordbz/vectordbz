@@ -11,6 +11,7 @@
     "publish": "electron-forge publish",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --fix --ext .ts,.tsx,.js,.jsx",
     "prepare": "cd .. && husky install app/.husky || true",
@@ -79,6 +80,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@deven96/ahnlich-client-node": "0.4.2",
     "@elastic/elasticsearch": "^8.19.1",
     "@monaco-editor/react": "^4.7.0",
     "@pinecone-database/pinecone": "^6.1.3",

@@ -15,9 +15,12 @@
     "seed:elasticsearch": "node seed.js --elasticsearch",
     "seed:redissearch": "node seed.js --redissearch",
     "seed:redis": "node seed.js --redis",
+    "seed:ahnlich": "node seed.js --ahnlich",
     "clean": "node clean.js"
   },
   "dependencies": {
+    "@deven96/ahnlich-client-node": "^0.4.2",
+    "@elastic/elasticsearch": "^8.15.0",
     "@faker-js/faker": "^9.2.0",
     "@pinecone-database/pinecone": "^6.1.3",
     "@qdrant/js-client-rest": "^1.16.2",
@@ -25,7 +28,6 @@
     "axios": "^1.7.7",
     "chromadb": "^1.10.5",
     "dotenv": "^17.2.3",
-    "@elastic/elasticsearch": "^8.15.0",
     "pg": "^8.13.1",
     "redis": "^4.7.0"
   }

@@ -290,6 +290,12 @@ export const TEST_CONFIGS: Record<string, ConnectionConfig> = {
     port: 6379,
     https: false,
   },
+  ahnlich: {
+    type: 'ahnlich',
+    host: '127.0.0.1',
+    port: 1369,
+    schema: 'public',
+  },
 };
 
 // ============================================

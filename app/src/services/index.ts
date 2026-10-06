@@ -7,6 +7,7 @@ export { PgVectorClient } from './clients/pgvector';
 export { PineconeClient } from './clients/pinecone';
 export { ElasticsearchClient } from './clients/elasticsearch';
 export { RedisSearchClient } from './clients/redissearch';
+export { AhnlichClient } from './clients/ahnlich';
 export { connectionStore, settingsStore } from './store';
 export * from './vectorUtils';
 export { mergeWithDefault, getSchemaDerivedCapabilities } from './searchCapabilities';
@@ -19,6 +20,7 @@ import { PgVectorClient } from './clients/pgvector';
 import { PineconeClient } from './clients/pinecone';
 import { ElasticsearchClient } from './clients/elasticsearch';
 import { RedisSearchClient } from './clients/redissearch';
+import { AhnlichClient } from './clients/ahnlich';
 
 /**
  * Factory function to create a database client based on type
@@ -41,6 +43,8 @@ export function createClient(type: DatabaseType, config: ConnectionConfig): Vect
       return new ElasticsearchClient(config);
     case 'redissearch':
       return new RedisSearchClient(config);
+    case 'ahnlich':
+      return new AhnlichClient(config);
     default:
       throw new Error(`Unsupported database type: ${type}`);
   }

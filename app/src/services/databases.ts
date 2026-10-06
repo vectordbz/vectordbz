@@ -10,6 +10,7 @@ export function getDatabaseColor(type: string) {
     pinecone: '#0A0A0A',
     elasticsearch: '#D7689D',
     redissearch: '#DC382D',
+    ahnlich: '#FFFF50',
   };
   return colors[type] || '#6366f1';
 }
@@ -22,6 +23,7 @@ const defaultPresets = {
   tenant: undefined,
   user: undefined,
   password: undefined,
+  schema: undefined,
 };
 
 export const databaseOptions: DatabaseOption[] = [
@@ -80,5 +82,17 @@ export const databaseOptions: DatabaseOption[] = [
     color: getDatabaseColor('redissearch'),
     fields: ['host', 'port', 'password'],
     presets: { ...defaultPresets, host: 'localhost', port: 6379 },
+  },
+  {
+    value: 'ahnlich',
+    label: 'Ahnlich',
+    color: getDatabaseColor('ahnlich'),
+    fields: ['host', 'port', 'schema'],
+    presets: {
+      ...defaultPresets,
+      host: 'localhost',
+      port: 1369,
+      schema: 'public',
+    },
   },
 ];

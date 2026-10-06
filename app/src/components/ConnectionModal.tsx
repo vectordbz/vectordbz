@@ -102,6 +102,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
         database: values.database?.trim() || undefined,
         user: values.user?.trim() || undefined,
         password: values.password?.trim() || undefined,
+        schema: values.schema?.trim() || undefined,
       };
 
       const result = await window.electronAPI.db.testConnection(config);
@@ -163,6 +164,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
     apiKey?: string;
     tenant?: string;
     database?: string;
+    schema?: string;
     user?: string;
     password?: string;
   }) => {
@@ -217,7 +219,9 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
       }
     } catch (error) {
       message.error(
-        t('connection.connectionFailedMsg', { error: error instanceof Error ? error.message : 'Unknown error' }),
+        t('connection.connectionFailedMsg', {
+          error: error instanceof Error ? error.message : 'Unknown error',
+        }),
       );
     } finally {
       setLoading(false);
@@ -391,6 +395,24 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                       </Form.Item>
                     )}
                     <div style={{ display: 'flex', gap: 12 }}>
+                      {shouldShowField('schema') && (
+                        <Form.Item
+                          name="schema"
+                          label={
+                            <Text type="secondary" style={{ fontSize: 12 }}>
+                              Schema
+                            </Text>
+                          }
+                          rules={[{ required: false, message: t('common.required') }]}
+                          style={{ flex: 1, marginBottom: 16 }}
+                        >
+                          <Input
+                            prefix={<ApartmentOutlined style={{ color: 'var(--text-muted)' }} />}
+                            placeholder="public"
+                            style={{ borderRadius: 8 }}
+                          />
+                        </Form.Item>
+                      )}
                       {shouldShowField('tenant') && (
                         <Form.Item
                           name="tenant"
@@ -607,6 +629,7 @@ const ConnectionModal: React.FC<ConnectionModalProps> = ({ open, onClose, onConn
                                   {conn.tenant && conn.database
                                     ? `@${conn.tenant}/${conn.database}`
                                     : ''}
+                                  {conn.schema ? `/${conn.schema}` : ''}
                                 </Text>
                               </Space>
                             }
